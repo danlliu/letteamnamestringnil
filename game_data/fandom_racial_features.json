@@ -1,5 +1,4 @@
 {
-    "Source": "https://d-n-d5e.fandom.com/wiki/Races",
     "Dragonborn": {
         "Modifiers": {
             "Charisma": 1,
@@ -371,5 +370,265 @@
             }
         },
         "Languages": ["Common", "Elven", "Choice"]
+    },
+    "Halfling": {
+        "Subclasses": ["Lightfoot Halfling", "Stout Halfling", "Ghostwise Halfling"],
+        "Modifiers": {
+            "Dexterity": 2,
+            "Lightfoot Halfling": {"Charisma": 1},
+            "Stout Halfling": {"Constitution": 1},
+            "Ghostwise Halfling": {"Wisdom": 1}
+        },
+        "Alignment": {
+            "LG": 100,
+            "LN": 10,
+            "LE": 2,
+            "NG": 50,
+            "NN": 7,
+            "NE": 1,
+            "CG": 35,
+            "CN": 4,
+            "CE": 1
+        },
+        "Size": {
+            "Classification": "small",
+            "Height": "3 ft",
+            "Weight": "40 lbs"
+        },
+        "Speed": 25,
+        "Racial Abilities": {
+            "Lucky": {
+                "Description": "When you roll a 1 on an attack roll, ability check, or saving throw, you can reroll the die. You must use the new result, even if it is a 1."
+            },
+            "Brave": {
+                "Description": "You have advantage on saving throws against being frightened.",
+                "Advantages (Against)": ["Fear"]
+            },
+            "Nimble": {
+                "Description": "You can move through the space of any creature that is of a size larger than yours."
+            },
+            "Naturally Stealthy": {
+                "Subclass": ["Lightfoot Halfling"],
+                "Description": "You can attempt to hide even when you are only obscured by a creature that is at least one size larger than you."
+            },
+            "Stout Resilience": {
+                "Subclass": ["Stout Halfling"],
+                "Description": "You have advantage on saving throws against poison, and you have resistance to poison damage.",
+                "Advantages (Against)": ["Poison"],
+                "Damage Type": "Poison"
+            },
+            "Silent Speech": {
+                "Subclass": ["Ghostwise Halfling"],
+                "Description": ["You can speak telepathically to any creature within 30 feet of you. The creature understands you only if the two of you share a language. You can speak telepathically in this way to one creature at a time."],
+                "Range": "30 feet"
+            }
+        },
+        "Languages": ["Common", "Halfling"]
+    },
+    "Half-Orc": {
+        "Modifiers": {
+            "Strength": 2,
+            "Constitution": 1
+        },
+        "Alignment": {
+            "LG": 1,
+            "LN": 5,
+            "LE": 10,
+            "NG": 2,
+            "NN": 15,
+            "NE": 35,
+            "CG": 50,
+            "CN": 60,
+            "CE": 80
+        },
+        "Size": {
+            "Classification": "medium",
+            "Height": "5-7 ft",
+            "Weight": "200 lbs"
+        },
+        "Speed": 30,
+        "Racial Abilities": {
+            "Darkvision": {
+                "Description": "Thanks to your orc blood, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray.",
+                "Range": "60 feet"
+            },
+            "Menacing": {
+                "Description": "You gain proficiency in the Intimidation skill.",
+                "Proficiency": ["Intimidation"]
+            },
+            "Relentless Endurance": {
+                "Description": "When you are reduced to 0 hit points but not killed outright, you can drop to 1 hit point instead. You can't use this feature again until you finish a long rest."
+            },
+            "Savage Attacks": {
+                "Description": "When you score a critical hit with a melee weapon attack, you can roll one of the weapon's damage dice one additional time and add it to the extra damage of the critical hit."
+            },
+            "Stout Resilience": {
+                "Subclass": ["Stout Halfling"],
+                "Description": "You have advantage on saving throws against poison, and you have resistance to poison damage.",
+                "Advantages (Against)": ["Poison"],
+                "Damage Type": "Poison"
+            }
+        },
+        "Languages": ["Common", "Orc"]
+    },
+    "Human": {
+        "Modifiers": {
+            "Charisma": 1,
+            "Constitution": 1,
+            "Dexterity": 1,
+            "Intelligence": 1,
+            "Strength": 1,
+            "Wisdom": 1
+        },
+        "Alignment": {
+            "LG": 100,
+            "LN": 100,
+            "LE": 100,
+            "NG": 100,
+            "NN": 100,
+            "NE": 100,
+            "CG": 100,
+            "CN": 100,
+            "CE": 100
+        },
+        "Size": {
+            "Classification": "medium",
+            "Height": "5-7 ft"
+        },
+        "Speed": 30,
+        "Racial Abilities": {
+            "Ability Score Increase": {
+                "Description": "Your ability scores each increase by 1."
+            }
+        },
+        "Languages": ["Common", "Choice"]
+    },
+    "Human Variant": {
+        "Modifiers": {
+            "Choice": 2
+        },
+        "Alignment": {
+            "LG": 100,
+            "LN": 100,
+            "LE": 100,
+            "NG": 100,
+            "NN": 100,
+            "NE": 100,
+            "CG": 100,
+            "CN": 100,
+            "CE": 100
+        },
+        "Size": {
+            "Classification": "medium",
+            "Height": "5-7 ft"
+        },
+        "Speed": 30,
+        "Racial Abilities": {
+            "Ability Score Increase": {
+                "Description": "Two different ability scores of your choice increase by 1."
+            },
+            "Skills": {
+                "Description": "You gain proficiency in one skill of your choice.",
+                "Proficiency": ["Choice"]
+            },
+            "Feat": {
+                "Description": "You gain one Feat of your choice.",
+                "Feats": ["Choice"]
+            }
+        },
+        "Languages": ["Common", "Choice"]
+    },
+    "Tiefling": {
+        "Subclasses": ["Bloodline of Asmodeus", "Bloodline of Baalzebul", "Bloodline of Dispater", "Bloodline of Fierna", "Bloodline of Glasya", "Bloodline of Levistus", "Bloodline of Mammon", "Bloodline of Mephistopheles", "Bloodline of Zariel", "Devil's Tongue", "Hellfire", "Winged"],
+        "Modifiers": {
+            "Charisma": 2,
+            "Bloodline of Asmodeus": {"Intelligence": 1},
+            "Bloodline of Baalzebul": {"Intelligence": 1},
+            "Bloodline of Dispater": {"Dexterity": 1},
+            "Bloodline of Fierna": {"Wisdom": 1},
+            "Bloodline of Glasya": {"Dexterity": 1},
+            "Bloodline of Levistus": {"Constitution": 1},
+            "Bloodline of Mammon": {"Intelligence": 1},
+            "Bloodline of Mephistopheles": {"Intelligence": 1},
+            "Bloodline of Zariel": {"Strength": 1},
+            "Devil's Tongue": {"Intelligence": 1},
+            "Hellfire": {"Intelligence": 1},
+            "Winged": {"Intelligence": 1}
+        },
+        "Alignment": {
+            "LG": 1,
+            "LN": 3,
+            "LE": 5,
+            "NG": 10,
+            "NN": 15,
+            "NE": 30,
+            "CG": 60,
+            "CN": 75,
+            "CE": 100
+        },
+        "Size": {
+            "Classification": "medium",
+            "Height": "5-7 ft"
+        },
+        "Speed": 30,
+        "Racial Abilities": {
+            "Darkvision": {
+                "Description": "Thanks to your infernal heritage, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can’t discern color in darkness, only shades of gray.",
+                "Range": "60 feet"
+            },
+            "Hellish Resistance": {
+                "Description": "You have resistance to fire damage.",
+                "Damage Type": "Fire"
+            },
+            "Infernal Legacy": {
+                "Subclass": ["Bloodline of Asmodeus"],
+                "Description": "You know the Thaumaturgy cantrip. Once you reach 3rd level, you can cast the Hellish Rebuke spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Darkness spell once. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Legacy of Maladomini": {
+                "Subclass": ["Bloodline of Baalzebul"],
+                "Description": "You know the Thaumaturgy cantrip. Once you reach 3rd level, you can cast the Ray of Sickness spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Crown of Madness spell once. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Legacy of Dis": {
+                "Subclass": ["Bloodline of Dispater"],
+                "Description": "You know the Thaumaturgy cantrip. Once you reach 3rd level, you can cast the Disguise Self spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Detect Thoughts spell once. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Legacy of Phlegethos": {
+                "Subclass": ["Bloodline of Fierna"],
+                "Description": "You know the Friends cantrip. Once you reach 3rd level, you can cast the Charm Person spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Suggestion spell once. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Legacy of Malbolge": {
+                "Subclass": ["Bloodline of Glasya"],
+                "Description": "You know the Minor Illusion cantrip. Once you reach 3rd level, you can cast the Disguise Self spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Invisibility spell once as a 3rd-level spell. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Legacy of Stygia": {
+                "Subclass": ["Bloodline of Levistus"],
+                "Description": "You know the Ray of Frost cantrip. Once you reach 3rd level, you can cast the Armor of Agathys spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Darkness spell once. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Legacy of Minauros": {
+                "Subclass": ["Bloodline of Mammon"],
+                "Description": "You know the Mage Hand cantrip. Once you reach 3rd level, you can cast the Tenser's Floating Disk spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Arcane Lock spell once. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Legacy of Cania": {
+                "Subclass": ["Bloodline of Mephistopheles"],
+                "Description": "You know the Mage Hand cantrip. Once you reach 3rd level, you can cast the Burning Hands spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Flame Blade spell once as a 3rd-level spell. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Legacy of Avernus": {
+                "Subclass": ["Bloodline of Zariel"],
+                "Description": "You know the Thaumaturgy cantrip. Once you reach 3rd level, you can cast the Searing Smite spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Branding Smite spell once as a 3rd-level spell. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Devil's Tongue": {
+                "Subclass": ["Devil's Tongue"],
+                "Description": "You know the Vicious Mockery cantrip. Once you reach 3rd level, you can cast the Charm Person spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Enthrall spell once. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells."
+            },
+            "Hellfire": {
+                "Subclass": ["Hellfire"],
+                "Description": "You may replace your hellish rebuke ability with burning hands. This alters, but does not replace, Infernal Legacy."
+            },
+            "Winged": {
+                "Subclass": ["Winged"],
+                "Description": "You have bat-like wings sprouting from your shoulders. You have a flying speed of 30 feet while you aren’t wearing heavy armor."
+            }
+        },
+        "Languages": ["Common", "Infernal"]
     }
 }
