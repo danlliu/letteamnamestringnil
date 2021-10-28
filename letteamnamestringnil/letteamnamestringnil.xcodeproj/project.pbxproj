@@ -13,6 +13,14 @@
 		D173E604272B06C100625CF5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D173E603272B06C100625CF5 /* Preview Assets.xcassets */; };
 		D173E606272B06C100625CF5 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E605272B06C100625CF5 /* Persistence.swift */; };
 		D173E609272B06C100625CF5 /* letteamnamestringnil.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D173E607272B06C100625CF5 /* letteamnamestringnil.xcdatamodeld */; };
+		D173E616272B07EF00625CF5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E615272B07EF00625CF5 /* LoginView.swift */; };
+		D173E618272B07FE00625CF5 /* GamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E617272B07FE00625CF5 /* GamesView.swift */; };
+		D173E61A272B081000625CF5 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E619272B081000625CF5 /* PlayerView.swift */; };
+		D173E61C272B081800625CF5 /* DMView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E61B272B081800625CF5 /* DMView.swift */; };
+		D173E61E272B082B00625CF5 /* CharacterSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E61D272B082B00625CF5 /* CharacterSheetView.swift */; };
+		D173E620272B083700625CF5 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E61F272B083700625CF5 /* WidgetView.swift */; };
+		D173E622272B084C00625CF5 /* CharacterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E621272B084C00625CF5 /* CharacterListView.swift */; };
+		D173E624272B087000625CF5 /* AddNPCView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E623272B087000625CF5 /* AddNPCView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +31,14 @@
 		D173E603272B06C100625CF5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D173E605272B06C100625CF5 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		D173E608272B06C100625CF5 /* letteamnamestringnil.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = letteamnamestringnil.xcdatamodel; sourceTree = "<group>"; };
+		D173E615272B07EF00625CF5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		D173E617272B07FE00625CF5 /* GamesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesView.swift; sourceTree = "<group>"; };
+		D173E619272B081000625CF5 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		D173E61B272B081800625CF5 /* DMView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMView.swift; sourceTree = "<group>"; };
+		D173E61D272B082B00625CF5 /* CharacterSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSheetView.swift; sourceTree = "<group>"; };
+		D173E61F272B083700625CF5 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
+		D173E621272B084C00625CF5 /* CharacterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterListView.swift; sourceTree = "<group>"; };
+		D173E623272B087000625CF5 /* AddNPCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNPCView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +77,14 @@
 				D173E605272B06C100625CF5 /* Persistence.swift */,
 				D173E607272B06C100625CF5 /* letteamnamestringnil.xcdatamodeld */,
 				D173E602272B06C100625CF5 /* Preview Content */,
+				D173E615272B07EF00625CF5 /* LoginView.swift */,
+				D173E617272B07FE00625CF5 /* GamesView.swift */,
+				D173E619272B081000625CF5 /* PlayerView.swift */,
+				D173E61B272B081800625CF5 /* DMView.swift */,
+				D173E61D272B082B00625CF5 /* CharacterSheetView.swift */,
+				D173E61F272B083700625CF5 /* WidgetView.swift */,
+				D173E621272B084C00625CF5 /* CharacterListView.swift */,
+				D173E623272B087000625CF5 /* AddNPCView.swift */,
 			);
 			path = letteamnamestringnil;
 			sourceTree = "<group>";
@@ -143,9 +167,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D173E622272B084C00625CF5 /* CharacterListView.swift in Sources */,
+				D173E618272B07FE00625CF5 /* GamesView.swift in Sources */,
 				D173E609272B06C100625CF5 /* letteamnamestringnil.xcdatamodeld in Sources */,
+				D173E61A272B081000625CF5 /* PlayerView.swift in Sources */,
+				D173E624272B087000625CF5 /* AddNPCView.swift in Sources */,
+				D173E61C272B081800625CF5 /* DMView.swift in Sources */,
+				D173E620272B083700625CF5 /* WidgetView.swift in Sources */,
 				D173E606272B06C100625CF5 /* Persistence.swift in Sources */,
+				D173E61E272B082B00625CF5 /* CharacterSheetView.swift in Sources */,
 				D173E5FF272B06BD00625CF5 /* ContentView.swift in Sources */,
+				D173E616272B07EF00625CF5 /* LoginView.swift in Sources */,
 				D173E5FD272B06BD00625CF5 /* letteamnamestringnilApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
