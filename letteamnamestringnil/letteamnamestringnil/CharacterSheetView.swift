@@ -8,8 +8,42 @@
 import SwiftUI
 
 struct CharacterSheetView: View {
+    
+    @State var race: String = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text("Character Sheet")
+                .font(.largeTitle)
+            
+            Divider()
+            Group {
+                Text("Character Information")
+                    .font(.headline)
+                VStack {
+                    TextField("Character Race", text: $race)
+                        .border(.gray, width: 1)
+                }.padding(16)
+            }
+            Divider()
+            Group {
+                Text("Ability Scores")
+                    .font(.headline)
+                VStack {
+                    TextField("Character Race", text: $race)
+                        .border(.gray, width: 1)
+                }.padding(16)
+            }
+            Divider()
+            Group {
+                Text("Other Stats")
+                    .font(.headline)
+                VStack {
+                    TextField("Character Race", text: $race)
+                        .border(.gray, width: 1)
+                }.padding(16)
+            }
+        }
     }
 }
 
