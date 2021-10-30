@@ -3082,8 +3082,8 @@
         "Properties": "Light, Thrown",
         "Range": "20/60"
     },
-    "light hammer +3": {
-        "Item": "light hammer +3",
+    "Light Hammer +3": {
+        "Item": "Light Hammer +3",
         "Item Roll20 Link": "https://roll20.net/compendium/dnd5e/Items:light%20hammer%20%2B%33",
         "Description": "No Description",
         "Damage": "1d4",
