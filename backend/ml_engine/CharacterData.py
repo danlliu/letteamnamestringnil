@@ -10,7 +10,7 @@ class CharacterData:
     background = ""
     race = ""
     alignment = 0
-    attrs = [] # [str, dex, con, int, wis, chr]
+    attrs = [] # [str, dex, con, int, wis, cha]
     ac = 0
     initiative = 0
     proficiency = 0
@@ -79,6 +79,8 @@ class CharacterData:
 
 
 class DataLists:
+    attr_max = {} 
+    attr_min = {}
     background_list = []
     skill_list = []
     feature_list = []
@@ -88,6 +90,34 @@ class DataLists:
     language_list = []
 
     def __init__(self):
+        self.attr_max = {
+            "str": 0,
+            "dex": 0,
+            "con": 0,
+            "int": 0,
+            "wis": 0,
+            "cha": 0,
+            "ac": 0,
+            "initiative": 0,
+            "proficiency": 0,
+            "perception": 0
+        }
+
+        self.attr_min = {
+            "str": 99,
+            "dex": 99,
+            "con": 99,
+            "int": 99,
+            "wis": 99,
+            "cha": 99,
+            "ac": 99,
+            "initiative": 99,
+            "proficiency": 99,
+            "perception": 99
+        }
+
+# [str, dex, con, int, wis, cha]
+
         self.background_list = []
         self.skill_list = []
         self.feature_list = []
@@ -98,6 +128,61 @@ class DataLists:
 
     def load_from_char_data(self, char_list):
         for c in char_list:
+            valid = True
+            for v in c.attrs:
+                if v > 20: 
+                    valid = False
+            if c.level == 1 and valid:
+                if c.attrs[0] > self.attr_max["str"]:
+                    self.attr_max["str"] = c.attrs[0]
+                if c.attrs[0] < self.attr_min["str"]:
+                    self.attr_min["str"] = c.attrs[0]
+
+                if c.attrs[1] > self.attr_max["dex"]:
+                    self.attr_max["dex"] = c.attrs[1]
+                if c.attrs[1] < self.attr_min["dex"]:
+                    self.attr_min["dex"] = c.attrs[1]
+
+                if c.attrs[2] > self.attr_max["con"]:
+                    self.attr_max["con"] = c.attrs[2]
+                if c.attrs[2] < self.attr_min["con"]:
+                    self.attr_min["con"] = c.attrs[2]
+
+                if c.attrs[3] > self.attr_max["int"]:
+                    self.attr_max["int"] = c.attrs[3]
+                if c.attrs[3] < self.attr_min["int"]:
+                    self.attr_min["int"] = c.attrs[3]
+
+                if c.attrs[4] > self.attr_max["wis"]:
+                    self.attr_max["wis"] = c.attrs[4]
+                if c.attrs[4] < self.attr_min["wis"]:
+                    self.attr_min["wis"] = c.attrs[4]
+
+                if c.attrs[5] > self.attr_max["cha"]:
+                    self.attr_max["cha"] = c.attrs[5]
+                if c.attrs[5] < self.attr_min["cha"]:
+                    self.attr_min["cha"] = c.attrs[5]
+
+                if c.ac > self.attr_max["ac"]:
+                    self.attr_max["ac"] = c.ac
+                if c.ac < self.attr_min["ac"]:
+                    self.attr_min["ac"] = c.ac
+
+                if c.initiative > self.attr_max["initiative"]:
+                    self.attr_max["initiative"] = c.initiative
+                if c.initiative < self.attr_min["initiative"]:
+                    self.attr_min["initiative"] = c.initiative
+
+                if c.proficiency > self.attr_max["proficiency"]:
+                    self.attr_max["proficiency"] = c.proficiency
+                if c.proficiency < self.attr_min["proficiency"]:
+                    self.attr_min["proficiency"] = c.proficiency
+
+                if c.perception > self.attr_max["perception"]:
+                    self.attr_max["perception"] = c.perception
+                if c.perception < self.attr_min["perception"]:
+                    self.attr_min["perception"] = c.perception
+
             self.background_list.append(c.background)
 
             for s in list(c.skills.keys()):
@@ -123,6 +208,7 @@ class DataLists:
             for l in c.languages:
                 st = validate_string(l)
                 self.language_list.append(st)
+
 
         self.background_list = list(set(self.background_list))
         self.skill_list = list(set(self.skill_list))
@@ -172,6 +258,8 @@ class DataLists:
         data = json.load(f)
         f.close()
 
+        self.attr_max = data["attr_max"],
+        self.attr_min = data["attr_min"],
         self.background_list = data["background_list"]
         self.skill_list = data["skill_list"]
         self.feature_list = data["feature_list"]
@@ -183,6 +271,8 @@ class DataLists:
     
     def save_to_file(self, fpath):
         out_map = {
+            "attr_max": self.attr_max,
+            "attr_min": self.attr_min,
             "background_list": self.background_list,
             "skill_list": self.skill_list,
             "feature_list": self.feature_list,

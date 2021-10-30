@@ -14,7 +14,7 @@ game_data = gd.GameData()
 data_list = cd.DataLists()
 
 
-def init_data(load_anyway=False, save_data=True):
+def init_data(load_anyway=True, save_data=True):
     basepath = path.abspath('')
     fpath = path.abspath(path.join(basepath, "..", "game_data", "saved_character_data_lists.json"))
     if exists(fpath) and not load_anyway:
