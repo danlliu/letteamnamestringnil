@@ -3736,15 +3736,31 @@
                 "count": 20
             },
             {
-                "name": "candles, a tinderbox, an alms box,",
+                "name": "Candles", 
                 "count": 10
             },
             {
-                "name": "Painter's Supplies, a letter of introduction from your guild, a set of traveler's clothes",
+                "name": "Tinderbox",
                 "count": 1
             },
             {
-                "name": "Wet tinderbox and candles",
+                "name": "Painter's Supplies", 
+                "count": 1
+            },
+            {
+                "name": "Alms Box",
+                "count": 1
+            },
+            {
+                "name": "Letter Of Introduction",
+                "count": 1
+            },
+            {
+                "name": "Traveler's Clothes",
+                "count": 1
+            },
+            {
+                "name": "Wet Tinderbox And Candles",
                 "count": 1
             },
             {
