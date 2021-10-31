@@ -8,8 +8,32 @@
 import SwiftUI
 
 struct LoginView: View {
+    @State private var username: String = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            HStack {
+                Text("username:")
+                    //.padding()
+                TextField("username", text: $username)
+                    .padding(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray, lineWidth: 1)
+                    )
+            }
+            Button(action: createParty) {
+                Text("Create New Party")
+                    .foregroundColor(Color.white)
+                    .padding()
+            }
+            .background(Color.blue)
+            .cornerRadius(10)
+        }
+    }
+    
+    func createParty() {
+        //TODO: create party entry in database
     }
 }
 
