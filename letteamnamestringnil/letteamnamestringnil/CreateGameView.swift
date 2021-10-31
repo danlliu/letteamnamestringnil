@@ -62,7 +62,7 @@ struct CreateGameView: View {
             
             Spacer()
             
-            NavigationLink(destination: PlayerView()) {
+            NavigationLink(destination: (role == "DM") ? AnyView(DMView()) : AnyView(GenerateCharacter())) {
                 Text("Create Party")
                     .foregroundColor(Color.white)
                     .padding()
