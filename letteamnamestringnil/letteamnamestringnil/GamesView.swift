@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct GamesView: View {
     private var games = ["game1", "game2", "game3"]
+    @State private var partyCode: String = ""
     
     var body: some View {
         VStack {
@@ -21,7 +23,29 @@ struct GamesView: View {
                 }
             }
             .listStyle(.plain)
+            
+            
+            Text("Enter a party code:")
+                .padding()
+            
+            TextField("", text: $partyCode)
+                .frame(width: 120) //TODO: this is hacky
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                )
+            
+            NavigationLink(destination: PlayerView()) {
+                Text("Join New Game")
+                    .foregroundColor(Color.white)
+                    .padding()
+            }
+            .background(Color.blue)
+            .cornerRadius(10)
+            .padding()
         }
+        .padding()
     }
 }
 

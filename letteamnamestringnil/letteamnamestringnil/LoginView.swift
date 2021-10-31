@@ -9,7 +9,6 @@ import SwiftUI
 
 struct LoginView: View {
     @State private var username: String = ""
-    @State private var partyCode: String = ""
     
     var body: some View {
         VStack {
@@ -33,17 +32,7 @@ struct LoginView: View {
             .background(Color.blue)
             .cornerRadius(10)
             .padding()
-            
-            Text("Or enter a party code:")
-                .padding()
-            
-            TextField("Enter code", text: $partyCode)
-                .frame(width: 120) //TODO: this is hacky
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray, lineWidth: 1)
-                )
+
             NavigationLink(destination: GamesView()) {
                 Text("Join Game")
                     .foregroundColor(Color.white)
