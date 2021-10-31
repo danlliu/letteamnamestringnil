@@ -44,15 +44,18 @@ struct GamesView: View {
                     .foregroundColor(Color.white)
                     .padding()
             }
-            .background(Color.blue)
+            .simultaneousGesture(TapGesture().onEnded(joinPartyWithCode)) // this lets us do the database call when the user presses the button
+            .disabled(partyCode == "")
+            .background((partyCode == "") ? Color.gray : Color.blue)
             .cornerRadius(10)
             .padding()
         }
         .padding()
     }
     
-    func newPartyWithCode() {
-        print("creating new party with code...")
+    func joinPartyWithCode() {
+        //TODO: I am lonely! I need a database!
+        print("joining party with code...")
     }
 }
 
