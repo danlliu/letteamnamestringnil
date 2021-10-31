@@ -23,8 +23,8 @@ struct HomeView: View {
                 Spacer()
                 Spacer()
 
-                NavigationLink(
-                    destination: Text("Join"),
+                NavigationLink (
+                    destination: GamesView(),
                     label: {
                         Text("Join Game")
                     }
@@ -32,7 +32,7 @@ struct HomeView: View {
                     .padding(.bottom, 12.0)
                 
                 NavigationLink(
-                    destination: Text("Create"),
+                    destination: Text("You pressed create game!"),
                     label: {
                         Text("Create Game")
                     }
@@ -41,7 +41,7 @@ struct HomeView: View {
                 Spacer()
                 
             }
-            .buttonStyle(RedButton())
+            .buttonStyle(BigRedButton())
         }
     }
     
@@ -59,7 +59,7 @@ struct HomeView: View {
      */
 }
 
-struct RedButton: ButtonStyle {
+struct BigRedButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .frame(width: 180.0)
