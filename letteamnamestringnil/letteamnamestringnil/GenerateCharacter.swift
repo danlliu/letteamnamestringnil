@@ -12,6 +12,7 @@ struct GenerateCharacter: View {
     @State private var playerClass: String = "Select a class"
     @State private var playerAlignment: String = "Select an alignment"
     @State private var level: Int = 0
+    @State private var manualInput: Bool = false
     
     private var classes = ["Aarakocra", "Bugbear", "Centaur", "Dragonborn", "Dwarf", "Elf", "Gensai", "Goblin", "Human", "Minotaur", "Orc", "Tortle",
                             "Vedalken", "Warforged"]
@@ -48,7 +49,6 @@ struct GenerateCharacter: View {
             }
             .listStyle(.plain)
             
-            
             NavigationLink(destination: GamesView()) {
                 Text("Generate Random Character")
                     .foregroundColor(Color.white)
@@ -58,8 +58,33 @@ struct GenerateCharacter: View {
             .background(Color.blue)
             .cornerRadius(10)
             .padding()
+            
+            Text("or")
+                .padding()
+            HStack {
+                Text("Enter all input manually")
+                Spacer()
+                Button(action: {
+                    manualInput.toggle()
+                }) {
+                    if manualInput {
+                        Image(systemName: "minus.circle")
+                    }
+                    else {
+                        Image(systemName: "plus.circle")
+                    }
+                }
+            }
+            .padding()
+            if(manualInput) {
+                ManualEntryView()
+            }
+
         }
         .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("New character")
+            }
             ToolbarItem {
                 NavigationLink(destination: PlayerView()) {
                     Text("Create")
@@ -71,6 +96,68 @@ struct GenerateCharacter: View {
     func generateRandom() {
         //TODO: need database and ML
         print("generating random character sheet...")
+    }
+}
+
+struct ManualEntryView: View {
+    //TODO: validate string to int conversions -> make number only keyboard
+    //basic stats
+    @State private var xp: String = ""
+    @State private var hp: String = ""
+    @State private var perception: String = ""
+    @State private var ac: String = ""
+    @State private var initiative: String = ""
+    @State private var speed: String = ""
+    
+    //ability modifiers
+    @State private var strength: String = ""
+    @State private var dexterity: String = ""
+    @State private var constitution: String = ""
+    @State private var intelligence: String = ""
+    @State private var wisdom: String = ""
+    @State private var character: String = ""
+    
+    var body: some View {
+        List {
+            Section(header: Text("Basic info")) {
+                HStack {
+                    Text("XP:")
+                    TextField("XP", text: $xp)
+                        .keyboardType(.numberPad)
+                }
+                HStack {
+                    Text("HP:")
+                    TextField("HP", text: $hp)
+                        .keyboardType(.numberPad)
+                }
+                HStack {
+                    Text("Perception:")
+                    TextField("Perception", text: $perception)
+                        .keyboardType(.numberPad)
+                }
+                HStack {
+                    Text("Initiative:")
+                    TextField("Initiative", text: $initiative)
+                        .keyboardType(.numberPad)
+                }
+                HStack {
+                    Text("AC:")
+                    TextField("AC", text: $ac)
+                        .keyboardType(.numberPad)
+                }
+                HStack {
+                    Text("Speed:")
+                    TextField("Speed", text: $speed)
+                        .keyboardType(.numberPad)
+                }
+            }
+            Section(header: Text("Ability modifiers")) {
+                HStack {
+                    
+                }
+            }
+        }
+        .listStyle(.grouped)
     }
 }
 
