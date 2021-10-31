@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreateGameView: View {
     @State private var partyCode: String = ""
-    @State private var role: String = "DM"
+    @State private var role: String = ""
     
     private var buttonPadding: CGFloat = 8
     
@@ -27,15 +27,20 @@ struct CreateGameView: View {
                     RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.gray, lineWidth: 1)
                 )
+                .padding()
             HStack {
                 Button(action: {
                     role = "DM"
                 }) {
                     Text("Join as DM")
-                        .foregroundColor(Color.white)
+                        .foregroundColor((role == "DM") ? Color.white : Color.blue)
                         .padding(buttonPadding)
                 }
-                .background((role == "DM") ? Color.blue : Color.gray)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.blue, lineWidth: 3)
+                )
+                .background((role == "DM") ? Color.blue : Color.white)
                 .cornerRadius(10)
                 .padding()
                 
@@ -43,22 +48,29 @@ struct CreateGameView: View {
                     role = "player"
                 }){
                     Text("Join as Player")
-                        .foregroundColor(Color.white)
+                        .foregroundColor((role == "player") ? Color.white : Color.blue)
                         .padding(buttonPadding)
                 }
-                .background((role == "player") ? Color.blue : Color.gray)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.blue, lineWidth: 3)
+                )
+                .background((role == "player") ? Color.blue : Color.white)
                 .background(Color.blue)
                 .cornerRadius(10)
                 .padding()
             }
+            
+            Spacer()
+            
             NavigationLink(destination: PlayerView()) {
                 Text("Create Party")
                     .foregroundColor(Color.white)
                     .padding()
             }
             .simultaneousGesture(TapGesture().onEnded(createGame))
-            .disabled(partyCode == "")
-            .background((partyCode == "") ? Color.gray : Color.blue)
+            .disabled(partyCode == "" || role == "")
+            .background((partyCode == "" || role == "") ? Color.gray : Color.blue)
             .background(Color.blue)
             .cornerRadius(10)
             .padding()
