@@ -47,6 +47,10 @@ struct GamesView: View {
         }
         .padding()
     }
+    
+    func newPartyWithCode() {
+        print("creating new party with code...")
+    }
 }
 
 struct GameInfoView: View {

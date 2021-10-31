@@ -12,17 +12,24 @@ struct LoginView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Text("username:")
-                    //.padding()
-                TextField("username", text: $username)
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.gray, lineWidth: 1)
-                    )
-            }
-            .padding()
+            Spacer()
+            Text("TCP")
+                .font(.largeTitle).bold() //TODO: custom fonts are a lot of work, not skeletal
+                .padding()
+            Text("Traveler Creation Partner")
+            Spacer()
+            
+            //TODO: MVP
+//            HStack {
+//                Text("username:")
+//                TextField("username", text: $username)
+//                    .padding(10)
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 10)
+//                                .stroke(Color.gray, lineWidth: 1)
+//                    )
+//            }
+//            .padding()
             
             Button(action: createParty) {
                 Text("Create New Party")
