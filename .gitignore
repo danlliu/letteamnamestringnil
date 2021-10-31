@@ -368,3 +368,6 @@ backend/data_scrapers_and_cleaners/scraper_output/*
 !backend/data_scrapers_and_cleaners/scraper_output/kassoon_scrapes/
 backend/data_scrapers_and_cleaners/scraper_output/kassoon_scrapes/*
 !backend/data_scrapers_and_cleaners/scraper_output/kassoon_scrapes/README.md
+
+# Permission & Key files
+letteamnamestringnil-ec2.pem
