@@ -22,7 +22,7 @@ def parties(request):
         pass
     return JsonResponse([
         EXAMPLE_PARTY_ID,
-    ])
+    ], safe=False)
 
 @require_http_methods(["GET", "POST"])
 def party_info(request, party_id):
@@ -53,7 +53,7 @@ def member_info(request, party_id, member_id):
         return JsonResponse({
             "isDM": True,
             "sheet": None,
-        }
+        })
     elif member_id == EXAMPLE_PLAYER_ID:
         return JsonResponse({
             "isDM": False,
@@ -108,7 +108,7 @@ def member_info(request, party_id, member_id):
                 "stats": {
                     "armorClass": 14,
                     "initiative": 2,
-                    "speed:" 30,
+                    "speed": 30,
                     "maxHP": 18,
                     "curHP": 18,
                     "tempHP": 0,
