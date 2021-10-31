@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1514DA7F272F2D2800BE23DB /* CreateGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1514DA7E272F2D2800BE23DB /* CreateGameView.swift */; };
+		1514DA81272F480D00BE23DB /* PlayerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1514DA80272F480D00BE23DB /* PlayerDetailView.swift */; };
 		D173E5FD272B06BD00625CF5 /* letteamnamestringnilApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E5FC272B06BD00625CF5 /* letteamnamestringnilApp.swift */; };
 		D173E5FF272B06BD00625CF5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E5FE272B06BD00625CF5 /* ContentView.swift */; };
 		D173E601272B06C100625CF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D173E600272B06C100625CF5 /* Assets.xcassets */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		1514DA7E272F2D2800BE23DB /* CreateGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGameView.swift; sourceTree = "<group>"; };
+		1514DA80272F480D00BE23DB /* PlayerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerDetailView.swift; sourceTree = "<group>"; };
 		D173E5F9272B06BD00625CF5 /* letteamnamestringnil.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = letteamnamestringnil.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D173E5FC272B06BD00625CF5 /* letteamnamestringnilApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = letteamnamestringnilApp.swift; sourceTree = "<group>"; };
 		D173E5FE272B06BD00625CF5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				D173E621272B084C00625CF5 /* CharacterListView.swift */,
 				D173E623272B087000625CF5 /* AddNPCView.swift */,
 				1514DA7E272F2D2800BE23DB /* CreateGameView.swift */,
+				1514DA80272F480D00BE23DB /* PlayerDetailView.swift */,
 			);
 			path = letteamnamestringnil;
 			sourceTree = "<group>";
@@ -172,6 +175,7 @@
 			files = (
 				D173E622272B084C00625CF5 /* CharacterListView.swift in Sources */,
 				D173E618272B07FE00625CF5 /* GamesView.swift in Sources */,
+				1514DA81272F480D00BE23DB /* PlayerDetailView.swift in Sources */,
 				D173E609272B06C100625CF5 /* letteamnamestringnil.xcdatamodeld in Sources */,
 				D173E61A272B081000625CF5 /* PlayerView.swift in Sources */,
 				D173E624272B087000625CF5 /* AddNPCView.swift in Sources */,
