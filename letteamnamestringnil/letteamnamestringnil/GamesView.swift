@@ -14,7 +14,7 @@ struct GamesView: View {
     
     var body: some View {
         VStack {
-            Text("Games Joined")
+            Text("Campaigns Joined")
                 .font(.title2)
                 .padding()
             List {
@@ -26,9 +26,12 @@ struct GamesView: View {
             
             
             Text("Enter a party code:")
+                .font(.title2)
                 .padding()
             
             TextField("", text: $partyCode)
+                .font(.title3)
+                .multilineTextAlignment(.center)
                 .frame(width: 120) //TODO: this is hacky
                 .padding()
                 .overlay(
@@ -37,7 +40,7 @@ struct GamesView: View {
                 )
             
             NavigationLink(destination: PlayerView()) {
-                Text("Join New Game")
+                Text("Join New Party")
                     .foregroundColor(Color.white)
                     .padding()
             }
