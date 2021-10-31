@@ -44,7 +44,7 @@ struct GamesView: View {
                     .foregroundColor(Color.white)
                     .padding()
             }
-            .simultaneousGesture(TapGesture().onEnded(joinPartyWithCode)) // this lets us do the database call when the user presses the button
+            .simultaneousGesture(TapGesture().onEnded(joinPartyWithCode)) // TODO: what if party doesn't exist?
             .disabled(partyCode == "")
             .background((partyCode == "") ? Color.gray : Color.blue)
             .cornerRadius(10)
@@ -56,6 +56,10 @@ struct GamesView: View {
     func joinPartyWithCode() {
         //TODO: I am lonely! I need a database!
         print("joining party with code...")
+        
+        //check to see if party exists
+        //if not, error
+        //if party exists, add username record to party
     }
 }
 
