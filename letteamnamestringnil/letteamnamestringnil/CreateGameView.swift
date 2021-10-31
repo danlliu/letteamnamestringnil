@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreateGameView: View {
     @State private var partyCode: String = ""
-    @State private var role: String = ""
+    @State private var role: String = "DM"
     
     private var buttonPadding: CGFloat = 8
     
@@ -28,33 +28,40 @@ struct CreateGameView: View {
                             .stroke(Color.gray, lineWidth: 1)
                 )
             HStack {
-                NavigationLink(destination: PlayerView()) {
+                Button(action: {
+                    role = "DM"
+                }) {
                     Text("Join as DM")
                         .foregroundColor(Color.white)
                         .padding(buttonPadding)
                 }
-                .simultaneousGesture(TapGesture().onEnded({
-                    role = "DM"
-                    createGame()
-                }))
-                .background(Color.blue)
+                .background((role == "DM") ? Color.blue : Color.gray)
                 .cornerRadius(10)
                 .padding()
                 
-                NavigationLink(destination: PlayerView()) {
+                Button(action: {
+                    role = "player"
+                }){
                     Text("Join as Player")
                         .foregroundColor(Color.white)
                         .padding(buttonPadding)
                 }
-                .simultaneousGesture(TapGesture().onEnded({
-                    role = "player"
-                    createGame()
-                }))
+                .background((role == "player") ? Color.blue : Color.gray)
                 .background(Color.blue)
                 .cornerRadius(10)
                 .padding()
-                
             }
+            NavigationLink(destination: PlayerView()) {
+                Text("Create Party")
+                    .foregroundColor(Color.white)
+                    .padding()
+            }
+            .simultaneousGesture(TapGesture().onEnded(createGame))
+            .disabled(partyCode == "")
+            .background((partyCode == "") ? Color.gray : Color.blue)
+            .background(Color.blue)
+            .cornerRadius(10)
+            .padding()
         }
     }
     
