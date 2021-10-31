@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CreateGameView: View {
     @State private var partyCode: String = ""
+    @State private var role: String = ""
+    
     private var buttonPadding: CGFloat = 8
     
     var body: some View {
@@ -31,6 +33,10 @@ struct CreateGameView: View {
                         .foregroundColor(Color.white)
                         .padding(buttonPadding)
                 }
+                .simultaneousGesture(TapGesture().onEnded({
+                    role = "DM"
+                    createGame()
+                }))
                 .background(Color.blue)
                 .cornerRadius(10)
                 .padding()
@@ -40,12 +46,21 @@ struct CreateGameView: View {
                         .foregroundColor(Color.white)
                         .padding(buttonPadding)
                 }
+                .simultaneousGesture(TapGesture().onEnded({
+                    role = "player"
+                    createGame()
+                }))
                 .background(Color.blue)
                 .cornerRadius(10)
                 .padding()
                 
             }
         }
+    }
+    
+    func createGame() {
+        //TODO: I am lonely, I need a database
+        //can use "role" state variable here
     }
 }
 

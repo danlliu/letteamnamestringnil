@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 
 struct GamesView: View {
-    private var games = ["game1", "game2", "game3"]
+    private var games = ["game1", "game2", "game3"] //TODO: remove me
     @State private var partyCode: String = ""
     
     var body: some View {
