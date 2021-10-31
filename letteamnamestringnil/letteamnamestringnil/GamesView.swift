@@ -9,17 +9,17 @@ import SwiftUI
 import UIKit
 
 struct GamesView: View {
-    private var games = ["game1", "game2", "game3"] //TODO: remove me
+    @State private var games: [GameData] = [GameData(username: "user", campaignName: "game1"), GameData(username: "user", campaignName: "game2")]
     @State private var partyCode: String = ""
     
     var body: some View {
         VStack {
-            Text("Campaigns Joined")
+            Text("My Campaigns")
                 .font(.title2)
                 .padding()
             List {
                 ForEach(games, id: \.self) { game in
-                    GameInfoView(gameCode: game, username: "User")
+                    GameInfoView(gameCode: game.campaignName, username: game.username)
                 }
             }
             .listStyle(.plain)
@@ -32,7 +32,7 @@ struct GamesView: View {
             TextField("", text: $partyCode)
                 .font(.title3)
                 .multilineTextAlignment(.center)
-                .frame(width: 120) //TODO: this is hacky
+                //.frame(width: 120) //TODO: this is hacky
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
@@ -51,6 +51,15 @@ struct GamesView: View {
             .padding()
         }
         .padding()
+        .onAppear(perform: getUserGames)
+    }
+    
+    func getUserGames() {
+        //TODO: I am lonely, I need a database!
+        print("getting user games...")
+        
+        //retrieve user campaign data from database to populate Games list
+        //(see GameData struct below)
     }
     
     func joinPartyWithCode() {
@@ -71,7 +80,9 @@ struct GameInfoView: View {
         HStack {
             VStack {
                 Text(gameCode)
+                    .font(.headline)
                 Text(username)
+                    .font(.subheadline)
             }
             Spacer()
             Button(action: deleteGame) {
@@ -84,6 +95,12 @@ struct GameInfoView: View {
         //TODO: remove player from game in database
         //if player created game, does whole game go away? backend problem
     }
+}
+
+struct GameData: Hashable {
+    var username: String
+    var campaignName: String
+    //TODO: can add other relevant info to show here
 }
 
 struct GamesView_Previews: PreviewProvider {
