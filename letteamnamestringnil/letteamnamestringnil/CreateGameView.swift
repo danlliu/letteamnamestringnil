@@ -11,18 +11,17 @@ struct CreateGameView: View {
     @State private var partyCode: String = ""
     @State private var role: String = ""
     
-    private var buttonPadding: CGFloat = 8
+    private var buttonPadding: CGFloat = 10
     
     var body: some View {
         VStack {
+            Spacer()
             Text("Enter a party code:")
                 .font(.title2)
-                .padding()
             
             TextField("", text: $partyCode)
                 .multilineTextAlignment(.center)
-                .frame(width: 120) //TODO: this is hacky
-                .padding()
+                .padding(buttonPadding)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.gray, lineWidth: 1)

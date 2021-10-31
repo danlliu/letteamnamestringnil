@@ -32,7 +32,6 @@ struct GamesView: View {
             TextField("", text: $partyCode)
                 .font(.title3)
                 .multilineTextAlignment(.center)
-                //.frame(width: 120) //TODO: this is hacky
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
