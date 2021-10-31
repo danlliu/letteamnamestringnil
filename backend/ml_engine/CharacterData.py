@@ -32,8 +32,15 @@ class CharacterData:
         self.background = char["background"]
         if self.background == "mercenary veterann":
             self.background = "mercenary veteran"
+
         self.race = char["race"]
+        if "(" in self.race:
+            self.race = re.sub(r"\(.*\)","", self.race)
+        self.race = self.race.strip()
+
         self.alignment = char["alignment"]
+        if self.alignment == "neutral neutral":
+            self.alignment = "neutral"
 
         self.attrs = []
         for a in list(char["attributes"].items())[:6]:
@@ -76,6 +83,18 @@ class CharacterData:
         self.inventory.sort()
         self.proficient_items.sort()
         self.languages.sort()
+
+
+    def to_dict(self):
+        char_dict = vars(self)
+        char_dict['str'] = self.attrs[0]
+        char_dict['dex'] = self.attrs[1]   
+        char_dict['con'] = self.attrs[2]   
+        char_dict['int'] = self.attrs[3]   
+        char_dict['wis'] = self.attrs[4]   
+        char_dict['cha'] = self.attrs[5]       
+        char_dict.pop('attrs')
+        return char_dict
 
 
 class DataLists:
@@ -227,30 +246,12 @@ class DataLists:
         self.language_list.sort()
 
         # Manual cleaning
-        banned_strs = ["", "You Have", "On", "On All", "On Being", "On Me", "Per", "During A", "Bonus To Ac", "Feat", 
-                        "It In The Following Ways", "Skill", "Times Per", "To Poison", "Uses", "While The Bladesong Is Active I Have The Following Benefits",
-                        "Wood Elf Traits", "You Gain The Following Benefits While You Are Unarmed Or Wielding Only Monk Weapons And You Aren't Wearing Armor Or Wielding A Shield",
-                        ",", ".", "/", "Ft", "Ft. Silk Rope", "G", "C", "Being Worn/equipped", "Minuti, La Magia Cessa Di Funzionare Fino Al Termine Di Un Riposo Lungo.",
-                        "Letter From A Dead Colleague Posing A Question You Have Not Yet Been Able To Answer",
-                        "La Magia Cessa Di Funzionare Fino Al Termine Di Un Riposo Lungo", "Attack Damage Dc", "You Aren't Wearing Armor Or Wielding A Shield",
-                        "You Gain The Following Benefits While You Are Unarmed Or Wielding Only Monk Weapons", "Lb", "Lbs", "Minuti", "Determined By Your Patron", 
-                        "Across The"]
-
-        for s in banned_strs:
-            if s in self.background_list:
-                self.background_list.remove(s)
-            if s in self.skill_list:
-                self.skill_list.remove(s)
-            if s in self.feature_list:
-                self.feature_list.remove(s)
-            if s in self.attack_list:
-                self.attack_list.remove(s)
-            if s in self.inventory_list:
-                self.inventory_list.remove(s)
-            if s in self.item_proficiency_list:
-                self.item_proficiency_list.remove(s)
-            if s in self.language_list:
-                self.language_list.remove(s)
+        self.background_list = remove_banned_strs(self.background_list)
+        self.skill_list = remove_banned_strs(self.skill_list)
+        self.feature_list = remove_banned_strs(self.feature_list)
+        self.attack_list = remove_banned_strs(self.attack_list)
+        self.item_proficiency_list = remove_banned_strs(self.item_proficiency_list)
+        self.language_list = remove_banned_strs(self.language_list)
 
 
     def load_from_file(self, fpath, encoding="utf-8"):
@@ -284,6 +285,24 @@ class DataLists:
 
         with open(fpath, "w", encoding='utf-8') as outfile:
             json.dump(out_map, outfile, ensure_ascii=False, indent=4)
+
+
+def remove_banned_strs(str_list):
+    banned_strs = ["", "You Have", "On", "On All", "On Being", "On Me", "Per", "During A", "Bonus To Ac", "Feat", 
+                        "It In The Following Ways", "Skill", "Times Per", "To Poison", "Uses", "While The Bladesong Is Active I Have The Following Benefits",
+                        "Wood Elf Traits", "You Gain The Following Benefits While You Are Unarmed Or Wielding Only Monk Weapons And You Aren't Wearing Armor Or Wielding A Shield",
+                        ",", ".", "/", "Ft", "Ft. Silk Rope", "G", "C", "Being Worn/equipped", "Minuti, La Magia Cessa Di Funzionare Fino Al Termine Di Un Riposo Lungo.",
+                        "Letter From A Dead Colleague Posing A Question You Have Not Yet Been Able To Answer",
+                        "La Magia Cessa Di Funzionare Fino Al Termine Di Un Riposo Lungo", "Attack Damage Dc", "You Aren't Wearing Armor Or Wielding A Shield",
+                        "You Gain The Following Benefits While You Are Unarmed Or Wielding Only Monk Weapons", "Lb", "Lbs", "Minuti", "Determined By Your Patron", 
+                        "Across The", 'La Magia Cessa Di Funzionare Fino Al Termine Di Un Riposo Lungo']
+
+    for s in str_list:
+        if s in banned_strs:
+            str_list.remove(s)
+
+    return str_list
+
 
 
 # Manual Cleaning
@@ -386,7 +405,8 @@ def expand_string(s, is_prof=False):
         "Longsword +1": ["Longsword"],
         "Class: Oath Of Redemption": ["Oath Of Redemption"],
         "Cantrips": ["Cantrip"],
-        "Dark Vision": ["Darkvision"]
+        "Dark Vision": ["Darkvision"],
+        "Flutes": ["Flute"]
     }
 
     prof_map = {
@@ -436,6 +456,9 @@ def clean_list(lst, cap=True, is_prof=False, reloop=True):
     if tmp:
         lst.extend(tmp)
     lst = list(set(lst))
+
+    lst = remove_banned_strs(lst)
+
     if '' in lst:
         lst.remove('')
 
