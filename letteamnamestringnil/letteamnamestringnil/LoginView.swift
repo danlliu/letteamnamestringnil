@@ -37,7 +37,7 @@ struct LoginView: View {
             Text("Or enter a party code:")
                 .padding()
             
-            TextField("", text: $partyCode)
+            TextField("Enter code", text: $partyCode)
                 .frame(width: 120) //TODO: this is hacky
                 .padding()
                 .overlay(
