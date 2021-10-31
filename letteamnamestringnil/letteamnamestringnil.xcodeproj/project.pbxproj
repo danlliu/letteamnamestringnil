@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1514DA7F272F2D2800BE23DB /* CreateGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1514DA7E272F2D2800BE23DB /* CreateGameView.swift */; };
 		D173E5FD272B06BD00625CF5 /* letteamnamestringnilApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E5FC272B06BD00625CF5 /* letteamnamestringnilApp.swift */; };
 		D173E5FF272B06BD00625CF5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D173E5FE272B06BD00625CF5 /* ContentView.swift */; };
 		D173E601272B06C100625CF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D173E600272B06C100625CF5 /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1514DA7E272F2D2800BE23DB /* CreateGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGameView.swift; sourceTree = "<group>"; };
 		D173E5F9272B06BD00625CF5 /* letteamnamestringnil.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = letteamnamestringnil.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D173E5FC272B06BD00625CF5 /* letteamnamestringnilApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = letteamnamestringnilApp.swift; sourceTree = "<group>"; };
 		D173E5FE272B06BD00625CF5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 				D173E61F272B083700625CF5 /* WidgetView.swift */,
 				D173E621272B084C00625CF5 /* CharacterListView.swift */,
 				D173E623272B087000625CF5 /* AddNPCView.swift */,
+				1514DA7E272F2D2800BE23DB /* CreateGameView.swift */,
 			);
 			path = letteamnamestringnil;
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 				D173E61A272B081000625CF5 /* PlayerView.swift in Sources */,
 				D173E624272B087000625CF5 /* AddNPCView.swift in Sources */,
 				D173E61C272B081800625CF5 /* DMView.swift in Sources */,
+				1514DA7F272F2D2800BE23DB /* CreateGameView.swift in Sources */,
 				D173E620272B083700625CF5 /* WidgetView.swift in Sources */,
 				D173E606272B06C100625CF5 /* Persistence.swift in Sources */,
 				D173E61E272B082B00625CF5 /* CharacterSheetView.swift in Sources */,

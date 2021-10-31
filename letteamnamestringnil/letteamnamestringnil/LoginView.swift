@@ -12,26 +12,24 @@ struct LoginView: View {
     
     var body: some View {
         VStack {
-            Spacer()
             Text("TCP")
                 .font(.largeTitle).bold() //TODO: custom fonts are a lot of work, not skeletal
                 .padding()
             Text("Traveler Creation Partner")
-            Spacer()
+            Spacer() //TODO: I don't love this spacing
             
-            //TODO: MVP
-//            HStack {
-//                Text("username:")
-//                TextField("username", text: $username)
-//                    .padding(10)
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: 10)
-//                                .stroke(Color.gray, lineWidth: 1)
-//                    )
-//            }
-//            .padding()
+            HStack {
+                Text("username:")
+                TextField("username", text: $username)
+                    .padding(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray, lineWidth: 1)
+                    )
+            }
+            .padding()
             
-            Button(action: createParty) {
+            NavigationLink(destination: CreateGameView()) {
                 Text("Create New Party")
                     .foregroundColor(Color.white)
                     .padding()
@@ -51,11 +49,6 @@ struct LoginView: View {
             
             Spacer()
         }
-    }
-    
-    func createParty() {
-        //TODO: create party entry in database
-        print("creating a new party...")
     }
 }
 
