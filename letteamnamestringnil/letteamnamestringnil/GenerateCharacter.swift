@@ -11,6 +11,7 @@ struct GenerateCharacter: View {
     @State private var name: String = ""
     @State private var playerClass: String = "Select a class"
     @State private var playerAlignment: String = "Select an alignment"
+    @State private var level: Int = 0
     
     private var classes = ["Aarakocra", "Bugbear", "Centaur", "Dragonborn", "Dwarf", "Elf", "Gensai", "Goblin", "Human", "Minotaur", "Orc", "Tortle",
                             "Vedalken", "Warforged"]
@@ -43,10 +44,20 @@ struct GenerateCharacter: View {
                         }
                     }
                 }
-                HStack {
-                    
-                }
+                Stepper("Level: \(level)", value: $level)
             }
+            .listStyle(.plain)
+            
+            
+            NavigationLink(destination: GamesView()) {
+                Text("Generate Random Character")
+                    .foregroundColor(Color.white)
+                    .padding()
+            }
+            .simultaneousGesture(TapGesture().onEnded(generateRandom))
+            .background(Color.blue)
+            .cornerRadius(10)
+            .padding()
         }
         .toolbar {
             ToolbarItem {
