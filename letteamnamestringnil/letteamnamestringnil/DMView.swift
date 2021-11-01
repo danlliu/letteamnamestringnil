@@ -11,6 +11,8 @@ struct DMView: View {
     @State private var partyCode: String = "placeholder"
     @State private var players: [Player] = [Player(name: "bob", playerClass: "elf", playerAlignment: "chaotic good", level: 2),
                                             Player(name: "alice", playerClass: "dragonborn", playerAlignment: "chaotic evil", level: 7)]
+    @State private var friendlys: [NPC] = [NPC(name: "Jinx", npcClass: "wizard", npcAlignment: "chaotic good", level: 5)]
+    @State private var monsters: [NPC] = [NPC(name: "Mine orc", npcClass: "orc", npcAlignment: "lawful evil", level: 2)]
     
     var body: some View {
         VStack {
@@ -41,10 +43,36 @@ struct DMView: View {
                     }
                 }
                 Section(header: Text("Friendly NPCs")) {
-                    
+                    ForEach(friendlys, id: \.self) { friendly in
+                        VStack(alignment: .leading) {
+                            Text(friendly.name)
+                                .font(.headline)
+                            Text("Lvl. \(friendly.level) \(friendly.npcClass)")
+                                .font(.subheadline)
+                        }
+                    }
+                    NavigationLink(destination: AddNPCView(friendly: true)) {
+                        HStack {
+                            Image(systemName: "plus.circle")
+                            Text("Add friendly NPC")
+                        }
+                    }
                 }
                 Section(header: Text("Monster NPCs")) {
-                    
+                    ForEach(monsters, id: \.self) { monster in
+                        VStack(alignment: .leading) {
+                            Text(monster.name)
+                                .font(.headline)
+                            Text("Lvl. \(monster.level) \(monster.npcClass)")
+                                .font(.subheadline)
+                        }
+                    }
+                    NavigationLink(destination: AddNPCView(friendly: false)) {
+                        HStack {
+                            Image(systemName: "plus.circle")
+                            Text("Add monster NPC")
+                        }
+                    }
                 }
             }
             .listStyle(.grouped)
@@ -66,6 +94,14 @@ struct Player: Hashable {
     var name: String
     var playerClass: String
     var playerAlignment: String
+    var level: Int
+    //can add more as desired
+}
+
+struct NPC: Hashable {
+    var name: String
+    var npcClass: String
+    var npcAlignment: String
     var level: Int
     //can add more as desired
 }

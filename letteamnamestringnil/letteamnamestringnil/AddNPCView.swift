@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct AddNPCView: View {
+    @State var friendly: Bool
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
-
-struct AddNPCView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddNPCView()
+        if(friendly) {
+            Text("friendly")
+        }
+        else {
+            Text("monster
+        ")
+        }
     }
 }
