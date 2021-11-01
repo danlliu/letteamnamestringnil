@@ -12,8 +12,6 @@ struct Widget {
     var name: String
     
 }
-
-@available(iOS 15.0, *)
 struct WidgetView: View {
     
     @State var chosenWidgets: [Widget] = [
@@ -36,7 +34,8 @@ struct WidgetView: View {
             ForEach(chosenWidgets, id: \.name) { widget in
                 HStack {
                     Spacer()
-                    Button("remove", role: .destructive, action: {() in})
+                    Button("remove", action: {})
+                        .foregroundColor(Color.red)
                     Spacer()
                     Text(widget.name)
                     Spacer()
@@ -48,7 +47,7 @@ struct WidgetView: View {
             ForEach(nonChosenWidgets, id: \.name) { widget in
                 HStack {
                     Spacer()
-                    Button("add", role: .none, action: {() in})
+                    Button("add", action: {})
                     Spacer()
                     Text(widget.name)
                     Spacer()
