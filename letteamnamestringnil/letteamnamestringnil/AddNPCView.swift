@@ -119,7 +119,7 @@ struct AddNPCView: View {
     }
     
     func blankEntry() -> Bool {
-        if(name == "" || playerClass == "Select a class" || playerAlignment == "Select an alignment") {
+        if(name == "" || playerClass == "Select a class" || playerAlignment == "Select an alignment" || type == "") {
             return true
         }
         return false
