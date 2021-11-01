@@ -32,31 +32,31 @@ class CharacterSheet(models.Model):
     inspiration = models.IntegerField()
     proficiencyBonus = models.IntegerField()
 
-    strength_saving = models.BooleanField()
-    dexterity_saving = models.BooleanField()
-    constitution_saving = models.BooleanField()
-    intelligence_saving = models.BooleanField()
-    wisdom_saving = models.BooleanField()
-    charisma_saving = models.BooleanField()
+    strength_saving = models.BooleanField(default=False, blank=True)
+    dexterity_saving = models.BooleanField(default=False, blank=True)
+    constitution_saving = models.BooleanField(default=False, blank=True)
+    intelligence_saving = models.BooleanField(default=False, blank=True)
+    wisdom_saving = models.BooleanField(default=False, blank=True)
+    charisma_saving = models.BooleanField(default=False, blank=True)
 
-    acrobatics_skill = models.BooleanField()
-    animal_handling_skill = models.BooleanField()
-    arcana_skill = models.BooleanField()
-    athletics_skill = models.BooleanField()
-    deception_skill = models.BooleanField()
-    history_skill = models.BooleanField()
-    insight_skill = models.BooleanField()
-    intimidation_skill = models.BooleanField()
-    investigation_skill = models.BooleanField()
-    medicine_skill = models.BooleanField()
-    nature_skill = models.BooleanField()
-    perception_skill = models.BooleanField()
-    performance_skill = models.BooleanField()
-    persuasion_skill = models.BooleanField()
-    religion_skill = models.BooleanField()
-    sleight_of_hand_skill = models.BooleanField()
-    stealth_skill = models.BooleanField()
-    survival_skill = models.BooleanField()
+    acrobatics_skill = models.BooleanField(default=False, blank=True)
+    animal_handling_skill = models.BooleanField(default=False, blank=True)
+    arcana_skill = models.BooleanField(default=False, blank=True)
+    athletics_skill = models.BooleanField(default=False, blank=True)
+    deception_skill = models.BooleanField(default=False, blank=True)
+    history_skill = models.BooleanField(default=False, blank=True)
+    insight_skill = models.BooleanField(default=False, blank=True)
+    intimidation_skill = models.BooleanField(default=False, blank=True)
+    investigation_skill = models.BooleanField(default=False, blank=True)
+    medicine_skill = models.BooleanField(default=False, blank=True)
+    nature_skill = models.BooleanField(default=False, blank=True)
+    perception_skill = models.BooleanField(default=False, blank=True)
+    performance_skill = models.BooleanField(default=False, blank=True)
+    persuasion_skill = models.BooleanField(default=False, blank=True)
+    religion_skill = models.BooleanField(default=False, blank=True)
+    sleight_of_hand_skill = models.BooleanField(default=False, blank=True)
+    stealth_skill = models.BooleanField(default=False, blank=True)
+    survival_skill = models.BooleanField(default=False, blank=True)
 
     passive_wisdom = models.IntegerField()
     other_proficiencies_skills = models.CharField(max_length=4095)
@@ -68,8 +68,8 @@ class CharacterSheet(models.Model):
     cur_hp = models.IntegerField()
     temp_hp = models.IntegerField()
     hit_dice = models.IntegerField()
-    death_save_success = models.IntegerField()
-    death_save_failure = models.IntegerField()
+    death_save_success = models.IntegerField(default=0)
+    death_save_failure = models.IntegerField(default=0)
 
     attacks = models.CharField(max_length=4095)
     equipment = models.CharField(max_length=4095)
@@ -87,9 +87,52 @@ class CharacterSheet(models.Model):
     weight = models.CharField(max_length=255)
 
     backstory = models.CharField(max_length=4095)
-    dark_gifts = models.CharField(max_length=4095)
+    dark_gifts = models.CharField(max_length=4095, default=None, blank=True, null=True)
     features = models.CharField(max_length=4095)
-    allies = models.CharField(max_length=4095)
-    treasure = models.CharField(max_length=4095)
+    allies = models.CharField(max_length=4095, default=None, blank=True, null=True)
+    treasure = models.CharField(max_length=4095, default=None, blank=True, null=True)
 
-    # TODO: spells
+
+# Spells
+class Spell(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=4096)
+    classes = models.CharField(max_length=255) # List stored as string. Use json.dumps
+    level = models.IntegerField()
+    components = models.CharField(max_length=255, default=None, blank=True, null=True) # List stored as string. Use json.dumps
+    material = models.CharField(max_length = 511, default=None, blank=True, null=True)
+    casting_time = models.CharField(max_length=255, default="1 action", blank=True, null=True)
+    die_sides = models.IntegerField(default=None, blank=True, null=True) # ex. 2d12: die_sides=12, die_count=2
+    die_count = models.IntegerField(default=None, blank=True, null=True)
+    damage_type = models.CharField(max_length=255, default=None, blank=True, null=True)
+    duration = models.IntegerField(default=0, blank=True) # instant can be duration=0, store as seconds
+    range = models.IntegerField(default=0, blank=True, null=True)
+    school = models.CharField(max_length=255)
+    target = models.CharField(max_length=511, default=None, blank=True, null=True)
+
+# Player Spellcasting
+class CharacterSpellSheet(models.Model):
+    character = models.ForeignKey(CharacterSheet)
+    spellcast_ability = models.CharField(max_length=127)
+    spell_save_dc = models.IntegerField(default=0)
+    spell_attack_bonus = models.IntegerField(default=0, blank=True)
+    level_0_spellslots = models.IntegerField(default=0, blank=True)
+    level_1_spellslots = models.IntegerField(default=0, blank=True)
+    level_2_spellslots = models.IntegerField(default=0, blank=True)
+    level_3_spellslots = models.IntegerField(default=0, blank=True)
+    level_4_spellslots = models.IntegerField(default=0, blank=True)
+    level_5_spellslots = models.IntegerField(default=0, blank=True)
+    level_6_spellslots = models.IntegerField(default=0, blank=True)
+    level_7_spellslots = models.IntegerField(default=0, blank=True)
+    level_8_spellslots = models.IntegerField(default=0, blank=True)
+    level_9_spellslots = models.IntegerField(default=0, blank=True)
+    level_x_spellslots = models.IntegerField(default=0, blank=True) # for any extra or lvl 10+ spells
+
+class CharacterSpellslot(models.Model):
+    character = models.ForeignKey(CharacterSpellSheet)
+    spell = models.ForeignKey(Spell)
+    charges = models.IntegerField()
+
+
+# TODO: items
+# TODO: inventory
