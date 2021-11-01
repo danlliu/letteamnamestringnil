@@ -62,7 +62,7 @@ struct GenerateCharacter: View {
             Text("or")
                 .padding()
             
-            NavigationLink(destination: ManualEntryView(name: name, playerClass: playerClass, playerAlignment: playerAlignment)) {
+            NavigationLink(destination: ManualEntryView(name: name, playerClass: playerClass, playerAlignment: playerAlignment, isNPC: false)) {
                 Text("Enter all information manually")
             }
             .disabled(blankEntry())
@@ -91,11 +91,5 @@ struct GenerateCharacter: View {
     func generateRandom() {
         //TODO: need database and ML
         print("generating random character sheet...")
-    }
-}
-
-struct GenerateCharacter_Previews: PreviewProvider {
-    static var previews: some View {
-        GenerateCharacter()
     }
 }

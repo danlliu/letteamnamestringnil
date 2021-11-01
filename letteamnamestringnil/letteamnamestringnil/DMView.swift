@@ -51,12 +51,6 @@ struct DMView: View {
                                 .font(.subheadline)
                         }
                     }
-                    NavigationLink(destination: AddNPCView(friendly: true)) {
-                        HStack {
-                            Image(systemName: "plus.circle")
-                            Text("Add friendly NPC")
-                        }
-                    }
                 }
                 Section(header: Text("Monster NPCs")) {
                     ForEach(monsters, id: \.self) { monster in
@@ -67,11 +61,11 @@ struct DMView: View {
                                 .font(.subheadline)
                         }
                     }
-                    NavigationLink(destination: AddNPCView(friendly: false)) {
-                        HStack {
-                            Image(systemName: "plus.circle")
-                            Text("Add monster NPC")
-                        }
+                }
+                NavigationLink(destination: AddNPCView()) {
+                    HStack {
+                        Image(systemName: "plus.circle")
+                        Text("Add NPC")
                     }
                 }
             }

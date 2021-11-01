@@ -8,15 +8,125 @@
 import SwiftUI
 
 struct AddNPCView: View {
-    @State var friendly: Bool
+    @State private var type: String = ""
+    @State private var name: String = ""
+    @State private var playerClass: String = "Select a class"
+    @State private var playerAlignment: String = "Select an alignment"
+    @State private var level: Int = 0
+    
+    private var classes = ["Aarakocra", "Bugbear", "Centaur", "Dragonborn", "Dwarf", "Elf", "Gensai", "Goblin", "Human", "Minotaur", "Orc", "Tortle",
+                            "Vedalken", "Warforged"]
+    private var alignments = ["Chaotic good", "Neutral good", "Lawful good", "Chaotic neutral", "Neutral neutral", "Lawful neutral", "Chaotic evil",
+                                "Neutral evil", "Lawful evil"]
+    
+    private var buttonPadding: CGFloat = 10
+    
     var body: some View {
         VStack {
-            if(friendly) {
-                Text("friendly")
+            List {
+                HStack {
+                    Text("Name")
+                    TextField("Enter name here", text: $name)
+                }
+                HStack {
+                    Text("Class")
+                    VStack {
+                        Menu(playerClass) {
+                            ForEach(classes, id: \.self) { classOption in
+                                Button(classOption, action: {playerClass = classOption})
+                            }
+                        }
+                    }
+                }
+                HStack {
+                    Text("Alignment")
+                    VStack {
+                        Menu(playerAlignment) {
+                            ForEach(alignments, id: \.self) { alignmentOption in
+                                Button(alignmentOption, action: {playerAlignment = alignmentOption})
+                            }
+                        }
+                    }
+                }
+                Stepper("Level: \(level)", value: $level)
             }
-            else {
-                Text("monster")
+            .listStyle(.plain)
+            HStack {
+                Button(action: {
+                    type = "friendly"
+                }) {
+                    Text("Friendly NPC")
+                        .foregroundColor((type == "friendly") ? Color.white : Color.blue)
+                        .padding(buttonPadding)
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.blue, lineWidth: 3)
+                )
+                .background((type == "friendly") ? Color.blue : Color.white)
+                .cornerRadius(10)
+                .padding()
+                
+                Button(action: {
+                    type = "monster"
+                }){
+                    Text("Monster")
+                        .foregroundColor((type == "monster") ? Color.white : Color.blue)
+                        .padding(buttonPadding)
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.blue, lineWidth: 3)
+                )
+                .background((type == "monster") ? Color.blue : Color.white)
+                .background(Color.blue)
+                .cornerRadius(10)
+                .padding()
+            }
+            
+            Spacer()
+            
+            NavigationLink(destination: PlayerView()) {
+                Text("Generate Random Character")
+                    .foregroundColor(Color.white)
+                    .padding()
+            }
+            .disabled(blankEntry())
+            .simultaneousGesture(TapGesture().onEnded(generateRandomNPC))
+            .background(blankEntry() ? Color.gray : Color.blue)
+            .cornerRadius(10)
+            
+            Text("or")
+                .padding()
+            
+            NavigationLink(destination: ManualEntryView(name: name, playerClass: playerClass, playerAlignment: playerAlignment, isNPC: true)) {
+                Text("Enter all information manually")
+            }
+            .disabled(blankEntry())
+            .foregroundColor(blankEntry() ? Color.gray : Color.blue)
+
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("New character")
+            }
+            ToolbarItem {
+                NavigationLink(destination: PlayerView()) {
+                    Text("Create")
+                }
             }
         }
+    }
+    
+    func blankEntry() -> Bool {
+        if(name == "" || playerClass == "Select a class" || playerAlignment == "Select an alignment") {
+            return true
+        }
+        return false
+    }
+    
+    func generateRandomNPC() {
+        //TODO: need database and ML
+        print("generating random character sheet...")
     }
 }
