@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ManualEntryView: View {
     //information from general character generation
+    @State var name: String
+    @State var playerClass: String
+    @State var playerAlignment: String
     
     //TODO: validate string to int conversions -> make number only keyboard
     //basic stats
@@ -157,7 +160,7 @@ struct ManualEntryView: View {
             }
             .listStyle(.grouped)
             
-            NavigationLink(destination: GamesView()) {
+            NavigationLink(destination: PlayerView()) {
                 Text("Generate Character")
                     .foregroundColor(Color.white)
                     .padding()

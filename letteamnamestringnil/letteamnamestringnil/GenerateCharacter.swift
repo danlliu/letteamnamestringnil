@@ -49,40 +49,24 @@ struct GenerateCharacter: View {
             }
             .listStyle(.plain)
             
-            NavigationLink(destination: GamesView()) {
+            NavigationLink(destination: PlayerView()) {
                 Text("Generate Random Character")
                     .foregroundColor(Color.white)
                     .padding()
             }
-            .disabled(manualInput)
+            .disabled(blankEntry())
             .simultaneousGesture(TapGesture().onEnded(generateRandom))
-            .background(manualInput ? Color.gray : Color.blue)
+            .background(blankEntry() ? Color.gray : Color.blue)
             .cornerRadius(10)
             
             Text("or")
                 .padding()
             
-            NavigationLink(destination: ManualEntryView()) {
+            NavigationLink(destination: ManualEntryView(name: name, playerClass: playerClass, playerAlignment: playerAlignment)) {
                 Text("Enter all information manually")
             }
-//            HStack {
-//                Text("Enter all input manually")
-//                Spacer()
-//                Button(action: {
-//                    manualInput.toggle()
-//                }) {
-//                    if manualInput {
-//                        Image(systemName: "minus.circle")
-//                    }
-//                    else {
-//                        Image(systemName: "plus.circle")
-//                    }
-//                }
-//            }
-//            .padding()
-//            if(manualInput) {
-//                ManualEntryView()
-//            }
+            .disabled(blankEntry())
+            .foregroundColor(blankEntry() ? Color.gray : Color.blue)
 
         }
         .toolbar {
@@ -95,6 +79,13 @@ struct GenerateCharacter: View {
                 }
             }
         }
+    }
+    
+    func blankEntry() -> Bool {
+        if(name == "" || playerClass == "Select a class" || playerAlignment == "Select an alignment") {
+            return true
+        }
+        return false
     }
     
     func generateRandom() {
