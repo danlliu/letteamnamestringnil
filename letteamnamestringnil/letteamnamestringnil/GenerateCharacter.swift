@@ -60,6 +60,7 @@ struct GenerateCharacter: View {
             .cornerRadius(10)
             
             Text("or")
+                .padding()
             
             NavigationLink(destination: ManualEntryView()) {
                 Text("Enter all information manually")

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ManualEntryView: View {
+    //information from general character generation
+    
     //TODO: validate string to int conversions -> make number only keyboard
     //basic stats
     @State private var xp: String = ""
@@ -36,124 +38,153 @@ struct ManualEntryView: View {
     @State private var editSkill: Bool = false
     
     var body: some View {
-        List {
-            Section(header: Text("Basic info")) {
-                HStack {
-                    Text("XP:")
-                    TextField("XP", text: $xp)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("HP:")
-                    TextField("HP", text: $hp)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("Perception:")
-                    TextField("Perception", text: $perception)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("Initiative:")
-                    TextField("Initiative", text: $initiative)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("AC:")
-                    TextField("AC", text: $ac)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("Speed:")
-                    TextField("Speed", text: $speed)
-                        .keyboardType(.numberPad)
-                }
-            }
-            Section(header: Text("Ability modifiers")) {
-                HStack {
-                    Text("Strength:")
-                    TextField("Strength", text: $strength)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("Dexterity:")
-                    TextField("Dexterity", text: $dexterity)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("Constitution:")
-                    TextField("Constitution", text: $constitution)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("Intelligence:")
-                    TextField("Intelligence", text: $intelligence)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("Wisdom:")
-                    TextField("Wisdom", text: $wisdom)
-                        .keyboardType(.numberPad)
-                }
-                HStack {
-                    Text("Character:")
-                    TextField("Character", text: $character)
-                        .keyboardType(.numberPad)
-                }
-            }
-            Section(header: Text("Skills")) {
-                ForEach(skills, id: \.self) { skill in
-                    Text(skill)
-                }
-                if editSkill {
+        VStack {
+            List {
+                Section(header: Text("Basic info")) {
                     HStack {
-                        TextField("New skill", text: $skilltext)
-                        Button("Add", action: {
-                            editSkill = false
-                            skills.append(skilltext)
-                            skilltext = ""
-                        })
-                            .disabled(skilltext == "")
+                        Text("XP:")
+                        TextField("XP", text: $xp)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("HP:")
+                        TextField("HP", text: $hp)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("Perception:")
+                        TextField("Perception", text: $perception)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("Initiative:")
+                        TextField("Initiative", text: $initiative)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("AC:")
+                        TextField("AC", text: $ac)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("Speed:")
+                        TextField("Speed", text: $speed)
+                            .keyboardType(.numberPad)
                     }
                 }
-                Button(action: {
-                    editSkill = true
-                }) {
+                Section(header: Text("Ability modifiers")) {
                     HStack {
-                        Text("Add skill")
-                        Image(systemName: "plus.circle")
+                        Text("Strength:")
+                        TextField("Strength", text: $strength)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("Dexterity:")
+                        TextField("Dexterity", text: $dexterity)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("Constitution:")
+                        TextField("Constitution", text: $constitution)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("Intelligence:")
+                        TextField("Intelligence", text: $intelligence)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("Wisdom:")
+                        TextField("Wisdom", text: $wisdom)
+                            .keyboardType(.numberPad)
+                    }
+                    HStack {
+                        Text("Character:")
+                        TextField("Character", text: $character)
+                            .keyboardType(.numberPad)
                     }
                 }
-            }
-            Section(header: Text("Spells")) {
-                ForEach(spells, id: \.self) { spell in
-                    Text(spell)
-                }
-                if editSpell {
-                    HStack {
-                        TextField("New spell", text: $spelltext)
-                        Button("Add", action: {
-                            editSpell = false
-                            spells.append(spelltext)
-                            spelltext = ""
-                        })
-                            .disabled(spelltext == "")
+                Section(header: Text("Skills")) {
+                    ForEach(skills, id: \.self) { skill in
+                        Text(skill)
                     }
-                }
-                Button(action: {
-                    editSpell = true
-                }) {
-                    VStack {
+                    if editSkill {
                         HStack {
-                            Text("Add spell")
+                            TextField("New skill", text: $skilltext)
+                            Button("Add", action: {
+                                editSkill = false
+                                skills.append(skilltext)
+                                skilltext = ""
+                            })
+                                .disabled(skilltext == "")
+                        }
+                    }
+                    Button(action: {
+                        editSkill = true
+                    }) {
+                        HStack {
+                            Text("Add skill")
                             Image(systemName: "plus.circle")
                         }
                     }
                 }
+                Section(header: Text("Spells")) {
+                    ForEach(spells, id: \.self) { spell in
+                        Text(spell)
+                    }
+                    if editSpell {
+                        HStack {
+                            TextField("New spell", text: $spelltext)
+                            Button("Add", action: {
+                                editSpell = false
+                                spells.append(spelltext)
+                                spelltext = ""
+                            })
+                                .disabled(spelltext == "")
+                        }
+                    }
+                    Button(action: {
+                        editSpell = true
+                    }) {
+                        VStack {
+                            HStack {
+                                Text("Add spell")
+                                Image(systemName: "plus.circle")
+                            }
+                        }
+                    }
+                }
+            }
+            .listStyle(.grouped)
+            
+            NavigationLink(destination: GamesView()) {
+                Text("Generate Character")
+                    .foregroundColor(Color.white)
+                    .padding()
+            }
+            .simultaneousGesture(TapGesture().onEnded(processManualData))
+            .disabled(blankEntry())
+            .background(blankEntry() ? Color.gray : Color.blue)
+            .cornerRadius(10)
+            .padding()
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("New character")
             }
         }
-        .listStyle(.grouped)
-        .onDisappear(perform: processManualData)
+    }
+    
+    //checks to see if any data was left unfilled
+    func blankEntry() -> Bool {
+        if (xp == "" || hp == "" || perception == "" || ac == "" || initiative == ""
+            || speed == "" || strength == "" || dexterity == "" || constitution == ""
+            || intelligence == "" || wisdom == "" || character == "") {
+            return true
+        }
+        else {
+            return false
+        }
     }
     
     func processManualData() {
