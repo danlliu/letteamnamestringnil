@@ -11,7 +11,7 @@ struct PlayerView: View {
     // partyCode, characterName, className, raceName, level, maxHP, tempHP, alignment, stats,
     
     // TODO: add values from database
-    @State private var partyCode = "E44W"
+    @State var partyCode = "E44W"
     
 //    @EnvironmentObject var charSheet: CharacterSheet
 //    @EnvironmentObject var party: [IndividualPlayerView]
@@ -36,13 +36,16 @@ struct PlayerView: View {
     @State private var ac = "12"
     @State private var alignment = 2
     
+    init(partyCode: String = "") {
+        self._partyCode = State(wrappedValue: partyCode)
+    }
+    
     var body: some View {
         VStack {
             Group {
                 Text("Party Code".uppercased())
                     .font(.caption)
                     .foregroundColor(.gray)
-                    .padding(.top)
                 Text(partyCode)
                     .padding(.bottom)
             }
@@ -153,7 +156,7 @@ struct ListHeader: View {
 
 struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
-        PlayerView()
+        PlayerView(partyCode: "E44W")
     }
 }
 

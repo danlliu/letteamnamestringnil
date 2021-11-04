@@ -29,7 +29,9 @@ struct PlayerDetailView: View {
                 Text("Party Code".uppercased())
                     .font(.caption)
                     .foregroundColor(.gray)
+                    .padding(.top)
                 Text(partyCode)
+                    .padding(.bottom)
             }
 //            Spacer()
             Group {
@@ -44,6 +46,7 @@ struct PlayerDetailView: View {
                         Text("Level 10")
                         Text("XP 1416")
                     }
+                    .padding()
                     HStack {
                         
                         VStack {
@@ -72,7 +75,7 @@ struct PlayerDetailView: View {
                             Text("CON\t6")
                         }
                         Spacer()
-                        VStack {
+                        VStack(alignment: .leading) {
                             Text("INT\t8")
                             Text("WIS\t7")
                             Text("CHR\t-5")
@@ -100,7 +103,7 @@ struct PlayerDetailView: View {
     }
     
     func addSkill() {
-        
+        // TODO: implement
     }
 }
 
