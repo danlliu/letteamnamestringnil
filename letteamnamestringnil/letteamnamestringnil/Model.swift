@@ -7,8 +7,8 @@
 
 import Foundation
 
-final class Model {
-    static let shared = Model()
-    private init() {}
-    
-}
+//final class Model {
+//    static let shared = Model()
+//    private init() {}
+//    
+//}

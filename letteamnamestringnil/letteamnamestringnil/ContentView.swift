@@ -21,7 +21,7 @@ struct ContentView: View {
             LoginView()
                 .padding()
         }
-        .navigationBarBackButtonHidden(true) //TODO: back buttons will be custom
+//        .navigationBarBackButtonHidden(true) //TODO: back buttons will be custom
     }
 
     private func addItem() {
