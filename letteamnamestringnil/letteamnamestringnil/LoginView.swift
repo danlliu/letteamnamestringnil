@@ -38,7 +38,7 @@ struct LoginView: View {
             .cornerRadius(10)
             .padding()
 
-            NavigationLink(destination: GamesView()) {
+            NavigationLink(destination: GamesView(username: username)) {
                 Text("Join Game")
                     .foregroundColor(Color.white)
                     .padding()
