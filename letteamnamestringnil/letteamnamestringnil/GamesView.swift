@@ -9,8 +9,17 @@ import SwiftUI
 import UIKit
 
 struct GamesView: View {
-    @State private var games: [GameData] = [GameData(username: "user", campaignName: "game1"), GameData(username: "user", campaignName: "game2")]
+    
+    var username: String
+    @State private var games: [GameData] = []
     @State private var partyCode: String = ""
+    
+    init(username: String = "user") {
+        self.username = username
+        // TODO: uncomment when getUserGames implemented
+        // self._games = getUserGames()
+        self._games = State(wrappedValue: [GameData(username: self.username, campaignName: "game1"), GameData(username: self.username, campaignName: "game2")])
+    }
     
     var body: some View {
         VStack {
@@ -23,7 +32,6 @@ struct GamesView: View {
                 }
             }
             .listStyle(.plain)
-            
             
             Text("Enter a party code:")
                 .font(.title2)
@@ -50,7 +58,7 @@ struct GamesView: View {
             .padding()
         }
         .padding()
-        .onAppear(perform: getUserGames)
+//        .onAppear(perform: getUserGames)
     }
     
     func getUserGames() {
@@ -77,7 +85,7 @@ struct GameInfoView: View {
     
     var body: some View {
         HStack {
-            VStack {
+            VStack(alignment: .leading) {
                 Text(gameCode)
                     .font(.headline)
                 Text(username)
@@ -90,6 +98,7 @@ struct GameInfoView: View {
             }
         }
     }
+    
     func deleteGame() {
         //TODO: remove player from game in database
         //if player created game, does whole game go away? backend problem
@@ -104,6 +113,6 @@ struct GameData: Hashable {
 
 struct GamesView_Previews: PreviewProvider {
     static var previews: some View {
-        GamesView()
+        GamesView(username: "tuna_player_485")
     }
 }
