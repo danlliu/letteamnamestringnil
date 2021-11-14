@@ -76,28 +76,28 @@ def join_party(request):
     return HttpResponse(status=201)
 
 @csrf_exempt
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET"])
 @require_auth
-def party_info(request, party_id):
-    if request.method == "POST":
-        pass
-    
-    if party_id != EXAMPLE_PARTY_ID:
-        return HttpResponse(status=404)
+def party_info(request, party_code):
+    parties = app.models.Party.objects.filter(code=party_code)
+    if len(parties) != 1:
+        return HttpResponse(status=401)
+    party = parties[0]
+
+    userinfos = app.models.UserPartyInfo.objects.filter(party=party)
 
     return JsonResponse({
-        "id": EXAMPLE_PARTY_ID,
-        "code": "EECS441",
+        "code": party.code,
         "members": [
-            { "id": EXAMPLE_DM_ID, "username": "example_dm" },
-            { "id": EXAMPLE_PLAYER_ID, "username": "example_user" },
+            { "id": info.user.id, "username": info.user.username, }
+            for info in userinfos
         ]
     })
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 @require_auth
-def member_info(request, party_id, member_id):
+def member_info(request, party_code, member_id):
     if request.method == "POST":
         pass
     
