@@ -6,6 +6,7 @@ class Party(models.Model):
 
 class UserPartyInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
     party = models.ForeignKey("Party", on_delete=models.CASCADE)
     is_dm = models.BooleanField()
     sheet = models.ForeignKey("CharacterSheet", null=True, on_delete=models.SET_NULL)
@@ -30,7 +31,7 @@ class CharacterSheet(models.Model):
     charisma_ability = models.IntegerField()
 
     inspiration = models.IntegerField()
-    proficiencyBonus = models.IntegerField()
+    proficiency_bonus = models.IntegerField()
 
     strength_saving = models.BooleanField(default=False, blank=True)
     dexterity_saving = models.BooleanField(default=False, blank=True)
