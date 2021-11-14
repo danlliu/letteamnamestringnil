@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['ec2-3-139-99-112.us-east-2.compute.amazonaws.com', '3.139.99.1
 # Application definition
 
 INSTALLED_APPS = [
+    'app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -103,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

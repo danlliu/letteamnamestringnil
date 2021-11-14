@@ -1,30 +1,83 @@
 import json
+import random
+import string
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+import app.models
 
 EXAMPLE_PLAYER_ID = "1dc61423-9f17-4b3c-bc26-455013d03d02"
 EXAMPLE_DM_ID = "e4cd7fa0-cd3e-421d-8063-bbbd9456b8ef"
 EXAMPLE_PARTY_ID = "de9cf5da-cdf3-4dd2-9e14-87105e1b423a"
 
+def require_auth(func):
+    def wrapper(*args, **kwargs):
+        request = args[0]
+        if not request.user.is_authenticated:
+            return HttpResponse(status=401)
+        return func(*args, **kwargs)
+    return wrapper
+        
+
+def gen_code():
+    return "".join(random.SystemRandom().choices(string.ascii_uppercase + string.digits + string.ascii_lowercase, k=6))
+
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
 def user(request):
+    user = request.user
     if request.method == "POST":
-        pass
+        # Performs a login
+        try:
+            obj = json.loads(request.body)
+        except json.JSONDecodeError:
+            return HttpResponse(status=400)
+        if user.is_authenticated or "username" not in obj or "password" not in obj:
+            return HttpResponse(status=400)
+        user = authenticate(username=obj["username"], password=obj["password"])
+        login(request, user)
+    if not user.is_authenticated:
+        return HttpResponse(status=401)
     return JsonResponse({
-        "id": EXAMPLE_PLAYER_ID,
-        "username": "example_user",
-        "email": "example_user@example.com",
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
     })
 
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
+@require_auth
 def parties(request):
     if request.method == "POST":
-        pass
-    return JsonResponse([
-        EXAMPLE_PARTY_ID,
-    ], safe=False)
+        # Create a new party
+        party = app.models.Party.objects.create(code=gen_code())
+        app.models.UserPartyInfo.objects.create(user=request.user, party=party, is_dm=True, sheet=None)
 
+    parties = app.models.UserPartyInfo.objects.all().filter(user=request.user)
+    return JsonResponse(list(map(lambda p: p.party.code, parties)), safe=False)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@require_auth
+def join_party(request):
+    try:
+        obj = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400)
+    if "code" not in obj or "is_dm" not in obj:
+        return HttpResponse(status=400)
+    parties = app.models.Party.objects.filter(code=obj["code"])
+    if len(parties) != 1:
+        return HttpResponse(status=400)
+    party = parties[0]
+    app.models.UserPartyInfo.create(
+        user=request.user, party=party, is_dm=is_dm, sheet=None)
+    return HttpResponse(status=201)
+
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
+@require_auth
 def party_info(request, party_id):
     if request.method == "POST":
         pass
@@ -41,7 +94,9 @@ def party_info(request, party_id):
         ]
     })
 
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
+@require_auth
 def member_info(request, party_id, member_id):
     if request.method == "POST":
         pass

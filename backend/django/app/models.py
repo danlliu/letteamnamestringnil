@@ -2,10 +2,10 @@ from django.contrib.auth.models import User
 from django.db import models
 
 class Party(models.Model):
-    code = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, unique=True)
 
 class UserPartyInfo(models.Model):
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     party = models.ForeignKey("Party", on_delete=models.CASCADE)
     is_dm = models.BooleanField()
     sheet = models.ForeignKey("CharacterSheet", null=True, on_delete=models.SET_NULL)
@@ -91,6 +91,7 @@ class CharacterSheet(models.Model):
     features = models.CharField(max_length=4095)
     allies = models.CharField(max_length=4095, default=None, blank=True, null=True)
     treasure = models.CharField(max_length=4095, default=None, blank=True, null=True)
+    notes = models.CharField(max_length=8191, default=None, blank=True, null=True)
 
 
 # Spells
@@ -112,7 +113,7 @@ class Spell(models.Model):
 
 # Player Spellcasting
 class CharacterSpellSheet(models.Model):
-    character = models.ForeignKey(CharacterSheet)
+    character = models.ForeignKey(CharacterSheet, on_delete=models.CASCADE)
     spellcast_ability = models.CharField(max_length=127)
     spell_save_dc = models.IntegerField(default=0)
     spell_attack_bonus = models.IntegerField(default=0, blank=True)
@@ -129,10 +130,6 @@ class CharacterSpellSheet(models.Model):
     level_x_spellslots = models.IntegerField(default=0, blank=True) # for any extra or lvl 10+ spells
 
 class CharacterSpellslot(models.Model):
-    character = models.ForeignKey(CharacterSpellSheet)
-    spell = models.ForeignKey(Spell)
+    character = models.ForeignKey(CharacterSpellSheet, on_delete=models.CASCADE)
+    spell = models.ForeignKey(Spell, on_delete=models.CASCADE)
     charges = models.IntegerField()
-
-
-# TODO: items
-# TODO: inventory
