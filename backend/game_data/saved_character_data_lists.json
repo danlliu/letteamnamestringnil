@@ -23,6 +23,32 @@
         "proficiency": 2,
         "perception": 7
     },
+    "cls_list": [
+        "apothecary",
+        "barbarian",
+        "bard",
+        "cleric",
+        "druid",
+        "fighter",
+        "monk",
+        "paladin",
+        "ranger",
+        "rogue",
+        "sorcerer",
+        "warlock",
+        "wizard"
+    ],
+    "alignment_list": [
+        "lawful good",
+        "neutral good",
+        "chaotic good",
+        "lawful neutral",
+        "neutral",
+        "chaotic neutral",
+        "lawful evil",
+        "neutral evil",
+        "chaotic evil"
+    ],
     "background_list": [
         "acolyte",
         "anthropologist",

@@ -100,6 +100,8 @@ class CharacterData:
 class DataLists:
     attr_max = {} 
     attr_min = {}
+    cls_list = []
+    alignment_list = []
     background_list = []
     skill_list = []
     feature_list = []
@@ -136,7 +138,8 @@ class DataLists:
         }
 
 # [str, dex, con, int, wis, cha]
-
+        self.cls_list = []
+        self.alignment_list = ["lawful good", "neutral good", "chaotic good", "lawful neutral", "neutral", "chaotic neutral", "lawful evil", "neutral evil", "chaotic evil"]
         self.background_list = []
         self.skill_list = []
         self.feature_list = []
@@ -202,6 +205,8 @@ class DataLists:
                 if c.perception < self.attr_min["perception"]:
                     self.attr_min["perception"] = c.perception
 
+            self.cls_list.append(c.cls)
+
             self.background_list.append(c.background)
 
             for s in list(c.skills.keys()):
@@ -229,6 +234,7 @@ class DataLists:
                 self.language_list.append(st)
 
 
+        self.cls_list = list(set(self.cls_list))
         self.background_list = list(set(self.background_list))
         self.skill_list = list(set(self.skill_list))
         self.feature_list = list(set(self.feature_list))
@@ -237,6 +243,7 @@ class DataLists:
         self.item_proficiency_list = list(set(self.item_proficiency_list))
         self.language_list = list(set(self.language_list))
 
+        self.cls_list.sort()
         self.background_list.sort()
         self.skill_list.sort()
         self.feature_list.sort()
@@ -259,8 +266,10 @@ class DataLists:
         data = json.load(f)
         f.close()
 
-        self.attr_max = data["attr_max"],
-        self.attr_min = data["attr_min"],
+        self.attr_max = data["attr_max"]
+        self.attr_min = data["attr_min"]
+        self.cls_list = data["cls_list"]
+        self.alignment_list = data["alignment_list"]
         self.background_list = data["background_list"]
         self.skill_list = data["skill_list"]
         self.feature_list = data["feature_list"]
@@ -274,6 +283,8 @@ class DataLists:
         out_map = {
             "attr_max": self.attr_max,
             "attr_min": self.attr_min,
+            "cls_list": self.cls_list,
+            "alignment_list": self.alignment_list,
             "background_list": self.background_list,
             "skill_list": self.skill_list,
             "feature_list": self.feature_list,
