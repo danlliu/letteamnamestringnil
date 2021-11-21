@@ -43,40 +43,43 @@ struct PlayerDetailView: View {
             Group {
                 VStack {
                     HStack {
-                        Text("Level 10")
-                        Text("XP 1416")
+                        Text("Level 10 (1416 XP)")
                     }
                     .padding()
                     HStack {
                         
                         VStack {
                             Text("Proficiency")
+                                .font(.caption)
                             Text(prof)
                         }
                         VStack {
                             Text("Speed")
+                                .font(.caption)
                             Text(speed)
                         }
                         VStack {
                             Text("Initiative")
+                                .font(.caption)
                             Text(initiative)
                         }
                         VStack {
                             Text("Armor Class")
+                                .font(.caption)
                             Text(ac)
                         }
                     }
                 }
                 List {
                     HStack {
-                        VStack {
+                        VStack(alignment: .leading) {
                             Text("STR\t10")
                             Text("DEX\t8")
                             Text("CON\t6")
                         }
                         Spacer()
                         VStack(alignment: .leading) {
-                            Text("INT\t8")
+                            Text("INT \t8")
                             Text("WIS\t7")
                             Text("CHR\t-5")
                         }
