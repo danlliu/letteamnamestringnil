@@ -99,3 +99,10 @@ struct NPC: Hashable {
     var level: Int
     //can add more as desired
 }
+
+@available(iOS 15.0, *)
+struct DMView_Previews: PreviewProvider {
+    static var previews: some View {
+        DMView()
+    }
+}

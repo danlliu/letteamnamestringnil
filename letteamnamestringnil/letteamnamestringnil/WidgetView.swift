@@ -12,6 +12,7 @@ struct Widget {
     var name: String
     
 }
+
 struct WidgetView: View {
     
     @State var chosenWidgets: [Widget] = [
@@ -29,30 +30,44 @@ struct WidgetView: View {
             Text("Customize Widgets")
                 .font(.largeTitle)
                 
-            Divider()
-            
-            ForEach(chosenWidgets, id: \.name) { widget in
-                HStack {
-                    Spacer()
-                    Button("remove", action: {})
-                        .foregroundColor(Color.red)
-                    Spacer()
-                    Text(widget.name)
-                    Spacer()
+            List {
+                Section(header: Text("Active Widgets")) {
+                    ForEach(chosenWidgets, id: \.name) { widget in
+                        Button(action: {
+                            chosenWidgets.remove(at: chosenWidgets.firstIndex {x in
+                                x.name == widget.name
+                            }!)
+                            nonChosenWidgets.append(widget)
+                        }) {
+                            HStack {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(.red)
+                                Text(widget.name)
+                            }
+                        }.foregroundColor(.black)
+                    }
+                    .onMove(perform: {f, t in chosenWidgets.move(fromOffsets: f, toOffset: t)})
+                }
+                Section(header: Text("Inactive Widgets")) {
+                    ForEach(nonChosenWidgets, id: \.name) { widget in
+                        Button(action: {
+                            nonChosenWidgets.remove(at: nonChosenWidgets.firstIndex { x in
+                                x.name == widget.name
+                            }!)
+                            chosenWidgets.append(widget)
+                        }) {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundColor(.green)
+                                Text(widget.name)
+                            }
+                        }.foregroundColor(.black)
+                    }
+                    .onMove(perform: {f, t in nonChosenWidgets.move(fromOffsets: f, toOffset: t)})
                 }
             }
-            
-            Divider()
-            
-            ForEach(nonChosenWidgets, id: \.name) { widget in
-                HStack {
-                    Spacer()
-                    Button("add", action: {})
-                    Spacer()
-                    Text(widget.name)
-                    Spacer()
-                }
-            }
+            .animation(.default)
+            .listStyle(.grouped)
         }
     }
 }

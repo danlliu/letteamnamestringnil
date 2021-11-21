@@ -52,30 +52,38 @@ struct PlayerView: View {
                 
             Group {
                 Text(characterName)
-                Text("\(className), \(race), Level \(level)")
-                Spacer()
+                    .font(.title)
+                Text("Level \(level) \(race), \("CG")") // TODO: alignment # to string
+                    .font(.title2)
                 Text("HP \(tempHP)/\(maxHP)")
                     .padding(.bottom)
+                    .font(.title3)
             }
             
             Group {
                 HStack {
+                    Spacer()
                     VStack {
                         Text("Proficiency")
+                            .font(.caption)
                         Text(prof)
                     }
                     VStack {
                         Text("Speed")
+                            .font(.caption)
                         Text(speed)
                     }
                     VStack {
                         Text("Initiative")
+                            .font(.caption)
                         Text(initiative)
                     }
                     VStack {
                         Text("Armor Class")
+                            .font(.caption)
                         Text(ac)
                     }
+                    Spacer()
                 }
                 HStack {
                     Spacer()
@@ -109,14 +117,15 @@ struct PlayerView: View {
                         IndividualPlayerView(player: friendly)
                     }
                 }
-                Section(header: ListHeader(title: "Monster NPCs")) {
-                    if monsterNPCs.isEmpty {
-                        Text("No monster NPCs")
-                    }
-                    ForEach(monsterNPCs, id: \.self) { monster in
-                        IndividualPlayerView(player: monster)
-                    }
-                }
+                
+//                Section(header: ListHeader(title: "Monster NPCs")) {
+//                    if monsterNPCs.isEmpty {
+//                        Text("No monster NPCs")
+//                    }
+//                    ForEach(monsterNPCs, id: \.self) { monster in
+//                        IndividualPlayerView(player: monster)
+//                    }
+//                }
             }
             .listStyle(GroupedListStyle())
         }
