@@ -12,13 +12,16 @@ struct LoginView: View {
     
     var body: some View {
         VStack {
+            
+            Spacer()
+            
             Text("TCP")
                 .font(.largeTitle).bold() //TODO: custom fonts are a lot of work, not skeletal
                 .padding()
             Text("Traveler Creation Partner")
             Spacer() //TODO: I don't love this spacing
             
-            HStack {
+            VStack {
                 Text("username:")
                 TextField("username", text: $username)
                     .padding(10)
@@ -27,25 +30,30 @@ struct LoginView: View {
                                 .stroke(Color.gray, lineWidth: 1)
                     )
             }
+            .frame(width: 300)
             .padding()
+            
+            Spacer()
             
             NavigationLink(destination: CreateGameView()) {
                 Text("Create New Party")
                     .foregroundColor(Color.white)
                     .padding()
             }
+            .frame(width: 220)
             .background(Color.blue)
-            .cornerRadius(10)
-            .padding()
+            .cornerRadius(40)
 
             NavigationLink(destination: GamesView(username: username)) {
                 Text("Join Game")
                     .foregroundColor(Color.white)
                     .padding()
             }
+            .frame(width: 220)
             .background(Color.blue)
-            .cornerRadius(10)
-            .padding()
+            .cornerRadius(40)
+            .padding(8)
+        
             
             Spacer()
         }
