@@ -24,7 +24,6 @@
         "perception": 7
     },
     "cls_list": [
-        "apothecary",
         "barbarian",
         "bard",
         "cleric",

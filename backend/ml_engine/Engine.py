@@ -138,40 +138,10 @@ def keras_encode(df):
     if verbose:
         print("")
         print("Keras Encoding Data... ", end="", flush=True)
-    
-
-def run_engine(args = sys.argv[1:]):
-    global verbose
-    global reload_char_data
-    global debug_mode
-    global overwrite_data
-    reload_dataframe = False
-    if "--verbose" in args or "-v" in args:
-        verbose = True
-    if "--reload-char-data" in args:
-        reload_char_data = True
-    if "--overwrite" in args or "-o" in args:
-        overwrite_data = True
-    if "--debug" in args or "-d" in args:
-        debug_mode = True
-        verbose = True
-    if "--reload-dataframe"in args or "-r" in args:
-        reload_dataframe = True
-
-    if debug_mode:
-        print("Arg Values:")
-        print("debug: True")
-        print("verbose: " + str(verbose))
-        print("reload character data: " + str(reload_char_data))
-        print("overwrite: " + str(overwrite_data))
 
 
-    init_data()
-
-    # Load Dataframe
+def load_dataframe(keras_mode, reload_dataframe):
     df = None
-    crossed_tags = None
-    keras_mode = True
     if keras_mode:
         basepath = path.abspath('')
         keras_df_outfile = path.abspath(path.join(basepath, "..", "training_data", "fully_cleaned", "keras_training_dataframe.csv"))
@@ -220,19 +190,10 @@ def run_engine(args = sys.argv[1:]):
         for tag in str_cols:
             #df[tag] = [np.str(i) for i in df[tag]]
             df[tag] = df[tag].astype('|S')
-            
-
-        
 
         if verbose:
             print("Complete")
             print(df.dtypes)
-
-        print()
-        print("STARTING KERAS ENGINE:")
-        print()
-
-        models.train_models(df, data_list, verbose, debug_mode)
 
     else:
         basepath = path.abspath('')
@@ -265,6 +226,59 @@ def run_engine(args = sys.argv[1:]):
             temp.close()
             if verbose:
                 print("Success")
+
+    return df
+
+
+def run_engine(args = sys.argv[1:]):
+    global verbose
+    global reload_char_data
+    global debug_mode
+    global overwrite_data
+    reload_dataframe = False
+
+    help_msg = """
+    --help, -h : Print this help message
+    --verbose, -v : Print verbose output
+    --debug, -d : 
+    --reload-char-data : Reload character data from files
+    --overwrite, -o : Overwrite existing character data
+    --reload-dataframe, -r : Overwrite the existing input dataframe
+    """
+
+    if "--help" in args or "-h" in args:
+        print(help_msg)
+        return
+    if "--verbose" in args or "-v" in args:
+        verbose = True
+    if "--reload-char-data" in args:
+        reload_char_data = True
+    if "--overwrite" in args or "-o" in args:
+        overwrite_data = True
+    if "--debug" in args or "-d" in args:
+        debug_mode = True
+        verbose = True
+    if "--reload-dataframe"in args or "-r" in args:
+        reload_dataframe = True
+
+    if debug_mode:
+        print("Arg Values:")
+        print("debug: True")
+        print("verbose: " + str(verbose))
+        print("reload character data: " + str(reload_char_data))
+        print("overwrite: " + str(overwrite_data))
+
+
+    init_data()
+    keras_mode = True
+    df = load_dataframe(keras_mode, reload_dataframe)
+    
+    if keras_mode:
+        print()
+        print("STARTING KERAS ENGINE:")
+        print()
+
+        models.train_models(df, data_list, verbose, debug_mode)
 
     
 
