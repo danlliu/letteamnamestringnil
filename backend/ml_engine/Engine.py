@@ -262,7 +262,7 @@ def get_models():
 
 ## -- CHARACTER GENERATOR -- ##
 
-def generate_character(cls, align=''):
+def generate_character(cls, alignment=''):
     fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
     dl = cd.DataLists()
     dl.load_from_file(fpath)
@@ -270,13 +270,11 @@ def generate_character(cls, align=''):
 
     character = {}
 
-    if align:
+    if alignment:
         character = {
             'cls': cls,
-            'alignment': align
+            'alignment': alignment
         }
-
-        return 0
 
     else:
         character = {
