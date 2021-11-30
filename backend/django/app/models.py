@@ -17,6 +17,8 @@ class UserPartyInfo(models.Model):
 class CharacterSheet(models.Model):
     name = models.CharField(max_length=255)
     clss = models.CharField(max_length=255)
+    is_npc = models.BooleanField()
+    is_friendly = models.BooleanField()
     level = models.IntegerField()
     race = models.CharField(max_length=255)
     background = models.CharField(max_length=255)
@@ -98,7 +100,7 @@ class CharacterSheet(models.Model):
 # Spells
 class Spell(models.Model):
     name = models.CharField(max_length=255)
-    description = models.CharField(max_length=4096)
+    description = models.CharField(max_length=4095)
     classes = models.CharField(max_length=255) # List stored as string. Use json.dumps
     level = models.IntegerField()
     components = models.CharField(max_length=255, default=None, blank=True, null=True) # List stored as string. Use json.dumps

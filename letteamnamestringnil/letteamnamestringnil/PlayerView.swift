@@ -12,15 +12,18 @@ struct PlayerView: View {
     
     // TODO: add values from database
     @State var partyCode = "E44W"
+    @State var username = "tuna_player_485"
     
 //    @EnvironmentObject var charSheet: CharacterSheet
 //    @EnvironmentObject var party: [IndividualPlayerView]
-    
+
+// TODO: Fetch
     @State private var players: [Player] = [
         Player(name: "Escobert the Red", playerClass: "Fighter", playerAlignment: "LN", level: 8),
         Player(name: "Sylva Nighthitll", playerClass: "Sorceress", playerAlignment: "CG", level: 6)
     ]
-    
+
+    // TODO: Fetch
     @State private var friendlyNPCs: [Player] = []
     @State private var monsterNPCs: [Player] = []
     
@@ -36,8 +39,9 @@ struct PlayerView: View {
     @State private var ac = "12"
     @State private var alignment = 2
     
-    init(partyCode: String = "") {
+    init(partyCode: String = "", username: String = "") {
         self._partyCode = State(wrappedValue: partyCode)
+        self._username = State(wrappedValue: username)
     }
     
     var body: some View {
@@ -87,12 +91,12 @@ struct PlayerView: View {
                 }
                 HStack {
                     Spacer()
-                    NavigationLink(destination: PlayerDetailView()) {
+                    NavigationLink(destination: PlayerDetailView(partyCode: partyCode, username: username)) {
                         Text("View")
                             .padding(8)
                             .background(Color.blue)
                     }
-                    NavigationLink(destination: ManualEntryView(name: characterName, playerClass: className, playerAlignment: "Lawful good", isNPC: false)) {
+                    NavigationLink(destination: CharacterSheetView(partyCode: partyCode, username: username)) {
                         Text("Edit")
                             .padding(8)
                             .background(Color.blue)

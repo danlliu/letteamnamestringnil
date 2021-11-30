@@ -40,6 +40,18 @@ struct HomeView: View {
             
 //            Spacer()
             
+            HStack {
+                Text("username:")
+                TextField("username", text: $username)
+                    .padding(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray, lineWidth: 1)
+                    )
+            }
+            .padding()
+
+            //TODO: Make this a button, use callback from model to redirect to DMView
             NavigationLink(destination: CreateGameView()) {
                 Text("Create New Party")
                     .foregroundColor(Color.white)

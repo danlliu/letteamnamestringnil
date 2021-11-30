@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct GenerateCharacter: View {
+
+    var partyCode: String
+
+    init(partyCode: String) {
+        self.partyCode = partyCode
+    }
+
     @State private var name: String = ""
     @State private var playerClass: String = "Select a class"
     @State private var playerAlignment: String = "Select an alignment"

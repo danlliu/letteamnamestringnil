@@ -21,7 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', views.user, name='user'),
     path('parties/', views.parties, name='parties'),
-    path('parties/join', views.join_party, name='join_party'),
+    path('parties/join/', views.join_party, name='join_party'),
     path('parties/<str:party_code>/', views.party_info, name='party_info'),
-    path('parties/<str:party_code>/members/<str:member_id>', views.member_info, name='member_info'),
+    path('parties/<str:party_code>/members/<str:member_id>/', views.member_info, name='member_info'),
 ]

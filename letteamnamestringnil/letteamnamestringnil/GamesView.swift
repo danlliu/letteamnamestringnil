@@ -46,7 +46,7 @@ struct GamesView: View {
                             .stroke(Color.gray, lineWidth: 1)
                 )
             
-            NavigationLink(destination: PlayerView(partyCode: self.partyCode)) {
+            NavigationLink(destination: PlayerView(partyCode: partyCode, username: username)) {
                 Text("Join New Party")
                     .foregroundColor(Color.white)
                     .padding()

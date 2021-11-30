@@ -9,10 +9,14 @@ import SwiftUI
 
 struct ManualEntryView: View {
     //information from general character generation
-    @State var name: String
-    @State var playerClass: String
-    @State var playerAlignment: String
-    @State var isNPC: Bool
+
+    var partyCode: String
+    var username: String
+
+    @State var name: String = ""
+    @State var playerClass: String = ""
+    @State var playerAlignment: String = ""
+    @State var isNPC: Bool = ""
     
     //TODO: validate string to int conversions -> make number only keyboard
     //basic stats
@@ -40,6 +44,13 @@ struct ManualEntryView: View {
     @State private var skills: [String] = []
     @State private var skilltext: String = ""
     @State private var editSkill: Bool = false
+
+    init(partyCode: String, username: String) {
+        self.partyCode = partyCode
+        self.username = username
+
+        // TODO: FETCH DATA
+    }
     
     var body: some View {
         VStack {
