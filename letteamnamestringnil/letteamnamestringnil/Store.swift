@@ -15,131 +15,133 @@ final class Store: ObservableObject {
     private init() {}
     
 //    @Published private(set) var chatts = [Chatt]()
-    @Published private var user = Player()
+//    @Published private var user = Player()
 //    private let nFields = Mirror(reflecting: Chatt()).children.count
     
     private let serverUrl = "https://3.139.99.112/"
+
+    @MainActor
+    func login(username: String, password: String) async {
+        _ = await apiRequest(path: "users/", method: "POST", body: ["username": username, "password": password])
+    }
+
+    @MainActor
+    func createAccount(username: String, password: String) async {
+        _ = await apiRequest(path: "users/", method: "PUT", body: ["username": username, "password": password])
+    }
+
+    @MainActor
+    func getUser() async -> PlayerAccountInfo {
+        let response = await apiRequest(path: "users/", method: "GET", body: nil)
+        switch (response) {
+        case .object (let obj):
+            return PlayerAccountInfo(id: obj["id"] as! Int, username: obj["username"] as! String)
+        default:
+            exit(1) // shouldn't get here
+        }
+    }
+
+    @MainActor
+    func getParties() async -> [String] {
+        let response = await apiRequest(path: "parties/", method: "GET", body: nil)
+        switch (response) {
+        case .array (let arr):
+            return arr;
+        default:
+            exit(1)
+        }
+    }
+
+    @MainActor
+    func createParty() async {
+        _ = await apiRequest(path: "parties/", method: "POST", body: nil)
+    }
+
+    @MainActor
+    func joinParty(code: String) async {
+        _ = await apiRequest(path: "parties/join/", method: "POST", body: ["code": code])
+    }
+
+    @MainActor
+    func getPartyInfo(code: String) async -> Party {
+        let response = await apiRequest(path: "parties/\(code)/", method: "GET", body: nil)
+        switch (response) {
+        case .object (let obj):
+            let code = obj["code"] as! String
+            let playersObj = obj["players"] as! [[String:Any]]
+            let players = playersObj.map { PlayerAccountInfo(id: $0["id"] as! Int, username: $0["username"] as! String) }
+            return Party(code: code, players: players)
+        default:
+            exit(1)
+        }
+    }
+
+    @MainActor
+    func getPlayerData(code: String, player: String) async -> Player {
+        let response = await apiRequest(path: "parties/\(code)/members/\(player)/", method: "GET", body: nil)
+        switch (response) {
+        case .object (let obj):
+            let isDM = obj["isDM"] as! Bool
+            let csheet = obj["sheet"] as! [String:Any]
+            return Player(isDM: isDM, csheet: csheet)
+        default:
+            exit(1)
+        }
+    }
+
+    @MainActor
+    func postPlayerData(code: String, player: String, isDM: Bool, csheet: CharacterSheet) async {
+        _ = await apiRequest(path: "parties/\(code)/members/\(player)/", method: "POST", body: [
+            "isDM": isDM,
+            "sheet": csheet.toDictionary()
+        ])
+    }
+
+    // inspired by https://stackoverflow.com/questions/40034034/swift-function-returning-two-different-types/40034233
+    enum ApiResult {
+        case object([String:Any])
+        case array([String])
+    }
     
     @MainActor
-    func getUser() async {
+    func apiRequest(path: String, method: String, body: [String:Any]?) async -> ApiResult {
 
-        guard let apiUrl = URL(string: serverUrl+"user/") else {
-            print("getUser: Bad URL")
-            return
+        guard let apiUrl = URL(string: serverUrl+path) else {
+            print("getData: Bad URL")
+            return ApiResult.array([])
         }
 
         var request = URLRequest(url: apiUrl)
-        request.httpMethod = "GET"
+        request.httpMethod = method
+        if let b = body {
+            guard let jsonData = try? JSONSerialization.data(withJSONObject: b) else {
+                print("Couldn't serialize object")
+                return ApiResult.array([])
+            }
+            request.httpBody = jsonData
+        }
 
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
 
             if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                print("getChatts: HTTP STATUS: \(httpStatus.statusCode)")
-                return
+                print("getData: HTTP STATUS: \(httpStatus.statusCode)")
+                return ApiResult.array([])
             }
 
-            guard let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [String:Any] else {
-                print("getUser: failed JSON deserialization")
-                return
+            if let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [String:Any] {
+                return ApiResult.object(jsonObj)
+            } else if let jsonArr = try? JSONSerialization.jsonObject(with: data) as? [String] {
+                return ApiResult.array(jsonArr)
+            } else {
+                print("getData: failed JSON deserialization")
+                return ApiResult.array([])
             }
-            
-//            let chattsReceived = jsonObj["chatts"] as? [[String?]] ?? []
-//
-//            self.chatts = [Chatt]()
-//            for chattEntry in chattsReceived {
-//                if chattEntry.count == self.nFields {
-//                    self.chatts.append(Chatt(username: chattEntry[0],
-//                                             message: chattEntry[1],
-//                                             timestamp: chattEntry[2]))
-//                } else {
-//                    print("getChatts: Received unexpected number of fields: \(chattEntry.count) instead of \(self.nFields).")
-//                }
-//            }
         } catch {
             print("getUser: NETWORKING ERROR")
+            return ApiResult.array([])
         }
     }
-    
-    func postChatt(/*_ chatt: Chatt*/) async {
-//        let jsonObj = ["chatterID": ChatterID.shared.id,
-//                       "message": chatt.message]
-//        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObj) else {
-//            print("postChatt: jsonData serialization error")
-//            return
-//        }
-//
-//        guard let apiUrl = URL(string: serverUrl+"postauth/") else {
-//            print("postChatt: Bad URL")
-//            return
-//        }
-//
-//        var request = URLRequest(url: apiUrl)
-//        request.httpMethod = "POST"
-//        request.httpBody = jsonData
-//
-//        do {
-//            let (_, response) = try await URLSession.shared.data(for: request)
-//
-//            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-//                print("postChatt: HTTP STATUS: \(httpStatus.statusCode)")
-//                return
-//            }
-//        } catch {
-//            print("postChatt: NETWORKING ERROR")
-//        }
-    }
-        
-        
-    
-//    // concurrency only available in 15.0 or newer
-//    @available(iOS 15.0.0, *)
-//    func addUser() async -> Bool {
-//        guard let idToken = idToken else {
-//            return
-//        }
-//
-//        let jsonObj = ["clientID": "YOUR_APP'S_CLIENT_ID",
-//                    "idToken" : idToken]
-//
-//        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObj) else {
-//            print("addUser: jsonData serialization error")
-//            return
-//        }
-//
-//        guard let apiUrl = URL(string: serverUrl+"adduser/") else {
-//            print("addUser: Bad URL")
-//            return
-//        }
-//
-//        var request = URLRequest(url: apiUrl)
-//        request.httpMethod = "POST"
-//        request.httpBody = jsonData
-//
-//        do {
-//            let (data, response) = try await URLSession.shared.data(for: request)
-//
-//            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-//                print("addUser: HTTP STATUS: \(httpStatus.statusCode)")
-//                return
-//            }
-//
-//            guard let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [String:Any] else {
-//                print("addUser: failed JSON deserialization")
-//                return
-//            }
-//
-//            ChatterID.shared.id = jsonObj["chatterID"] as? String
-//            ChatterID.shared.expiration = Date()+(jsonObj["lifetime"] as! TimeInterval)
-//
-//            guard let _ = ChatterID.shared.id else {
-//                return
-//            }
-//            // will save() chatterID later
-//        } catch {
-//            print("addUser: NETWORKING ERROR")
-//        }
-//    }
     
 }
 
@@ -155,27 +157,26 @@ struct PlayerAccountInfo: Hashable {
     
 }
 
-struct Player: Hashable {
-    var playerInfo: PlayerAccountInfo
-    var characterName: String
-    var playerClass: String
-    var playerAlignment: String
-    var level: Int
+struct Party: Hashable {
+    var code: String
+    var players: [PlayerAccountInfo]
+}
+
+struct Player {
+
+    var isDM: Bool
+    var csheet: [String:Any]
     //can add more as desired
     
-    init(playerInfo: PlayerAccountInfo = PlayerAccountInfo(),
-         characterName: String = "", playerClass: String = "",
-         playerAlignment: String = "", level: Int = -1) {
-        self.playerInfo = playerInfo
-        self.characterName = characterName
-        self.playerClass = playerClass
-        self.playerAlignment = playerAlignment
-        self.level = level
+    init(isDM: Bool,
+         csheet: [String:Any]) {
+        self.isDM = isDM
+        self.csheet = csheet
     }
     
 }
 
-/
+/*
  
  {
          "isDM": False,
