@@ -101,6 +101,7 @@ class DataLists:
     attr_max = {} 
     attr_min = {}
     cls_list = []
+    race_list = []
     alignment_list = []
     background_list = []
     skill_list = []
@@ -139,6 +140,7 @@ class DataLists:
 
 # [str, dex, con, int, wis, cha]
         self.cls_list = []
+        self.race_list = []
         self.alignment_list = ["lawful good", "neutral good", "chaotic good", "lawful neutral", "neutral", "chaotic neutral", "lawful evil", "neutral evil", "chaotic evil"]
         self.background_list = []
         self.skill_list = []
@@ -207,7 +209,10 @@ class DataLists:
 
             self.cls_list.append(c.cls)
 
+            self.race_list.append(c.race)
+
             self.background_list.append(c.background)
+
 
             for s in list(c.skills.keys()):
                 st = validate_string(s)
@@ -235,6 +240,7 @@ class DataLists:
 
 
         self.cls_list = list(set(self.cls_list))
+        self.race_list = list(set(self.race_list))
         self.background_list = list(set(self.background_list))
         self.skill_list = list(set(self.skill_list))
         self.feature_list = list(set(self.feature_list))
@@ -244,6 +250,7 @@ class DataLists:
         self.language_list = list(set(self.language_list))
 
         self.cls_list.sort()
+        self.race_list.sort()
         self.background_list.sort()
         self.skill_list.sort()
         self.feature_list.sort()
@@ -253,6 +260,7 @@ class DataLists:
         self.language_list.sort()
 
         # Manual cleaning
+        self.race_list = remove_banned_strs(self.race_list)
         self.background_list = remove_banned_strs(self.background_list)
         self.skill_list = remove_banned_strs(self.skill_list)
         self.feature_list = remove_banned_strs(self.feature_list)
@@ -269,6 +277,7 @@ class DataLists:
         self.attr_max = data["attr_max"]
         self.attr_min = data["attr_min"]
         self.cls_list = data["cls_list"]
+        self.race_list = data["race_list"]
         self.alignment_list = data["alignment_list"]
         self.background_list = data["background_list"]
         self.skill_list = data["skill_list"]
@@ -284,6 +293,7 @@ class DataLists:
             "attr_max": self.attr_max,
             "attr_min": self.attr_min,
             "cls_list": self.cls_list,
+            "race_list": self.race_list,
             "alignment_list": self.alignment_list,
             "background_list": self.background_list,
             "skill_list": self.skill_list,

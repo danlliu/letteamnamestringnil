@@ -27,6 +27,7 @@ verbose = False
 reload_char_data = False
 debug_mode = False
 overwrite_data = False
+testing_mode = False
 
 game_data = gd.GameData()
 data_list = cd.DataLists()
@@ -186,10 +187,18 @@ def load_dataframe(keras_mode, reload_dataframe):
                     print(row)
                     df.drop([i])
 
+        df = df[df['background'].notna()]
+
+        df.loc[df['alignment'] == "chaoic good", 'alignment'] = "chaotic good"
+        df.loc[df['alignment'] == "true neutral", 'alignment'] = "neutral"
+        df.loc[df['alignment'] == 'lawful neurtral', 'alignment'] = "lawful neutral"
+
         str_cols = ["cls", "background", "race", "alignment"]
         for tag in str_cols:
             #df[tag] = [np.str(i) for i in df[tag]]
             df[tag] = df[tag].astype('|S')
+
+        
 
         if verbose:
             print("Complete")
@@ -235,12 +244,14 @@ def run_engine(args = sys.argv[1:]):
     global reload_char_data
     global debug_mode
     global overwrite_data
+    global testing_mode
     reload_dataframe = False
 
     help_msg = """
     --help, -h : Print this help message
     --verbose, -v : Print verbose output
-    --debug, -d : 
+    --debug, -d : Debug output
+    --testing : Additional tests run
     --reload-char-data : Reload character data from files
     --overwrite, -o : Overwrite existing character data
     --reload-dataframe, -r : Overwrite the existing input dataframe
@@ -260,6 +271,9 @@ def run_engine(args = sys.argv[1:]):
         verbose = True
     if "--reload-dataframe"in args or "-r" in args:
         reload_dataframe = True
+    if "--testing" in args:
+        testing_mode = True
+        debug_mode = True
 
     if debug_mode:
         print("Arg Values:")
@@ -278,7 +292,7 @@ def run_engine(args = sys.argv[1:]):
         print("STARTING KERAS ENGINE:")
         print()
 
-        models.train_models(df, data_list, verbose, debug_mode)
+        models.train_models(df, data_list, verbose, debug_mode, testing_mode)
 
     
 
