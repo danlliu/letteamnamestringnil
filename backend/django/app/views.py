@@ -2,14 +2,11 @@ import json
 import random
 import string
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import app.models
-
-EXAMPLE_PLAYER_ID = "1dc61423-9f17-4b3c-bc26-455013d03d02"
-EXAMPLE_DM_ID = "e4cd7fa0-cd3e-421d-8063-bbbd9456b8ef"
-EXAMPLE_PARTY_ID = "de9cf5da-cdf3-4dd2-9e14-87105e1b423a"
 
 def require_auth(func):
     def wrapper(*args, **kwargs):
@@ -27,7 +24,7 @@ def in_party(party, user):
 def gen_code():
     return "".join(random.SystemRandom().choices(string.ascii_uppercase + string.digits + string.ascii_lowercase, k=6))
 
-same_attrs = ["name", "clss", "level", "race", "background", "alignment", "experience_points", "inspiration", "proficiency_bonus", "passive_wisdom", "other_proficiencies_skills", "armor_class", "initiative", "speed", "max_hp", "cur_hp", "temp_hp", "hit_dice", "death_save_success", "death_save_failure", "attacks", "equipment", "traits", "ideals", "bonds", "flaws", "features_and_traits", "age", "eyes", "height", "weight", "backstory", "dark_gifts", "features", "allies", "treasure", "notes"]
+same_attrs = ["name", "clss", "is_npc", "is_friendly", "level", "race", "background", "alignment", "experience_points", "inspiration", "proficiency_bonus", "passive_wisdom", "other_proficiencies_skills", "armor_class", "initiative", "speed", "max_hp", "cur_hp", "temp_hp", "hit_dice", "death_save_success", "death_save_failure", "attacks", "equipment", "traits", "ideals", "bonds", "flaws", "features_and_traits", "age", "eyes", "height", "weight", "backstory", "dark_gifts", "features", "allies", "treasure", "notes"]
 
 abilities = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
 
@@ -37,9 +34,141 @@ spells_same_attrs = ["spellcast_ability", "spell_save_dc", "spell_attack_bonus"]
 
 spell_same_attrs = ["name", "description", "classes", "level", "components", "material", "casting_time", "die_sides", "die_count", "damage_type", "duration", "range", "school", "target"]
 
+character_sheet_schema = {
+    "type": "object",
+    "properties": {
+        "name": {"type": "string", "maxLength": 255},
+        "clss": {"type": "string", "maxLength": 255},
+        "is_npc": {"type": "boolean"},
+        "is_friendly": {"type": "boolean"},
+        "level": {"type": "integer", "minimum": 0},
+        "race": {"type": "string", "maxLength": 255},
+        "background": {"type": "string", "maxLength": 255},
+        "alignment": {"type": "integer", "minimum": 0, "maximum": 8},
+        "experience_points": {"type": "integer", "minimum": 0},
+        "inspiration": {"type": "integer"},
+        "proficiency_bonus": {"type": "integer"},
+        "passive_wisdom": {"type": "integer"},
+        "other_proficiencies_skills": {"type": "string", "maxLength": 4095},
+        "armor_class": {"type": "integer"},
+        "initiative": {"type": "integer"},
+        "speed": {"type": "integer"},
+        "max_hp": {"type": "integer", "minimum": 0},
+        "cur_hp": {"type": "integer", "minimum": 0},
+        "temp_hp": {"type": "integer", "minimum": 0},
+        "hit_dice": {"type": "integer", "minimum": 0},
+        "death_save_success": {"type": "integer", "minimum": 0},
+        "death_save_failure": {"type": "integer", "minimum": 0},
+        "attacks": {"type": "string", "maxLength": 4095},
+        "equipment": {"type": "string", "maxLength": 4095},
+        "traits": {"type": "string", "maxLength": 4095},
+        "ideals": {"type": "string", "maxLength": 4095},
+        "bonds": {"type": "string", "maxLength": 4095},
+        "flaws": {"type": "string", "maxLength": 4095},
+        "features_and_traits": {"type": "string", "maxLength": 4095},
+        "age": {"type": "integer", "minimum": 0},
+        "eyes": {"type": "string", "maxLength": 255},
+        "height": {"type": "string", "maxLength": 255},
+        "weight": {"type": "string", "maxLength": 255},
+        "backstory": {"type": "string", "maxLength": 4095},
+        "dark_gifts": {"type": ["string", "null"], "maxLength": 4095},
+        "features": {"type": "string", "maxLength": 4095},
+        "allies": {"type": ["string", "null"], "maxLength": 4095},
+        "treasure": {"type": ["string", "null"], "maxLength": 4095},
+        "notes": {"type": ["string", "null"], "maxLength": 4095},
+
+        "abilities": {
+            "type": "object",
+            "properties": {
+                ability: {"type": "integer"}
+                for ability in abilities
+            },
+            "additionalProperties": False,
+            "minProperties": len(abilities),
+        },
+        "saving": {
+            "type": "object",
+            "properties": {
+                ability: {"type": "boolean"}
+                for ability in abilities
+            },
+            "additionalProperties": False,
+            "minProperties": len(abilities),
+        },
+        "skills": {
+            "type": "object",
+            "properties": {
+                skill: {"type": "boolean"}
+                for skill in skills
+            },
+            "additionalProperties": False,
+            "minProperties": len(skills),
+        },
+
+        "spells": {
+            "type": "object",
+            "properties": {
+                "spellcast_ability": {"type": "string", "maxLength": 127},
+                "spell_save_dc": {"type": "integer"},
+                "spell_attack_bonus": {"type": "integer"},
+                "by_level": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "slots": {"type": "integer", "minimum": 0},
+                            "spells": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {"type": "string", "maxLength": 255},
+                                    },
+                                    "required": ["name"],
+                                },
+                            },
+                        },
+                    },
+                    "minItems": 11, # 0-x
+                    "maxItems": 11,
+                },
+            },
+            "additionalProperties": False,
+            "minProperties": 4,
+        },
+    },
+    "additionalProperties": False,
+    "minProperties": 43,
+}
 
 def create_character_sheet(info):
-    pass
+    validate(instance=info, schema=character_sheet_schema)
+    sheet = app.models.CharacterSheet()
+    for attr in same_attrs:
+        setattr(sheet, attr, info[attr])
+    for ability, val in info["abilities"].items():
+        setattr(sheet, f"{ability}_ability", val)
+    for ability, val in info["saving"].items():
+        setattr(sheet, f"{ability}_saving", val)
+    for skill, val in info["skills"].items():
+        setattr(sheet, f"{skill}_skill", val)
+
+    spellsheet = app.models.CharacterSpellSheet(character=sheet)
+    for attr in spells_same_attrs:
+        setattr(spellsheet, attr, info["spells"][attr])
+    for level, level_info in enumerate(info["spells"]["by_level"]):
+        if level == 10:
+            level = "x"
+        setattr(spellsheet, f"level_{level}_spellslots", level_info["slots"])
+        for spell_info in level_info["spells"]:
+            # TODO: Can this fail??
+            spell = app.models.Spell.objects.filter(name=spell_info["name"])
+            spellslot = app.models.CharacterSpellslot(character=sheet, spell=spell, charges=spell_info["charges"])
+            spellslot.save()
+    spellsheet.save()
+
+    sheet.save()
+    return sheet
 
 def json_spell(spellslot):
     json = {}
@@ -58,12 +187,12 @@ def json_spells(sheet):
         json[attr] = getattr(spellsheet, attr)
     json["by_level"] = []
     for level in range(0, 10):
-        json["by_level"].append({ "slots": getattr(spellsheet, f"level_{level}_spellslots") })
-    json["by_level"].append({ "slots": spellsheet.level_x_slots })
+        json["by_level"].append({ "slots": getattr(spellsheet, f"level_{level}_spellslots"), "spells": [] })
+    json["by_level"].append({ "slots": spellsheet.level_x_slots, "spells": [] })
 
     spells = app.models.CharacterSpellslot.objects.filter(character=sheet)
     for spell in spells:
-        json["by_level"][spell.spell.level] = json_spell(spell)
+        json["by_level"][spell.spell.level]["spells"].append(json_spell(spell))
     return json
 
 def json_character_sheet(sheet):
@@ -82,10 +211,22 @@ def json_character_sheet(sheet):
     return json
 
 @csrf_exempt
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET", "POST", "PUT"])
 def user(request):
     user = request.user
-    if request.method == "POST":
+    if request.method == "PUT":
+        # Creates an account
+        try:
+            obj = json.loads(request.body)
+        except json.JSONDecodeError:
+            return HttpResponse(status=400)
+        if user.is_authenticated or "username" not in obj or "password" not in obj or not isinstance(obj["password"], str):
+            return HttpResponse(status=400)
+        user = User.objects.create_user(obj["username"], email=None, password=obj["password"])
+        if user is None:
+            return HttpResponse(status=409)
+        login(request, user)
+    elif request.method == "POST":
         # Performs a login
         try:
             obj = json.loads(request.body)
@@ -192,188 +333,3 @@ def member_info(request, party_code, member_id):
         "isDM": info.is_dm,
         "sheet": json_character_sheet(info.sheet) if info.sheet is not None else None,
     })
-
-    if member_id == EXAMPLE_DM_ID:
-        return JsonResponse({
-            "isDM": True,
-            "sheet": None,
-        })
-    elif member_id == EXAMPLE_PLAYER_ID:
-        return JsonResponse({
-            "isDM": False,
-            "sheet": {
-                "name": "exampleName",
-                "class": "artificer",
-                "level": 3,
-                "race": "Aasimar",
-                "background": "Sage",
-                "alignment": 2,
-                "experiencePoints": 8,
-                "abilityScores": {
-                    "strength": -1,
-                    "dexterity": 2,
-                    "constitution": 1,
-                    "intelligence": 4,
-                    "wisdom": 1,
-                    "charisma": 1,
-                },
-                "inspiration": 0,
-                "proficiencyBonus": 2,
-                "savingThrows": {
-                    "strength": False,
-                    "dexterity": False,
-                    "constitution": True,
-                    "intelligence": True,
-                    "wisdom": False,
-                    "charisma": False,
-                },
-                "skills": {
-                    "acrobatics": False,
-                    "animalHandling": False,
-                    "arcana": True,
-                    "athletics": False,
-                    "deception": False,
-                    "history": True,
-                    "insight": False,
-                    "intimidation": False,
-                    "investigation": False,
-                    "medicine": False,
-                    "nature": False,
-                    "perception": True,
-                    "performance": False,
-                    "persuasion": False,
-                    "religion": False,
-                    "sleightOfHand": True,
-                    "stealth": False,
-                    "survival": False,
-                },
-                "passiveWisdom": 13,
-                "otherProficienciesAndSkills": "Common\nCelestial",
-                "stats": {
-                    "armorClass": 14,
-                    "initiative": 2,
-                    "speed": 30,
-                    "maxHP": 18,
-                    "curHP": 18,
-                    "tempHP": 0,
-                    "hitDice": "3d8",
-                    "deathSaveSuccess": 0,
-                    "deathSaveFailure": 0
-                },
-                "attacks": "Example attacks here",
-                "equipment": """Hand-axe (1d6 slashing)
-Spear (1d6 piercing)
-Light crossbow (1d8 piercing, 20 ammo)
-Scale mail (AC 14, stealth disadv)
-Thieves' tools
-Backpack
-Crowbar
-Hammer
-10 pitons
-10 torches
-Tinderbox
-10 days of rations
-Waterskin
-Soft of hempen rope""",
-                "personality": {
-                    "traits": "Example traits here",
-                    "ideals": "Example ideals here",
-                    "bonds": "Example bonds here",
-                    "flaws": "Example flaws here",
-                },
-                "featuresAndTraits": """Darkvision
-Celestial resistance
-Healing hands
-    touch, +HP = level, 1/LR
-Radiant consumption
-    light 10ft, dim light 20ft
-    ceil(level/2) radiant dmg in 10ft (incl. self)
-    extra radiant dmg/attack: +level, 1/turn""",
-                "appearance": {
-                    "age": 28,
-                    "eyes": "blue",
-                    "height": "5ft 11in",
-                    "weight": "160lbs",
-                },
-                "backstory": "Example backstory here",
-                "darkGifts": "Example darkgifts here",
-                "features": "Example features here",
-                "allies": "Example allies here",
-                "treasure": "Example treasure here",
-                "spellcasting": {
-                    "ability": 18,
-                    "dc": 14,
-                    "attackBonus": 6,
-                    "level1Slots": 3,
-                    "level2Slots": 0,
-                    "level3Slots": 0,
-                    "level4Slots": 0,
-                    "level5Slots": 0,
-                    "level6Slots": 0,
-                    "level7Slots": 0,
-                    "level8Slots": 0,
-                    "level9Slots": 0,
-                },
-                "spells": [
-                    {
-                        "name": "Light",
-                        "components": ['V', 'M'],
-                        "level": 0,
-                        "description": "",
-                        "prepared": None,
-                    },
-                    {
-                        "name": "Fire Bolt",
-                        "components": ['V', 'S'],
-                        "level": 0,
-                        "description": "ranged spell 1d10, inst., 120ft",
-                        "prepared": None,
-                    },
-                    {
-                        "name": "Magic Stone",
-                        "components": ['V', 'S'],
-                        "level": 0,
-                        "description": "1-3 pebbles, blud 1d6 + spell mod, 60ft, BA",
-                        "prepared": None,
-                    },
-                    {
-                        "name": "Faerie Fire",
-                        "components": ['V'],
-                        "level": 1,
-                        "description": "20ft cube B1/Gr/Vi 10ft light, 60ft",
-                        "prepared": False,
-                    },
-                    {
-                        "name": "Purify Food and Drink",
-                        "components": ['V', 'S'],
-                        "level": 1,
-                        "description": "5ft sphere, 10ft",
-                        "prepared": False,
-                    },
-                    {
-                        "name": "Tasha' Caustic Brew",
-                        "components": ['V', 'S', 'M'],
-                        "level": 1,
-                        "description": "30ft x 5ft, 2d4 acid",
-                        "prepared": False,
-                    },
-                    {
-                        "name": "Healing Word",
-                        "components": ['V'],
-                        "level": 1,
-                        "description": "+HP = 1d4 + spell, 60ft, BA",
-                        "prepared": True,
-                    },
-                    {
-                        "name": "Ray of Sickness",
-                        "components": ['V', 'S'],
-                        "level": 1,
-                        "description": "ranged spell, 2d8 poison, 60ft",
-                        "prepared": True,
-                    },
-                ]
-            }
-        })
-    else:
-        return HttpResponse(status=404)
-
