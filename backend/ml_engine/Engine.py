@@ -252,8 +252,6 @@ def get_models():
     wis_model = tf.keras.models.load_model('saved_models/wis_model')
     cha_model = tf.keras.models.load_model('saved_models/cha_model')
 
-    print("Models loaded")
-
     attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
 
     with open("saved_models/model_col_names.json", "r", encoding='utf-8') as f:

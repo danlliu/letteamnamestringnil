@@ -156,9 +156,9 @@ def create_cat_model(input_df, cat_input_cols, numeric_input_cols, target_col, t
 
     train, val, test = np.split(df.sample(frac=1), [int(0.8*len(df)), int(0.9*len(df))])
 
-    train_ds = df_to_dataset(train, batch_size=len(train.index))
-    val_ds = df_to_dataset(val, shuffle=False, batch_size=len(val.index))
-    test_ds = df_to_dataset(test, shuffle=False, batch_size=len(test.index))
+    train_ds = df_to_dataset(train, batch_size=int(len(train.index) / 8))
+    val_ds = df_to_dataset(val, shuffle=False, batch_size=int(len(val.index) / 8))
+    test_ds = df_to_dataset(test, shuffle=False, batch_size=int(len(test.index) / 8))
 
     all_inputs = []
     encoded_features = []
@@ -198,7 +198,7 @@ def create_cat_model(input_df, cat_input_cols, numeric_input_cols, target_col, t
             metrics=["binary_crossentropy"])
 
 
-    model.fit(train_ds, epochs=10, validation_data=val_ds)
+    model.fit(train_ds, epochs=16, validation_data=val_ds)
     loss, accuracy = model.evaluate(test_ds)
     
     if verbose:
@@ -349,9 +349,9 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
         print(test_race_layer(test_race_col))
 
     if debug_mode and testing_mode:
-        train_ds = df_to_dataset(train, batch_size=len(train.index))
-        val_ds = df_to_dataset(val, shuffle=False, batch_size=len(val.index))
-        test_ds = df_to_dataset(test, shuffle=False, batch_size=len(test.index))
+        train_ds = df_to_dataset(train, batch_size=int(len(train.index) / 8))
+        val_ds = df_to_dataset(val, shuffle=False, batch_size=int(len(val.index) / 8))
+        test_ds = df_to_dataset(test, shuffle=False, batch_size=int(len(test.index) / 8))
 
         all_inputs = []
         encoded_features = []
