@@ -11,7 +11,6 @@ import numpy as np
 
 from sklearn.preprocessing import MultiLabelBinarizer
 from tqdm.auto import tqdm
-from IPython.display import display
 
 import tensorflow as tf
 from tensorflow.keras import layers
@@ -183,8 +182,9 @@ def load_dataframe(keras_mode, reload_dataframe):
         for i, row in df.iterrows():
             for col in df.columns:
                 if isinstance(row[col], float):
-                    print(str(row[col]) + " float")
-                    print(row)
+                    if verbose:
+                        print(str(row[col]) + " float")
+                        print(row)
                     df.drop([i])
 
         df = df[df['background'].notna()]
@@ -217,7 +217,7 @@ def load_dataframe(keras_mode, reload_dataframe):
                 print(crossed_tags)
                 print()
                 print("Dataframe:")
-                display(df)
+                print(df.head())
 
             if verbose:
                 print("Saving dataframe to file... ", end="", flush=True)
@@ -239,6 +239,84 @@ def load_dataframe(keras_mode, reload_dataframe):
     return df
 
 
+def get_models():
+    basepath = path.abspath('')
+    align_model = tf.keras.models.load_model('saved_models/align_model')
+    race_model = tf.keras.models.load_model('saved_models/race_model')
+    background_model = tf.keras.models.load_model('saved_models/background_model')
+
+    str_model = tf.keras.models.load_model('saved_models/str_model')
+    dex_model = tf.keras.models.load_model('saved_models/dex_model')
+    con_model = tf.keras.models.load_model('saved_models/con_model')
+    int_model = tf.keras.models.load_model('saved_models/int_model')
+    wis_model = tf.keras.models.load_model('saved_models/wis_model')
+    cha_model = tf.keras.models.load_model('saved_models/cha_model')
+
+    print("Models loaded")
+
+    attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
+
+    with open("saved_models/model_col_names.json", "r", encoding='utf-8') as f:
+        col_names = json.load(f)
+
+    return align_model, race_model, background_model, attr_models, col_names
+
+
+## -- CHARACTER GENERATOR -- ##
+
+def generate_character(cls, align=''):
+    fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
+    dl = cd.DataLists()
+    dl.load_from_file(fpath)
+    align_model, race_model, background_model, attr_models, col_names = get_models()
+
+    character = {}
+
+    if align:
+        character = {
+            'cls': cls,
+            'alignment': align
+        }
+
+        return 0
+
+    else:
+        character = {
+            'cls': cls
+        }
+
+        align_pred = models.get_cat_prediction(align_model, character)
+        # print(align_pred)
+
+        character['alignment'] = dl.alignment_list[(int(np.argmax(align_pred)))]
+    
+    race_pred = models.get_cat_prediction(race_model, character)
+    # print(race_pred)
+    character['race'] = dl.race_list[(int(np.argmax(race_pred)))]
+
+    
+
+    bg_pred = models.get_cat_prediction(background_model, character)
+    # print(bg_pred)
+    character['background'] = dl.background_list[(int(np.argmax(bg_pred)))]
+
+
+    attr_preds = models.get_all_attr_predictions(attr_models, character, col_names)
+
+    character['str'] = attr_preds[0]
+    character['dex'] = attr_preds[1]
+    character['con'] = attr_preds[2]
+    character['int'] = attr_preds[3]
+    character['wis'] = attr_preds[4]
+    character['cha'] = attr_preds[5]
+
+    return character
+
+
+
+
+## -- TRAINING ENGINE -- ##
+
 def run_engine(args = sys.argv[1:]):
     global verbose
     global reload_char_data
@@ -246,6 +324,7 @@ def run_engine(args = sys.argv[1:]):
     global overwrite_data
     global testing_mode
     reload_dataframe = False
+    retrain_model = False
 
     help_msg = """
     --help, -h : Print this help message
@@ -271,6 +350,8 @@ def run_engine(args = sys.argv[1:]):
         verbose = True
     if "--reload-dataframe"in args or "-r" in args:
         reload_dataframe = True
+    if "--train" in args or "-t" in args:
+        retrain_model = True
     if "--testing" in args:
         testing_mode = True
         debug_mode = True
@@ -287,12 +368,35 @@ def run_engine(args = sys.argv[1:]):
     keras_mode = True
     df = load_dataframe(keras_mode, reload_dataframe)
     
-    if keras_mode:
+    align_model = None
+    race_model = None
+    background_model = None
+    attr_models = None
+    col_names = None
+
+    if retrain_model:
         print()
-        print("STARTING KERAS ENGINE:")
+        print("Training Models...")
         print()
 
-        models.train_models(df, data_list, verbose, debug_mode, testing_mode)
+        align_model, race_model, background_model, attr_models, col_names = models.train_models(df, data_list, verbose, debug_mode, testing_mode)
+
+        align_model.save('saved_models/align_model')
+        race_model.save('saved_models/race_model')
+        background_model.save('saved_models/background_model')
+        attr_models[0].save('saved_models/str_model')
+        attr_models[1].save('saved_models/dex_model')
+        attr_models[2].save('saved_models/con_model')
+        attr_models[3].save('saved_models/int_model')
+        attr_models[4].save('saved_models/wis_model')
+        attr_models[5].save('saved_models/cha_model')
+
+        with open("saved_models/model_col_names.json", "w", encoding='utf-8') as f:
+            json.dump(col_names, f, ensure_ascii=False)
+
+    else:
+        align_model, race_model, background_model, attr_models, col_names = get_models()
+
 
     
 

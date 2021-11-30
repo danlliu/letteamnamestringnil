@@ -128,14 +128,19 @@ def max_elements(lst, n):
     return max_vals, max_index
 
 
+def get_cat_prediction(model, sample):
+    input_dict = {name: tf.convert_to_tensor([value]) for name, value in sample.items()}
+    return model.predict(input_dict)
+
+
 def get_attr_prediction(model, sample, column_names):
     temp = pd.DataFrame(0, index = np.arange(1,2), columns=column_names)
     for v in sample:
         temp[v][1] = 1
-    return model.predict(temp)[0][0]
+    return int(round(float(model.predict(temp)[0][0])))
 
 def get_all_attr_predictions(attr_models, char_dict, column_names):
-    sample = [char_dict['cls'], char_dict['background'], char_dict['race']]
+    sample = [char_dict['cls'], char_dict['race']]
     preds = []
     for m in attr_models:
         preds.append(get_attr_prediction(m, sample, column_names))
@@ -175,7 +180,11 @@ def create_cat_model(input_df, cat_input_cols, numeric_input_cols, target_col, t
         all_inputs.append(categorical_col)
         encoded_features.append(encoded_categorical_col)
 
-    all_features = tf.keras.layers.concatenate(encoded_features)
+    if len(cat_input_cols) + len(numeric_input_cols) > 1:
+        all_features = tf.keras.layers.concatenate(encoded_features)
+    else:
+        all_features = encoded_features[0]
+
     s1 = int(tf.keras.backend.int_shape(all_features)[1]) * 2 / 3 + int(len(target_data_list))
     x1 = tf.keras.layers.Dense(s1, activation="elu")(all_features)
     s2 = (s1 * 2 / 3 + int(len(target_data_list)))
@@ -276,7 +285,6 @@ def create_attr_model(input_df, cat_input_cols, numeric_input_cols, target_col):
     return model, column_names
 
 
-
 # training
 def train_models(dataframe, data_list_in, ver, deb, tst):
     global verbose
@@ -310,9 +318,6 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
             print(len(val), 'validation examples')
             print(len(test), 'test examples')
             print()
-
-
-            
 
     # cls prediction
     # data_list.cls_list.index(test_df["cls"])
@@ -423,16 +428,16 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
         print(pred)
     
 
-    align_model = create_cat_model(dataframe, ['cls', 'background', 'race'], [], 'alignment', target_data_list=data_list.alignment_list)
-    race_model = create_cat_model(dataframe, ['cls', 'background', 'alignment'], [], 'race', target_data_list=data_list.race_list)
-    background_model = create_cat_model(dataframe, ['cls', 'race', 'alignment'], [], 'background', target_data_list=data_list.background_list)
+    align_model = create_cat_model(dataframe, ['cls'], [], 'alignment', target_data_list=data_list.alignment_list)
+    race_model = create_cat_model(dataframe, ['cls', 'alignment'], [], 'race', target_data_list=data_list.race_list)
+    background_model = create_cat_model(dataframe, ['cls', 'alignment', 'race'], [], 'background', target_data_list=data_list.background_list)
     
-    str_model, col_names = create_attr_model(dataframe, ['cls', 'background', 'race'], [], 'str')
-    dex_model, t = create_attr_model(dataframe, ['cls', 'background', 'race'], [], 'dex')
-    con_model, t = create_attr_model(dataframe, ['cls', 'background', 'race'], [], 'con')
-    int_model, t = create_attr_model(dataframe, ['cls', 'background', 'race'], [], 'int')
-    wis_model, t = create_attr_model(dataframe, ['cls', 'background', 'race'], [], 'wis')
-    cha_model, t = create_attr_model(dataframe, ['cls', 'background', 'race'], [], 'cha')
+    str_model, col_names = create_attr_model(dataframe, ['cls', 'race'], [], 'str')
+    dex_model, t = create_attr_model(dataframe, ['cls', 'race'], [], 'dex')
+    con_model, t = create_attr_model(dataframe, ['cls', 'race'], [], 'con')
+    int_model, t = create_attr_model(dataframe, ['cls', 'race'], [], 'int')
+    wis_model, t = create_attr_model(dataframe, ['cls', 'race'], [], 'wis')
+    cha_model, t = create_attr_model(dataframe, ['cls', 'race'], [], 'cha')
 
     attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
 
@@ -450,12 +455,3 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
     return align_model, race_model, background_model, attr_models, col_names
 
 
-    
-
-
-
-    
-
-    
-
-    
