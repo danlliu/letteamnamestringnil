@@ -99,18 +99,19 @@ class CharacterSheet(models.Model):
 
 # Spells
 class Spell(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.CharField(max_length=4095)
     classes = models.CharField(max_length=255) # List stored as string. Use json.dumps
     level = models.IntegerField()
     components = models.CharField(max_length=255, default=None, blank=True, null=True) # List stored as string. Use json.dumps
     material = models.CharField(max_length = 511, default=None, blank=True, null=True)
     casting_time = models.CharField(max_length=255, default="1 action", blank=True, null=True)
-    die_sides = models.IntegerField(default=None, blank=True, null=True) # ex. 2d12: die_sides=12, die_count=2
+    die_sides = models.IntegerField(default=None, blank=True, null=True) # ex. 2d12+3: die_sides=12, die_count=2, extra_damage=3
     die_count = models.IntegerField(default=None, blank=True, null=True)
+    extra_damage = models.IntegerField(default=None, blank=True, null=True)
     damage_type = models.CharField(max_length=255, default=None, blank=True, null=True)
-    duration = models.IntegerField(default=0, blank=True) # instant can be duration=0, store as seconds
-    range = models.IntegerField(default=0, blank=True, null=True)
+    duration = models.CharField(max_length=255)
+    range = models.CharField(max_length=255, null=True)
     school = models.CharField(max_length=255)
     target = models.CharField(max_length=511, default=None, blank=True, null=True)
 
