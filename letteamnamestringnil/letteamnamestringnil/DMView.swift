@@ -84,14 +84,6 @@ struct DMView: View {
     }
 }
 
-struct Player: Hashable {
-    var name: String
-    var playerClass: String
-    var playerAlignment: String
-    var level: Int
-    //can add more as desired
-}
-
 struct NPC: Hashable {
     var name: String
     var npcClass: String

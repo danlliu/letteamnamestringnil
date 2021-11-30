@@ -7,33 +7,38 @@
 
 import SwiftUI
 
-struct LoginView: View {
-    @State private var username: String = ""
+struct HomeView: View {
+    
+    var username: String = "guest"
     
     var body: some View {
         VStack {
             
             Spacer()
-            
             Text("TCP")
                 .font(.largeTitle).bold() //TODO: custom fonts are a lot of work, not skeletal
-                .padding()
+                .padding(5)
             Text("Traveler Creation Partner")
+//                .font(.headline)
             Spacer() //TODO: I don't love this spacing
             
-            VStack {
-                Text("username:")
-                TextField("username", text: $username)
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.gray, lineWidth: 1)
-                    )
-            }
-            .frame(width: 300)
-            .padding()
+            Text("Welcome, \(username)!")
             
-            Spacer()
+            Spacer() //TODO: I don't love this spacing
+            
+//            VStack {
+//                Text("username:")
+//                TextField("username", text: $username)
+//                    .padding(10)
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 10)
+//                                .stroke(Color.gray, lineWidth: 1)
+//                    )
+//            }
+//            .frame(width: 300)
+//            .padding()
+            
+//            Spacer()
             
             NavigationLink(destination: CreateGameView()) {
                 Text("Create New Party")
@@ -60,8 +65,8 @@ struct LoginView: View {
     }
 }
 
-struct LoginView_Previews: PreviewProvider {
+struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        HomeView()
     }
 }
