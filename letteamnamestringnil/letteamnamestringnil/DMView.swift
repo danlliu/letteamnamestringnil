@@ -19,7 +19,7 @@ struct DMView: View {
             Text("Party code")
             Text(partyCode)
                 .font(.title2)
-            NavigationLink(destination: GenerateCharacter()) {
+            NavigationLink(destination: GenerateCharacter(partyCode: partyCode)) {
                 Text("Switch to player")
                     .foregroundColor(Color.white)
                     .padding()
@@ -32,7 +32,7 @@ struct DMView: View {
             List {
                 Section(header: Text("Players")) {
                     ForEach(players, id:\.self) { player in
-                        NavigationLink(destination: PlayerView()) { //TODO: need more info about where to go
+                        NavigationLink(destination: PlayerView()) {
                             VStack(alignment: .leading) {
                                 Text(player.name)
                                     .font(.headline)
@@ -62,7 +62,7 @@ struct DMView: View {
                         }
                     }
                 }
-                NavigationLink(destination: AddNPCView()) {
+                NavigationLink(destination: AddNPCView(partyCode: partyCode)) {
                     HStack {
                         Image(systemName: "plus.circle")
                         Text("Add NPC")

@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct AddNPCView: View {
+
+    var partyCode: String
+
+    init(partyCode: String) {
+        self.partyCode = partyCode
+    }
+
     @State private var type: String = ""
     @State private var name: String = ""
     @State private var playerClass: String = "Select a class"
@@ -99,7 +106,7 @@ struct AddNPCView: View {
             Text("or")
                 .padding()
             
-            NavigationLink(destination: ManualEntryView(name: name, playerClass: playerClass, playerAlignment: playerAlignment, isNPC: true)) {
+            NavigationLink(destination: CharacterSheetView(partyCode: partyCode, username: name, isNPC: true)) {
                 Text("Enter all information manually")
             }
             .disabled(blankEntry())

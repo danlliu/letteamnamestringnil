@@ -28,7 +28,8 @@ struct LoginView: View {
                     )
             }
             .padding()
-            
+
+            //TODO: Make this a button, use callback from model to redirect to DMView
             NavigationLink(destination: CreateGameView()) {
                 Text("Create New Party")
                     .foregroundColor(Color.white)

@@ -9,7 +9,15 @@ import SwiftUI
 
 struct PlayerDetailView: View {
     
-    @State private var partyCode = "E44W"
+    var partyCode = "E44W"
+    var username = "tuna_player_485"
+
+    init(partyCode: String, username: String) {
+        self.partyCode = partyCode
+        self.username = username
+
+        // TODO: fetch
+    }
     
     @State private var characterName = "Eaydan Falconmoon"
     @State private var className = "Fighter"
@@ -112,6 +120,6 @@ struct PlayerDetailView: View {
 
 struct PlayerDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        PlayerDetailView()
+        PlayerDetailView(partyCode: "E44W", username: "tuna_player_485")
     }
 }

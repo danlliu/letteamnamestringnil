@@ -9,6 +9,9 @@ import Combine
 import SwiftUI
 
 struct CharacterSheetView: View {
+
+    var partyCode: String
+    var username: String
     
     @State var csheet: CharacterSheet
     @State var xpText: String = ""
@@ -17,6 +20,12 @@ struct CharacterSheetView: View {
     @State var newSpellComponents: String = ""
     @State var newSpellLevel: Int = 0
     @State var newSpellDescription: String = ""
+
+    init(partyCode: String, username: String) {
+        self.partyCode = partyCode
+        self.username = username
+        // TODO: FETCH CSHEET
+    }
 
     var body: some View {
         VStack {
