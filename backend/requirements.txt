@@ -1,5 +1,6 @@
 django
 gunicorn
+jsonschema
 psycopg2-binary
 pandas
 tensorflow

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from jsonschema import validate
 import app.models
 
 def require_auth(func):
