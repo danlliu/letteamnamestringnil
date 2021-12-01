@@ -1,13 +1,18 @@
 import json
+import logging
 import random
 import string
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from jsonschema import validate
+from jsonschema import validate, ValidationError
 import app.models
+
+
+logger = logging.getLogger(__name__)
 
 def require_auth(func):
     def wrapper(*args, **kwargs):
@@ -33,7 +38,7 @@ skills = ["acrobatics", "animal_handling", "arcana", "athletics", "deception", "
 
 spells_same_attrs = ["spellcast_ability", "spell_save_dc", "spell_attack_bonus"]
 
-spell_same_attrs = ["name", "description", "classes", "level", "components", "material", "casting_time", "die_sides", "die_count", "damage_type", "duration", "range", "school", "target"]
+spell_same_attrs = ["name", "description", "classes", "level", "components", "material", "casting_time", "die_sides", "die_count", "extra_damage", "damage_type", "duration", "range", "school", "target"]
 
 character_sheet_schema = {
     "type": "object",
@@ -124,6 +129,7 @@ character_sheet_schema = {
                                     "type": "object",
                                     "properties": {
                                         "name": {"type": "string", "maxLength": 255},
+                                        "charges": {"type": "integer", "minimum": 0},
                                     },
                                     "required": ["name"],
                                 },
@@ -143,33 +149,44 @@ character_sheet_schema = {
 }
 
 def create_character_sheet(info):
-    validate(instance=info, schema=character_sheet_schema)
-    sheet = app.models.CharacterSheet()
-    for attr in same_attrs:
-        setattr(sheet, attr, info[attr])
-    for ability, val in info["abilities"].items():
-        setattr(sheet, f"{ability}_ability", val)
-    for ability, val in info["saving"].items():
-        setattr(sheet, f"{ability}_saving", val)
-    for skill, val in info["skills"].items():
-        setattr(sheet, f"{skill}_skill", val)
+    try:
+        validate(instance=info, schema=character_sheet_schema)
+    except ValidationError as e:
+        logger.warn(f"Got validation error: {e}")
+        return None
 
-    spellsheet = app.models.CharacterSpellSheet(character=sheet)
-    for attr in spells_same_attrs:
-        setattr(spellsheet, attr, info["spells"][attr])
-    for level, level_info in enumerate(info["spells"]["by_level"]):
-        if level == 10:
-            level = "x"
-        setattr(spellsheet, f"level_{level}_spellslots", level_info["slots"])
-        for spell_info in level_info["spells"]:
-            # TODO: Can this fail??
-            spell = app.models.Spell.objects.filter(name=spell_info["name"])
-            spellslot = app.models.CharacterSpellslot(character=sheet, spell=spell, charges=spell_info["charges"])
-            spellslot.save()
-    spellsheet.save()
+    with transaction.atomic():
+        sheet = app.models.CharacterSheet()
+        for attr in same_attrs:
+            setattr(sheet, attr, info[attr])
+        for ability, val in info["abilities"].items():
+            setattr(sheet, f"{ability}_ability", val)
+        for ability, val in info["saving"].items():
+            setattr(sheet, f"{ability}_saving", val)
+        for skill, val in info["skills"].items():
+            setattr(sheet, f"{skill}_skill", val)
+        sheet.save()
 
-    sheet.save()
-    return sheet
+        spellsheet = app.models.CharacterSpellSheet(character=sheet)
+        for attr in spells_same_attrs:
+            setattr(spellsheet, attr, info["spells"][attr])
+        for level, level_info in enumerate(info["spells"]["by_level"]):
+            if level == 10:
+                level = "x"
+            setattr(spellsheet, f"level_{level}_spellslots", level_info["slots"])
+        spellsheet.save()
+
+        for level, level_info in enumerate(info["spells"]["by_level"]):
+            for spell_info in level_info["spells"]:
+                spell = app.models.Spell.objects.filter(name=spell_info["name"])
+                if len(spell) != 1:
+                    transaction.rollback()
+                    return None
+                spell = spell[0]
+                spellslot = app.models.CharacterSpellslot(character=spellsheet, spell=spell, charges=spell_info["charges"])
+                spellslot.save()
+
+        return sheet
 
 def json_spell(spellslot):
     json = {}
@@ -189,9 +206,9 @@ def json_spells(sheet):
     json["by_level"] = []
     for level in range(0, 10):
         json["by_level"].append({ "slots": getattr(spellsheet, f"level_{level}_spellslots"), "spells": [] })
-    json["by_level"].append({ "slots": spellsheet.level_x_slots, "spells": [] })
+    json["by_level"].append({ "slots": spellsheet.level_x_spellslots, "spells": [] })
 
-    spells = app.models.CharacterSpellslot.objects.filter(character=sheet)
+    spells = app.models.CharacterSpellslot.objects.filter(character=spellsheet)
     for spell in spells:
         json["by_level"][spell.spell.level]["spells"].append(json_spell(spell))
     return json
@@ -323,9 +340,14 @@ def member_info(request, party_code, member_id):
             return HttpResponse(status=400)
         if "sheet" not in obj or "isDM" not in obj:
             return HttpResponse(status=400)
-        sheet = create_character_sheet(obj["sheet"])
-        if sheet is None:
-            return HttpResponse(status=400)
+        if obj["sheet"] is not None:
+            sheet = create_character_sheet(obj["sheet"])
+            if sheet is None:
+                return HttpResponse(status=400)
+        else:
+            sheet = None
+        if info.sheet is not None:
+            info.sheet.delete()
         info.sheet = sheet
         info.is_dm = bool(obj["isDM"])
         info.save()
