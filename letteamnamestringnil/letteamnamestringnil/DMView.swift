@@ -8,7 +8,14 @@
 import SwiftUI
 
 struct DMView: View {
-    @State private var partyCode: String = "placeholder"
+    @State var partyCode: String = "placeholder"
+    @State var username: String = "tuna_player_485"
+
+    init(partyCode: String, username: String) {
+        self.partyCode = partyCode
+        self.username = username
+    }
+
     @State private var players: [Player] = [Player(name: "bob", playerClass: "elf", playerAlignment: "chaotic good", level: 2),
                                             Player(name: "alice", playerClass: "dragonborn", playerAlignment: "chaotic evil", level: 7)]
     @State private var friendlys: [NPC] = [NPC(name: "Jinx", npcClass: "wizard", npcAlignment: "chaotic good", level: 5)]
@@ -19,7 +26,7 @@ struct DMView: View {
             Text("Party code")
             Text(partyCode)
                 .font(.title2)
-            NavigationLink(destination: GenerateCharacter(partyCode: partyCode)) {
+            NavigationLink(destination: PlayerView(partyCode: partyCode, username: username)) {
                 Text("Switch to player")
                     .foregroundColor(Color.white)
                     .padding()

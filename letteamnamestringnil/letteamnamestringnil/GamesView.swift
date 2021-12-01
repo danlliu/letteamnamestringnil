@@ -16,63 +16,68 @@ struct GamesView: View {
     
     init(username: String = "user") {
         self.username = username
-        // TODO: uncomment when getUserGames implemented
-        // self._games = getUserGames()
-        self._games = State(wrappedValue: [GameData(username: self.username, campaignName: "game1"), GameData(username: self.username, campaignName: "game2")])
     }
     
     var body: some View {
-        VStack {
-            Text("My Campaigns")
-                .font(.title2)
-                .padding()
-            List {
-                ForEach(games, id: \.self) { game in
-                    GameInfoView(gameCode: game.campaignName, username: game.username)
+        if #available(iOS 15.0, *) {
+            VStack {
+                Text("My Campaigns")
+                        .font(.title2)
+                        .padding()
+                List {
+                    ForEach(games, id: \.self) { game in
+                        GameInfoView(gameCode: game.code, username: username)
+                    }
                 }
+                        .listStyle(.plain)
+
+                Text("Enter a party code:")
+                        .font(.title2)
+                        .padding()
+
+                TextField("", text: $partyCode)
+                        .font(.title3)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.gray, lineWidth: 1)
+                        )
+
+                NavigationLink(destination: PlayerView(partyCode: partyCode, username: username)) {
+                    Text("Join New Party")
+                            .foregroundColor(Color.white)
+                            .padding()
+                }
+                        .simultaneousGesture(TapGesture().onEnded(joinPartyWithCode)) // TODO: what if party doesn't exist?
+                        .disabled(partyCode == "")
+                        .background((partyCode == "") ? Color.gray : Color.blue)
+                        .cornerRadius(10)
+                        .padding()
             }
-            .listStyle(.plain)
-            
-            Text("Enter a party code:")
-                .font(.title2)
-                .padding()
-            
-            TextField("", text: $partyCode)
-                .font(.title3)
-                .multilineTextAlignment(.center)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray, lineWidth: 1)
-                )
-            
-            NavigationLink(destination: PlayerView(partyCode: partyCode, username: username)) {
-                Text("Join New Party")
-                    .foregroundColor(Color.white)
                     .padding()
-            }
-            .simultaneousGesture(TapGesture().onEnded(joinPartyWithCode)) // TODO: what if party doesn't exist?
-            .disabled(partyCode == "")
-            .background((partyCode == "") ? Color.gray : Color.blue)
-            .cornerRadius(10)
-            .padding()
+                    .task {
+                        let games = await Store.shared.getParties()
+                        self.games = games.map {
+                            GameData(code: $0)
+                        }
+                    }
+        } else {
+            // Fallback on earlier versions
         }
-        .padding()
-//        .onAppear(perform: getUserGames)
-    }
-    
-    func getUserGames() {
-        //TODO: I am lonely, I need a database!
-        print("getting user games...")
-        
-        //retrieve user campaign data from database to populate Games list
-        //(see GameData struct below)
     }
     
     func joinPartyWithCode() {
         //TODO: I am lonely! I need a database!
         print("joining party with code...")
-        
+
+        if #available(iOS 15.0, *) {
+            Task {
+                await Store.shared.joinParty(code: partyCode)
+            }
+        } else {
+            // Fallback on earlier versions
+        }
         //check to see if party exists
         //if not, error
         //if party exists, add username record to party
@@ -82,32 +87,48 @@ struct GamesView: View {
 struct GameInfoView: View {
     @State var gameCode: String
     @State var username: String
+    @State var isDM: Bool
+    @State var goPlayer: Bool = false
+    @State var goDM: Bool = false
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(gameCode)
-                    .font(.headline)
-                Text(username)
-                    .font(.subheadline)
+        if #available(iOS 15.0, *) {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(gameCode)
+                            .font(.headline)
+                    Text(username)
+                            .font(.subheadline)
+                }
+                Spacer()
+                Button(action: joinGame) {
+                    Image(systemName: "x.square")
+                            .foregroundColor(Color.red)
+                }
+                NavigationLink(destination: PlayerView(partyCode: gameCode, username: username), isActive: $goPlayer) {
+                    EmptyView()
+                }.hidden()
+                NavigationLink(destination: DMView(partyCode: gameCode, username: username), isActive: $goDM) {
+                    EmptyView()
+                }.hidden()
             }
-            Spacer()
-            Button(action: deleteGame) {
-                Image(systemName: "x.square")
-                    .foregroundColor(Color.red)
-            }
+                    .task {
+                        let p = await Store.shared.getPlayerData(code: gameCode, player: username)
+                        self.isDM = p.isDM
+                    }
+        } else {
+            // Fallback on earlier versions
         }
     }
     
-    func deleteGame() {
+    func joinGame() {
         //TODO: remove player from game in database
         //if player created game, does whole game go away? backend problem
     }
 }
 
 struct GameData: Hashable {
-    var username: String
-    var campaignName: String
+    var code: String
     //TODO: can add other relevant info to show here
 }
 

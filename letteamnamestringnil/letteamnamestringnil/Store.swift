@@ -82,8 +82,12 @@ final class Store: ObservableObject {
         switch (response) {
         case .object (let obj):
             let isDM = obj["isDM"] as! Bool
+            if obj["sheet"] == nil {
+                return Player(username: player, isDM: isDM, csheet: nil)
+            }
             let csheet = obj["sheet"] as! [String:Any]
-            return Player(isDM: isDM, csheet: csheet)
+
+            return Player(username: player, isDM: isDM, csheet: CharacterSheet(json: csheet))
         default:
             exit(1)
         }
@@ -164,12 +168,14 @@ struct Party: Hashable {
 
 struct Player {
 
+    var username: String
     var isDM: Bool
-    var csheet: [String:Any]
+    var csheet: CharacterSheet?
     //can add more as desired
     
-    init(isDM: Bool,
-         csheet: [String:Any]) {
+    init(username: String, isDM: Bool,
+         csheet: CharacterSheet?) {
+        self.username = username
         self.isDM = isDM
         self.csheet = csheet
     }

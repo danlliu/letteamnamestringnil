@@ -9,7 +9,9 @@ import SwiftUI
 
 struct HomeView: View {
     
-    var username: String = "guest"
+    @State var username: String = "guest"
+    // https://stackoverflow.com/questions/57799548/navigationview-and-navigationlink-on-button-click-in-swiftui
+    @State var active = false
     
     var body: some View {
         VStack {
@@ -51,12 +53,21 @@ struct HomeView: View {
             }
             .padding()
 
-            //TODO: Make this a button, use callback from model to redirect to DMView
-            NavigationLink(destination: CreateGameView()) {
+            Button(action: {
+                if #available(iOS 15.0, *) {
+                    Task {
+                        await Store.shared.createParty()
+                        isActive = true
+                    }
+                }
+            }) {
                 Text("Create New Party")
                     .foregroundColor(Color.white)
                     .padding()
             }
+                    NavigationLink(destination: GamesView(), isActive: $active) {
+                        EmptyView()
+                    }.hidden()
             .frame(width: 220)
             .background(Color.blue)
             .cornerRadius(40)
@@ -71,8 +82,6 @@ struct HomeView: View {
             .cornerRadius(40)
             .padding(8)
         
-            
-            Spacer()
         }
     }
 }

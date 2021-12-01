@@ -12,25 +12,26 @@ struct CharacterSheetView: View {
 
     var partyCode: String
     var username: String
-    
+
     @State var csheet: CharacterSheet
     @State var xpText: String = ""
 
     @State var newSpellName: String = ""
-    @State var newSpellComponents: String = ""
-    @State var newSpellLevel: Int = 0
-    @State var newSpellDescription: String = ""
+    @State var newSpellCasts: Int = ""
 
     init(partyCode: String, username: String) {
         self.partyCode = partyCode
         self.username = username
-        // TODO: FETCH CSHEET
     }
 
     var body: some View {
         VStack {
             Text("Character Sheet")
                 .font(.largeTitle)
+
+            Button(action: { Store.shared.postPlayerData(code: partyCode, player: username, isDM: false, csheet: csheet) }) {
+                Text("Save changes")
+            }
 
             Group {
                 Divider()
@@ -199,7 +200,7 @@ struct CharacterSheetView: View {
                     }.padding(16)
                     VStack {
                         HStack {
-                            Text("Inspiration:")
+                            Text("Inspiration: \(csheet.stats.inspiration)")
                             Stepper {
                                 Text("\(csheet.stats.inspiration)")
                             } onIncrement: {
@@ -209,13 +210,13 @@ struct CharacterSheetView: View {
                             }
                         }
                         HStack {
-                            Text("Proficiency Bonus:")
+                            Text("Proficiency Bonus: \(csheet.stats.profBonus)")
                             Stepper {
-                                Text("\(csheet.stats.proficiencyBonus)")
+                                Text("\(csheet.stats.profBonus)")
                             } onIncrement: {
-                                csheet.stats.proficiencyBonus += 1
+                                csheet.stats.profBonus += 1
                             } onDecrement: {
-                                csheet.stats.proficiencyBonus -= 1
+                                csheet.stats.profBonus -= 1
                             }
                         }
 
@@ -317,7 +318,7 @@ struct CharacterSheetView: View {
                         }
 
                         HStack {
-                            Text("Passive Perception:")
+                            Text("Passive Perception: \(csheet.stats.perception)")
                             Stepper {
                                 Text("\(csheet.stats.perception)")
                             } onIncrement: {
@@ -330,18 +331,25 @@ struct CharacterSheetView: View {
 
                     VStack {
                         Stepper {
-                            Text("Max HP")
+                            Text("Max HP: \(csheet.stats.maxHP)")
                         } onIncrement: {
-                            csheet.stats.maxHp += 1
+                            csheet.stats.maxHP += 1
                         } onDecrement: {
-                            csheet.stats.maxHp -= 1
+                            csheet.stats.maxHP -= 1
                         }
                         Stepper {
-                            Text("Current HP")
+                            Text("Current HP: \(csheet.stats.curHP)")
                         } onIncrement: {
-                            csheet.stats.curHp += 1
+                            csheet.stats.curHP += 1
                         } onDecrement: {
-                            csheet.stats.curHp -= 1
+                            csheet.stats.curHP -= 1
+                        }
+                        Stepper {
+                            Text("Temporary HP: \(csheet.stats.tmpHP)")
+                        } onIncrement: {
+                            csheet.stats.curHP += 1
+                        } onDecrement: {
+                            csheet.stats.curHP -= 1
                         }
                     }.padding(16)
                 }
@@ -432,22 +440,17 @@ struct CharacterSheetView: View {
                     Divider()
                     Group {
                         TextField("Spell Name:", text: $newSpellName)
-                        TextField("Spell Components:", text: $newSpellComponents)
                         Stepper {
-                            Text("Spell Level: \(newSpellLevel)")
+                            Text("Spell Casts: \(newSpellCasts)")
                         } onIncrement: {
-                            newSpellLevel += 1
+                            newSpellCasts += 1
                         } onDecrement: {
-                            newSpellLevel -= 1
+                            newSpellCasts -= 1
                         }
-                        Text("Spell Description:")
-                        TextEditor(text: $newSpellDescription)
                         Button(action: {() in
                             csheet.spells.append(Spells(
                                     name: newSpellName,
-                                    components: newSpellComponents,
-                                    level: newSpellLevel,
-                                    description: newSpellDescription))
+                                    casts: newSpellCasts))
                         }){
                             Image(systemName: "plus.circle.fill")
                                     .foregroundColor(.green)
@@ -455,6 +458,10 @@ struct CharacterSheetView: View {
                     }
                 }
             }
+        }
+        .task {
+            let response = Store.shared.getPlayerData(code: partyCode, player: username)
+            csheet = response.csheet!
         }
     }
 }

@@ -15,10 +15,10 @@ struct PlayerDetailView: View {
     init(partyCode: String, username: String) {
         self.partyCode = partyCode
         self.username = username
-
-        // TODO: fetch
     }
-    
+
+
+    // TODO: get UI
     @State private var characterName = "Eaydan Falconmoon"
     @State private var className = "Fighter"
     @State private var race = "Human"
@@ -51,7 +51,7 @@ struct PlayerDetailView: View {
             Group {
                 VStack {
                     HStack {
-                        Text("Level 10 (1416 XP)")
+                        Text("Level \(level) (\(xp) XP)")
                     }
                     .padding()
                     HStack {
@@ -92,24 +92,13 @@ struct PlayerDetailView: View {
                             Text("CHR\t-5")
                         }
                     }
-                    HStack {
-                        Text("Add Skill")
-                        Spacer()
-                        Button(action: addSkill) {
-                            Image(systemName: "pencil")
-                                .foregroundColor(Color.red)
-                        }
-                    }
-                    HStack {
-                        Text("Add attack/spell")
-                        Spacer()
-                        Button(action: addSkill) {
-                            Image(systemName: "pencil")
-                                .foregroundColor(Color.red)
-                        }
-                    }
+                    NavigationLink(destination: )
                 }
             }
+        }
+        .task {
+            let response = await Store.shared.getPlayerData(code: partyCode, player: username)
+            // TODO use response.csheet
         }
     }
     

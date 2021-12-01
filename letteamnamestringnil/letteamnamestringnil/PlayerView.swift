@@ -10,20 +10,19 @@ import SwiftUI
 struct PlayerView: View {
     // partyCode, characterName, className, raceName, level, maxHP, tempHP, alignment, stats,
     
-    // TODO: add values from database
     @State var partyCode = "E44W"
     @State var username = "tuna_player_485"
     
 //    @EnvironmentObject var charSheet: CharacterSheet
 //    @EnvironmentObject var party: [IndividualPlayerView]
 
-// TODO: Fetch
-    @State private var players: [Player] = [
-        Player(name: "Escobert the Red", playerClass: "Fighter", playerAlignment: "LN", level: 8),
-        Player(name: "Sylva Nighthitll", playerClass: "Sorceress", playerAlignment: "CG", level: 6)
-    ]
+    // TODO: Fetch
+    @State private var players: [Player] = []
 
     // TODO: Fetch
+
+    @State private var hasCS = false
+
     @State private var friendlyNPCs: [Player] = []
     @State private var monsterNPCs: [Player] = []
     
@@ -45,93 +44,118 @@ struct PlayerView: View {
     }
     
     var body: some View {
-        VStack {
-            Group {
-                Text("Party Code".uppercased())
-                    .font(.caption)
-                    .foregroundColor(.gray)
-                Text(partyCode)
-                    .padding(.bottom)
-            }
-                
-            Group {
-                Text(characterName)
-                    .font(.title)
-                Text("Level \(level) \(race), \("CG")") // TODO: alignment # to string
-                    .font(.title2)
-                Text("HP \(tempHP)/\(maxHP)")
-                    .padding(.bottom)
-                    .font(.title3)
-            }
-            
-            Group {
-                HStack {
-                    Spacer()
-                    VStack {
-                        Text("Proficiency")
+        if #available(iOS 15.0, *) {
+            VStack {
+                Group {
+                    Text("Party Code".uppercased())
                             .font(.caption)
-                        Text(prof)
-                    }
-                    VStack {
-                        Text("Speed")
-                            .font(.caption)
-                        Text(speed)
-                    }
-                    VStack {
-                        Text("Initiative")
-                            .font(.caption)
-                        Text(initiative)
-                    }
-                    VStack {
-                        Text("Armor Class")
-                            .font(.caption)
-                        Text(ac)
-                    }
-                    Spacer()
+                            .foregroundColor(.gray)
+                    Text(partyCode)
+                            .padding(.bottom)
                 }
-                HStack {
-                    Spacer()
-                    NavigationLink(destination: PlayerDetailView(partyCode: partyCode, username: username)) {
-                        Text("View")
-                            .padding(8)
-                            .background(Color.blue)
-                    }
-                    NavigationLink(destination: CharacterSheetView(partyCode: partyCode, username: username)) {
-                        Text("Edit")
-                            .padding(8)
-                            .background(Color.blue)
-                    }
-                    Spacer()
+                if (hasCS) {
+                Group {
+                    Text(characterName)
+                            .font(.title)
+                    Text("Level \(level) \(race), \("CG")") // TODO: alignment # to string
+                            .font(.title2)
+                    Text("HP \(tempHP)/\(maxHP)")
+                            .padding(.bottom)
+                            .font(.title3)
                 }
-                    .padding()
-                    .foregroundColor(Color.white)
-                    .cornerRadius(4)
+
+                Group {
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Text("Proficiency")
+                                    .font(.caption)
+                            Text(prof)
+                        }
+                        VStack {
+                            Text("Speed")
+                                    .font(.caption)
+                            Text(speed)
+                        }
+                        VStack {
+                            Text("Initiative")
+                                    .font(.caption)
+                            Text(initiative)
+                        }
+                        VStack {
+                            Text("Armor Class")
+                                    .font(.caption)
+                            Text(ac)
+                        }
+                        Spacer()
+                    }
+                    HStack {
+                        Spacer()
+                        NavigationLink(destination: PlayerDetailView(partyCode: partyCode, username: username)) {
+                            Text("View")
+                                    .padding(8)
+                                    .background(Color.blue)
+                        }
+                        NavigationLink(destination: CharacterSheetView(partyCode: partyCode, username: username)) {
+                            Text("Edit")
+                                    .padding(8)
+                                    .background(Color.blue)
+                        }
+                        Spacer()
+                    }
+                            .padding()
+                            .foregroundColor(Color.white)
+                            .cornerRadius(4)
+                }
+                }
+
+                List {
+                    Section(header: ListHeader(title: "Players")) {
+                        ForEach(players, id: \.username) { player in
+                            IndividualPlayerView(player: player)
+                        }
+                    }
+                    Section(header: ListHeader(title: "Friendly NPCs")) {
+                        if friendlyNPCs.isEmpty {
+                            Text("No friendly NPCs")
+                        }
+                        ForEach(friendlyNPCs, id: \.username) { friendly in
+                            IndividualPlayerView(player: friendly)
+                        }
+                    }
+
+                    //                Section(header: ListHeader(title: "Monster NPCs")) {
+                    //                    if monsterNPCs.isEmpty {
+                    //                        Text("No monster NPCs")
+                    //                    }
+                    //                    ForEach(monsterNPCs, id: \.self) { monster in
+                    //                        IndividualPlayerView(player: monster)
+                    //                    }
+                    //                }
+                }
+                        .listStyle(GroupedListStyle())
             }
-            List {
-                Section(header: ListHeader(title: "Players")) {
-                    ForEach(players, id: \.self) { player in
-                        IndividualPlayerView(player: player)
+                    .task {
+                        let response = await Store.shared.getPlayerData(code: partyCode, player: username)
+                        if let cs = response.csheet {
+                            hasCS = true
+                            characterName = cs.basicInfo.name
+                            className = cs.basicInfo.className
+                            race = cs.basicInfo.race
+                            level = cs.stats.level
+                            maxHP = cs.stats.maxHP
+                            tempHP = cs.stats.curHP
+                            prof = "\(cs.stats.profBonus)"
+                            speed = "\(cs.stats.speed)"
+                            initiative = "\(cs.stats.initiative)"
+                            ac = "\(cs.stats.ac)"
+                            alignment = cs.basicInfo.alignment
+                        } else {
+                            hasCS = false
+                        }
                     }
-                }
-                Section(header: ListHeader(title: "Friendly NPCs")) {
-                    if friendlyNPCs.isEmpty {
-                        Text("No friendly NPCs")
-                    }
-                    ForEach(friendlyNPCs, id: \.self) { friendly in
-                        IndividualPlayerView(player: friendly)
-                    }
-                }
-                
-//                Section(header: ListHeader(title: "Monster NPCs")) {
-//                    if monsterNPCs.isEmpty {
-//                        Text("No monster NPCs")
-//                    }
-//                    ForEach(monsterNPCs, id: \.self) { monster in
-//                        IndividualPlayerView(player: monster)
-//                    }
-//                }
-            }
-            .listStyle(GroupedListStyle())
+        } else {
+            // Fallback on earlier versions
         }
     }
 }
@@ -143,7 +167,7 @@ struct IndividualPlayerView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(player.name)
+                Text(player.username)
                 Text("Lvl \(player.level), \(player.playerClass), \(player.playerAlignment)")
                     .font(.subheadline)
                     .foregroundColor(.gray)

@@ -10,9 +10,11 @@ import SwiftUI
 struct GenerateCharacter: View {
 
     var partyCode: String
+    var username: String
 
-    init(partyCode: String) {
+    init(partyCode: String, username: String) {
         self.partyCode = partyCode
+        self.username = username
     }
 
     @State private var name: String = ""
