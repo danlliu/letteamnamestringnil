@@ -53,6 +53,12 @@ def fill_in_character(c):
     race_abil = json.load(rf)
     rf.close()
 
+    rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "wikidot_all_spells.json")), "r", encoding="utf-8")
+    all_spells = json.load(rf)
+    rf.close()
+
+    c['clss'] = c['cls']
+
     c['level'] = 1
     c['experience_points'] = 0
     c['inspiration'] = 0
@@ -190,12 +196,32 @@ def fill_in_character(c):
     c['spells'] = {
         "spellcast_ability": long_name(cls_traits[c['cls']]["spellcasting_mod"]),
         "spell_save_dc": 8 + to_score(c[cls_traits[c['cls']]["spellcasting_mod"]]) + c['proficiency_bonus'],
-        "spell_attack_bonus": to_score(c[cls_traits[c['cls']]["spellcasting_mod"]]) + c['proficiency_bonus'],        
+        "spell_attack_bonus": to_score(c[cls_traits[c['cls']]["spellcasting_mod"]]) + c['proficiency_bonus'],
+        "by_level": []        
     }
 
+    for idx, n in enumerate(cls_traits[c['cls']]["spell_slots"]):
+        slot = {
+            "slots": n,
+            "spells": []
+        }
+        if n > 0:
+            lvl = "Level " + str(int(idx))
+            if lvl == "Level 0":
+                lvl = "Cantrip"
+
+            spell_list = list(all_spells[c['cls'].title()][lvl].keys())
+            spells = rand_from_arr(spell_list, n)
+            for s in spells:
+                sp = {
+                    "name": s,
+                    "charges": random.randint(1, 5)
+                }
+                slot["spells"].append(sp)
+        c['spells']['by_level'].append(slot)
 
 
-    c['clss'] = c['cls']
+    
     del c['cls']
 
     del c['str']
@@ -207,12 +233,6 @@ def fill_in_character(c):
 
 
     return c
-
-
-
-
-
-
 
 
 
@@ -247,7 +267,7 @@ def generate_character(cls, alignment):
         character['alignment'] = dl.alignment_list[(int(np.argmax(align_pred)))]
     
     race_pred = models.get_cat_prediction(race_model, character)
-    print(race_pred)
+    # print(race_pred)
     race_pred = list(race_pred[0])
     max_val = max(list(race_pred))
     max_idx = list(race_pred).index(max_val)
