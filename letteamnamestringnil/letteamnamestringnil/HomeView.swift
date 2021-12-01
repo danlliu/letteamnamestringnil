@@ -65,12 +65,13 @@ struct HomeView: View {
                     .foregroundColor(Color.white)
                     .padding()
             }
-                    NavigationLink(destination: GamesView(username: username), isActive: $active) {
-                        EmptyView()
-                    }.hidden()
             .frame(width: 220)
             .background(Color.blue)
             .cornerRadius(40)
+            .padding(8)
+                    NavigationLink(destination: GamesView(username: username), isActive: $active) {
+                        EmptyView()
+                    }.hidden()
 
             NavigationLink(destination: GamesView(username: username)) {
                 Text("Join Game")

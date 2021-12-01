@@ -135,9 +135,3 @@ struct GameData: Hashable {
     var code: String
     //TODO: can add other relevant info to show here
 }
-
-struct GamesView_Previews: PreviewProvider {
-    static var previews: some View {
-        GamesView(username: "tuna_player_485")
-    }
-}

@@ -21,6 +21,19 @@ class CharacterSheet: ObservableObject {
     @Published var notes: String = ""
 
 //    @Published var hitDice: [Int: Int]
+    
+    init () {
+        self.basicInfo = PlayerBasicInfo(characterInfo: [:])
+        self.stats = PlayerStats(stats: [:])
+        self.skills = Skills(sk: [:])
+        self.attacks = ""
+        self.spellcasting = [:]
+        self.spells = []
+        self.inventory = PlayerInventory(equipment: "", darkGifts: "", treasure: "")
+        self.background = PlayerBackgroundInfo(background: "", backstory: "", proficiencies: "", features: "", featuresAndTraits: "", allies: "", personality: Personality(json: [:]))
+        self.notes = ""
+        
+    }
 
     init(json: [String: Any]) {
 
@@ -71,11 +84,10 @@ class CharacterSheet: ObservableObject {
             features: json["features"] as! String,
             featuresAndTraits: json["features_and_traits"] as! String,
                 allies: json["allies"] as! String,
-            personality: personality,
-            appearance: json["appearance"] as! [String: Any]
+            personality: personality
         )
         self.notes = json["notes"] as! String
-        self.spellcasting = json["spellcasting"] as! [String: Any]
+        self.spellcasting = json["spells"] as! [String: Any]
         self.spells = []
 
         for level in spellsData {
@@ -102,12 +114,12 @@ struct PlayerBasicInfo: Hashable {
     var alignment: Int
 
     init(characterInfo: [String: Any]) {
-        self.name      = characterInfo["name"] as! String
-        self.className = characterInfo["clss"] as! String
-        self.race      = characterInfo["race"] as! String
-        self.alignment = characterInfo["alignment"] as! Int
-        self.isNPC = characterInfo["isNPC"] as! Bool
-        self.isFriendly = characterInfo["isFriendly"] as! Bool
+        self.name      = characterInfo["name"] as? String ?? ""
+        self.className = characterInfo["clss"] as? String ?? ""
+        self.race      = characterInfo["race"] as? String ?? ""
+        self.alignment = characterInfo["alignment"] as? Int ?? 0
+        self.isNPC = characterInfo["isNPC"] as? Bool ?? false
+        self.isFriendly = characterInfo["isFriendly"] as? Bool ?? false
     }
 }
 
@@ -128,73 +140,72 @@ struct PlayerStats: Hashable {
     var deathSaveFailure: Int
 
     init(stats: [String: Any]) {
-        ac = stats["ac"] as! Int
-        initiative = stats["initiative"] as! Int
-        maxHP = stats["maxHP"] as! Int
-        curHP = stats["curHP"] as! Int
-        tmpHP = stats["tmpHP"] as! Int
-        hitDice = stats["hitDice"] as! Int
-        level = stats["level"] as! Int
-        xp = stats["xp"] as! Int
-        speed = stats["speed"] as! Int
-        abilityScores = stats["abilityScores"] as! [String:Int]
-        perception = stats["perception"] as! Int
-        inspiration = stats["inspiration"] as! Int
-        profBonus = stats["profBonus"] as! Int
-        savingThrows = SavingThrows(st: stats["savingThrows"] as! [String:Bool])
-        deathSaveSuccess = stats["deathSaveSuccess"] as! Int
-        deathSaveFailure = stats["deathSaveFailure"] as! Int
+        ac = stats["ac"] as? Int ?? 0
+        initiative = stats["initiative"] as? Int ?? 0
+        maxHP = stats["maxHP"] as? Int ?? 0
+        curHP = stats["curHP"] as? Int ?? 0
+        tmpHP = stats["tmpHP"] as? Int ?? 0
+        hitDice = stats["hitDice"] as? Int ?? 0
+        level = stats["level"] as? Int ?? 0
+        xp = stats["xp"] as? Int ?? 0
+        speed = stats["speed"] as? Int ?? 0
+        abilityScores = stats["abilityScores"] as? [String:Int] ?? [:]
+        perception = stats["perception"] as? Int ?? 0
+        inspiration = stats["inspiration"] as? Int ?? 0
+        profBonus = stats["profBonus"] as? Int ?? 0
+        savingThrows = SavingThrows(st: stats["savingThrows"] as? [String:Bool] ?? [:])
+        deathSaveSuccess = stats["deathSaveSuccess"] as? Int ?? 0
+        deathSaveFailure = stats["deathSaveFailure"] as? Int ?? 0
     }
 
 }
 
 struct Spells: Hashable {
-    var name: String
-    var charges: Int
+    var name: String = ""
+    var charges: Int = 0
 }
 
 
 struct PlayerBackgroundInfo {
-    var background: String
-    var backstory: String
-    var proficiencies: String
-    var features: String
-    var featuresAndTraits: String
-    var allies: String
-    var personality: Personality
-    var appearance: [String: Any]
+    var background: String = ""
+    var backstory: String = ""
+    var proficiencies: String = ""
+    var features: String = ""
+    var featuresAndTraits: String = ""
+    var allies: String = ""
+    var personality: Personality = Personality(json: [:])
 }
 
 struct Personality: Hashable {
-    var traits: String?
-    var ideals: String?
-    var bonds: String?
-    var flaws: String?
+    var traits: String
+    var ideals: String
+    var bonds: String
+    var flaws: String
 
     init(json: [String: Any]) {
-        traits = json["traits"] as? String
-        ideals = json["ideals"] as? String
-        bonds  = json["bonds"] as? String
-        flaws  = json["flaws"] as? String
+        traits = json["traits"] as? String ?? ""
+        ideals = json["ideals"] as? String ?? ""
+        bonds  = json["bonds"] as? String ?? ""
+        flaws  = json["flaws"] as? String ?? ""
     }
 }
 
 struct PlayerInventory: Hashable {
-    var equipment: String
-    var darkGifts: String
-    var treasure: String
+    var equipment: String = ""
+    var darkGifts: String = ""
+    var treasure: String = ""
 }
 
 struct SavingThrows: Hashable {
     var str, dex, con, int, wis, char: Bool
 
     init(st: [String: Bool]) {
-        str = st["strength"]!
-        dex = st["dexterity"]!
-        con = st["constitution"]!
-        int = st["intelligence"]!
-        wis = st["wisdom"]!
-        char = st["charisma"]!
+        str = st["strength"] ?? false
+        dex = st["dexterity"] ?? false
+        con = st["constitution"] ?? false
+        int = st["intelligence"] ?? false
+        wis = st["wisdom"] ?? false
+        char = st["charisma"] ?? false
     }
 }
 
@@ -204,23 +215,23 @@ struct Skills: Hashable {
         religion, sleightOfHand, stealth, survival: Bool
 
     init(sk: [String: Bool]) {
-        acrobatics = sk["acrobatics"]!
-        animalHandling = sk["animal_handling"]!
-        arcana = sk["arcana"]!
-        athletics = sk["athletics"]!
-        deception = sk["deception"]!
-        history = sk["history"]!
-        insight = sk["insight"]!
-        intimidation = sk["intimidation"]!
-        investigation = sk["investigation"]!
-        medicine = sk["medicine"]!
-        nature = sk["nature"]!
-        perception = sk["perception"]!
-        performance = sk["performance"]!
-        persuasion = sk["persuasion"]!
-        religion = sk["religion"]!
-        sleightOfHand = sk["sleight_of_hand"]!
-        stealth = sk["stealth"]!
-        survival = sk["survival"]!
+        acrobatics = sk["acrobatics"] ?? false
+        animalHandling = sk["animal_handling"] ?? false
+        arcana = sk["arcana"] ?? false
+        athletics = sk["athletics"] ?? false
+        deception = sk["deception"] ?? false
+        history = sk["history"] ?? false
+        insight = sk["insight"] ?? false
+        intimidation = sk["intimidation"] ?? false
+        investigation = sk["investigation"] ?? false
+        medicine = sk["medicine"] ?? false
+        nature = sk["nature"] ?? false
+        perception = sk["perception"] ?? false
+        performance = sk["performance"] ?? false
+        persuasion = sk["persuasion"] ?? false
+        religion = sk["religion"] ?? false
+        sleightOfHand = sk["sleight_of_hand"] ?? false
+        stealth = sk["stealth"] ?? false
+        survival = sk["survival"] ?? false
     }
 }

@@ -117,17 +117,17 @@ final class Store: ObservableObject {
     }
 
     @MainActor
-    func getNPCData(code: String, npcid: String) async -> Player {
+    func getNPCData(code: String, npcid: String) async -> NPC {
         let response = await apiRequest(path: "parties/\(code)/members/\(npcid)/", method: "GET", body: nil)
         switch (response) {
         case .object (let obj):
             let isDM = false
             if obj["sheet"] == nil {
-                return Player(username: npcid, isDM: isDM, csheet: nil)
+                return NPC(npcid: npcid, csheet: nil)
             }
             let csheet = obj["sheet"] as! [String:Any]
 
-            return Player(username: npcid, isDM: isDM, csheet: CharacterSheet(json: csheet))
+            return NPC(npcid: npcid, csheet: CharacterSheet(json: csheet))
         default:
             exit(1)
         }

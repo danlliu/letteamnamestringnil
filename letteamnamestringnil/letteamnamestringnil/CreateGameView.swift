@@ -65,7 +65,7 @@ struct CreateGameView: View {
             Spacer()
             
             //TODO: GenerateCharacter need arguments
-            NavigationLink(destination: (role == "DM") ? AnyView(DMView(partyCode: partyCode, username: username)) : AnyView(GenerateCharacter())) {
+            NavigationLink(destination: (role == "DM") ? AnyView(DMView(partyCode: partyCode, username: username)) : AnyView(GenerateCharacter(partyCode: partyCode, username: username))) {
                 Text("Create Party")
                     .foregroundColor(Color.white)
                     .padding()
