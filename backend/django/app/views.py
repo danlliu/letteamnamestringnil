@@ -400,9 +400,9 @@ def npc_info(request, party_code, npc_id):
     })
 
 @csrf_exempt
-@require_http_methods(["POST"])
+@require_http_methods(["GET", "POST"])
 @require_auth
-def create_npc(request, party_code):
+def party_npcs(request, party_code):
     parties = app.models.Party.objects.filter(code=party_code)
     if len(parties) != 1:
         return HttpResponse(status=403)
@@ -411,9 +411,12 @@ def create_npc(request, party_code):
     if not in_party(party, request.user):
         return HttpResponse(status=403)
 
-    info = app.models.NPCInfo.objects.create(party=party, sheet=None)
-    return JsonResponse({
-        "id": info.id,
-        "sheet": info.sheet,
-    })
+    if request.method == "POST":
+        info = app.models.NPCInfo.objects.create(party=party, sheet=None)
+        return JsonResponse({
+            "id": info.id,
+        })
+    else:
+        npcs = app.models.NPCInfo.objects.all().filter(party=party)
+        return JsonResponse([npc.id for npc in npcs], safe=False)
 
