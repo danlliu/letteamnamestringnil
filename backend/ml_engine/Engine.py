@@ -17,6 +17,7 @@ from tensorflow.keras import layers
 
 import GameData as gd
 import CharacterData as cd
+import CharacterGeneration as gen
 import MLModels as models
 
 
@@ -192,6 +193,18 @@ def load_dataframe(keras_mode, reload_dataframe):
         df.loc[df['alignment'] == "chaoic good", 'alignment'] = "chaotic good"
         df.loc[df['alignment'] == "true neutral", 'alignment'] = "neutral"
         df.loc[df['alignment'] == 'lawful neurtral', 'alignment'] = "lawful neutral"
+        df.loc[df['cls'] == 'tieflign', 'cls'] = 'tiefling'
+        df.loc[df['cls'] == 'kolbold', 'cls'] = 'kobold'
+        df.loc[df['cls'] == 'ghallanda halfling', 'cls'] = 'ghostwise halfling'
+        df.loc[df['cls'] == "jorasco halfling", 'cls'] = 'lightfoot halfling'
+        df.loc[df['cls'] == 'cannith human', 'cls'] = 'human'
+        df.loc[df['cls'] == 'orien human', 'cls'] = 'human'
+        df.loc[df['cls'] == 'variant human', 'cls'] = 'human'
+        df.loc[df['cls'] == 'half orc', 'cls'] = 'half-orc'
+        df.loc[df['cls'] == 'finding half-orc', 'cls']  = 'half-orc'
+        df.loc[df['cls'] == 'lyrandar half-elf', 'cls'] = 'half-elf'
+        df.loc[df['cls'] == 'medani half-elf', 'cls'] = 'half-elf'
+        df.loc[df['cls'] == 'eladrin elf', 'cls'] = 'high elf'
 
         str_cols = ["cls", "background", "race", "alignment"]
         for tag in str_cols:
@@ -261,54 +274,10 @@ def get_models():
 
 
 ## -- CHARACTER GENERATOR -- ##
+# moved to CharacterGeneration.py
 
 def generate_character(cls, alignment=''):
-    fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
-    dl = cd.DataLists()
-    dl.load_from_file(fpath)
-    align_model, race_model, background_model, attr_models, col_names = get_models()
-
-    character = {}
-
-    if alignment:
-        character = {
-            'cls': cls,
-            'alignment': alignment
-        }
-
-    else:
-        character = {
-            'cls': cls
-        }
-
-        align_pred = models.get_cat_prediction(align_model, character)
-        # print(align_pred)
-
-        character['alignment'] = dl.alignment_list[(int(np.argmax(align_pred)))]
-    
-    race_pred = models.get_cat_prediction(race_model, character)
-    # print(race_pred)
-    character['race'] = dl.race_list[(int(np.argmax(race_pred)))]
-
-    
-
-    bg_pred = models.get_cat_prediction(background_model, character)
-    # print(bg_pred)
-    character['background'] = dl.background_list[(int(np.argmax(bg_pred)))]
-
-
-    attr_preds = models.get_all_attr_predictions(attr_models, character, col_names)
-
-    character['str'] = attr_preds[0]
-    character['dex'] = attr_preds[1]
-    character['con'] = attr_preds[2]
-    character['int'] = attr_preds[3]
-    character['wis'] = attr_preds[4]
-    character['cha'] = attr_preds[5]
-
-    return character
-
-
+    return gen.generate_character(cls, alignment)
 
 
 ## -- TRAINING ENGINE -- ##

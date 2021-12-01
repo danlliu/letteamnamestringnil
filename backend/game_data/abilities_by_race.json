@@ -1,0 +1,211 @@
+{
+    "dragonborn": [
+        "Draconic Ancestry",
+        "Breath Weapon",
+        "Damage Resistance"
+    ],
+    "dwarf": [
+        "Darkvision",
+        "Dwarven Resilience",
+        "Dwarven Combat Training",
+        "Stonecunning"
+    ],
+    "hill dwarf": [
+        "Darkvision",
+        "Dwarven Resilience",
+        "Dwarven Combat Training",
+        "Stonecunning",
+        "Dwarven Toughness"
+    ],
+    "mountain dwarf": [
+        "Darkvision",
+        "Dwarven Resilience",
+        "Dwarven Combat Training",
+        "Stonecunning",
+        "Dwarven Armor Training"
+    ],
+    "underdark dwarf": [
+        "Darkvision",
+        "Dwarven Resilience",
+        "Dwarven Combat Training",
+        "Stonecunning",
+        "Superior Darkvision",
+        "Duergar Resilience",
+        "Duergar Magic",
+        "Sunlight Sensitivity"
+    ],
+    "elf": [
+        "Darkvision",
+        "Fey Ancestry",
+        "Trance"
+    ],
+    "dark elf": [
+        "Darkvision",
+        "Fey Ancestry",
+        "Trance",
+        "Drow Magic",
+        "Drow Weapon Training",
+        "Keen Senses",
+        "Superior Darkvision",
+        "Sunlight Sensitivity"
+    ],
+    "high elf": [
+        "Darkvision",
+        "Fey Ancestry",
+        "Trance",
+        "Keen Senses",
+        "Cantrip",
+        "Elf Weapon Training",
+        "Extra Language"
+    ],
+    "sea elf": [
+        "Darkvision",
+        "Fey Ancestry",
+        "Trance",
+        "Keen Senses",
+        "Sea Elf Training",
+        "Child of the Sea",
+        "Friend of the Sea",
+        "Languages"
+    ],
+    "shadar-kai": [
+        "Darkvision",
+        "Fey Ancestry",
+        "Trance",
+        "Keen Senses",
+        "Necrotic Resistance",
+        "Blessing of the Raven Queen"
+    ],
+    "wood elf": [
+        "Darkvision",
+        "Fey Ancestry",
+        "Trance",
+        "Keen Senses",
+        "Elf Weapon Training",
+        "Fleet of Foot",
+        "Mask of the Wild"
+    ],
+    "gnome": [
+        "Darkvision",
+        "Gnome Cunning"
+    ],
+    "forest gnome": [
+        "Darkvision",
+        "Gnome Cunning",
+        "Natural Illusionist",
+        "Speak With Small Beasts"
+    ],
+    "rock gnome": [
+        "Darkvision",
+        "Gnome Cunning",
+        "Artificer's Lore",
+        "Tinker"
+    ],
+    "svirfneblin": [
+        "Darkvision",
+        "Gnome Cunning",
+        "Superior Darkvision",
+        "Stone Camouflage"
+    ],
+    "half-elf": [
+        "Darkvision",
+        "Fey Ancestry",
+        "Half-Elf Versatility"
+    ],
+    "halfling": [
+        "Lucky",
+        "Brave",
+        "Nimble"
+    ],
+    "lightfoot halfling": [
+        "Lucky",
+        "Brave",
+        "Nimble",
+        "Naturally Stealthy"
+    ],
+    "stout halfling": [
+        "Lucky",
+        "Brave",
+        "Nimble",
+        "Stout Resilience"
+    ],
+    "ghostwise halfling": [
+        "Lucky",
+        "Brave",
+        "Nimble",
+        "Silent Speech"
+    ],
+    "half-orc": [
+        "Darkvision",
+        "Menacing",
+        "Relentless Endurance",
+        "Savage Attacks"
+    ],
+    "human": [
+        "Ability Score Increase"
+    ],
+    "tiefling": [
+        "Darkvision",
+        "Hellish Resistance"
+    ],
+    "bloodline of asmodeus": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Infernal Legacy"
+    ],
+    "bloodline of baalzebul": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Legacy of Maladomini"
+    ],
+    "bloodline of dispater": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Legacy of Dis"
+    ],
+    "bloodline of fierna": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Legacy of Phlegethos"
+    ],
+    "bloodline of glasya": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Legacy of Malbolge"
+    ],
+    "bloodline of levistus": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Legacy of Stygia"
+    ],
+    "bloodline of mammon": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Legacy of Minauros"
+    ],
+    "bloodline of mephistopheles": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Legacy of Cania"
+    ],
+    "bloodline of zariel": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Legacy of Avernus"
+    ],
+    "devil's tongue": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Devil's Tongue"
+    ],
+    "hellfire": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Hellfire"
+    ],
+    "winged": [
+        "Darkvision",
+        "Hellish Resistance",
+        "Winged"
+    ]
+}
