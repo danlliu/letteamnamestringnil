@@ -23,7 +23,8 @@ urlpatterns = [
     path('parties/', views.parties, name='parties'),
     path('parties/join/', views.join_party, name='join_party'),
     path('parties/<str:party_code>/', views.party_info, name='party_info'),
-    path('parties/<str:party_code>/members/<str:member_id>/', views.member_info, name='member_info'),
+    path('parties/<str:party_code>/members/<int:member_id>/', views.member_info, name='member_info'),
     path('parties/<str:party_code>/npcs/', views.party_npcs, name='party_npcs'),
-    path('parties/<str:party_code>/npcs/<str:npc_id>/', views.npc_info, name='npc_info'),
+    path('parties/<str:party_code>/npcs/<int:npc_id>/', views.npc_info, name='npc_info'),
+    path('parties/<str:party_code>/spells/', views.party_spells, name='party_spells'), 
 ]
