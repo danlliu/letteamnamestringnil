@@ -420,3 +420,31 @@ def party_npcs(request, party_code):
         npcs = app.models.NPCInfo.objects.all().filter(party=party)
         return JsonResponse([npc.id for npc in npcs], safe=False)
 
+@csrf_exempt
+@require_http_methods(["GET"])
+@require_auth
+def party_spells(request, party_code):
+    parties = app.models.Party.objects.filter(code=party_code)
+    if len(parties) != 1: 
+        return HttpResponse(status=403)
+    party = parties[0]
+
+    if not in_party(party, request.user):
+        return HttpResponse(status=403)
+
+    user_party_info = app.models.UserPartyInfo.objects.filter(party=party_code)
+
+    result = []
+    for userinfo in user_party_info:
+        username = userinfo.user
+        sheet = userinfo.sheet
+        dm = userinfo.is_dm
+        
+        cur = {}
+        if sheet and not dm:
+            cur['user'] = username
+            cur['spells'] = json_spells(sheet)
+            result.append(cur)
+
+    return JsonResponse({result})
+
