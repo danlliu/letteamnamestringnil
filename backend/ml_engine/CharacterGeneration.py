@@ -240,6 +240,8 @@ def fill_in_character(c):
                 slot["spells"].append(sp)
         c['spells']['by_level'].append(slot)
 
+    c['spells']['by_level'].append({"slots": 0, "spells": []})
+
 
     
     del c['cls']
