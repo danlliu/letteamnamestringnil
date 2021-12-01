@@ -1,0 +1,762 @@
+{
+    "barbarian": {
+        "hit dice": 12,
+        "proficiencies": [
+            "light armor",
+            "medium armor",
+            "shields",
+            "simple weapons",
+            "martial weapons"
+        ],
+        "saving_throws": [
+            "str",
+            "con"
+        ],
+        "skills": [
+            "animal handling",
+            "athletics",
+            "intimidation",
+            "nature",
+            "perception",
+            "survival"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "greataxe",
+                "martial melee weapon"
+            ],
+            [
+                "handaxe *2",
+                "simple weapon"
+            ],
+            [
+                "explorer's pack"
+            ],
+            [
+                "javelin *4"
+            ]
+        ],
+        "features": [
+            "rage",
+            "unarmored defense"
+        ],
+        "spell_slots": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "str"
+    },
+    "bard": {
+        "hit dice": 8,
+        "proficiencies": [
+            "light armor",
+            "simple weapons",
+            "hand crossbows",
+            "longswords",
+            "rapiers",
+            "shortswords",
+            "musical instruments"
+        ],
+        "saving_throws": [
+            "dex",
+            "cha"
+        ],
+        "skills": [
+            "Acrobatics",
+            "Animal Handling",
+            "Arcana",
+            "Athletics",
+            "Deception",
+            "History",
+            "Insight",
+            "Intimidation",
+            "Investigation",
+            "Medicine",
+            "Nature",
+            "Perception",
+            "Performance",
+            "Persuasion",
+            "Religion",
+            "Sleight Of Hand",
+            "Stealth",
+            "Survival"
+        ],
+        "num_skills": 3,
+        "starting_inv": [
+            [
+                "rapier",
+                "longsword",
+                "simple weapon"
+            ],
+            [
+                "diplomat's pack",
+                "entertainer's pack"
+            ],
+            [
+                "lute",
+                "musical instrument"
+            ],
+            [
+                "leather armor"
+            ],
+            [
+                "dagger"
+            ]
+        ],
+        "features": [
+            "spellcasting",
+            "bardic inspiration"
+        ],
+        "spell_slots": [
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "cha"
+    },
+    "cleric": {
+        "hit dice": 8,
+        "proficiencies": [
+            "light armor",
+            "medium armor",
+            "shields",
+            "simple weapons"
+        ],
+        "saving_throws": [
+            "wis",
+            "cha"
+        ],
+        "skills": [
+            "History",
+            "Insight",
+            "Medicine",
+            "Persuasion",
+            "Religion"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "mace"
+            ],
+            [
+                "scale mail",
+                "leather armor"
+            ],
+            [
+                "light crossbow"
+            ],
+            [
+                "bolts *20"
+            ],
+            [
+                "priest's pack",
+                "explorer's pack"
+            ],
+            [
+                "shield"
+            ],
+            [
+                "holy symbol"
+            ]
+        ],
+        "features": [
+            "spellcasting",
+            "divine domain"
+        ],
+        "spell_slots": [
+            3,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "wis"
+    },
+    "druid": {
+        "hit dice": 8,
+        "proficiencies": [
+            "light armor",
+            "medium armor",
+            "shields",
+            "clubs",
+            "daggers",
+            "darts",
+            "javelins",
+            "maces",
+            "quarterstaffs",
+            "scimitars",
+            "sickles",
+            "slings",
+            "spears",
+            "herbalism kit"
+        ],
+        "saving_throws": [
+            "wis",
+            "int"
+        ],
+        "skills": [
+            "Arcana",
+            "Animal Handling",
+            "Insight",
+            "Medicine",
+            "Nature",
+            "Perception",
+            "Religion",
+            "Survival"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "wooden shield",
+                "simple weapon"
+            ],
+            [
+                "scimitar",
+                "simple melee weapon"
+            ],
+            [
+                "leather armor"
+            ],
+            [
+                "explorer's pack"
+            ],
+            [
+                "druidic focus"
+            ]
+        ],
+        "features": [
+            "spellcasting",
+            "druidic"
+        ],
+        "spell_slots": [
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "wis"
+    },
+    "fighter": {
+        "hit dice": 10,
+        "proficiencies": [
+            "all armor",
+            "shields",
+            "simple weapons",
+            "martial weapons"
+        ],
+        "saving_throws": [
+            "str",
+            "con"
+        ],
+        "skills": [
+            "Acrobatics",
+            "Animal Handling",
+            "Athletics",
+            "History",
+            "Insight",
+            "Intimidation",
+            "Perception",
+            "Survival"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "chain mail"
+            ],
+            [
+                "martial weapon",
+                "martial weapon"
+            ],
+            [
+                "light crossbow"
+            ],
+            [
+                "bolts *20"
+            ],
+            [
+                "explorer's pack",
+                "dungeoneer's pack"
+            ]
+        ],
+        "features": [
+            "fighting style",
+            "second wind"
+        ],
+        "spell_slots": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "str"
+    },
+    "monk": {
+        "hit dice": 8,
+        "proficiencies": [
+            "simple weapons",
+            "shortswords"
+        ],
+        "saving_throws": [
+            "str",
+            "dex"
+        ],
+        "skills": [
+            "Acrobatics",
+            "Athletics",
+            "History",
+            "Insight",
+            "Religion",
+            "Stealth"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "shortsword"
+            ],
+            [
+                "explorer's pack",
+                "dungeoneer's pack"
+            ],
+            [
+                "darts *10"
+            ]
+        ],
+        "features": [
+            "unarmored defense",
+            "martial arts"
+        ],
+        "spell_slots": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "str"
+    },
+    "paladin": {
+        "hit dice": 10,
+        "proficiencies": [
+            "all armor",
+            "shields",
+            "simple weapons",
+            "martial weapons"
+        ],
+        "saving_throws": [
+            "wis",
+            "cha"
+        ],
+        "skills": [
+            "Athletics",
+            "Insight",
+            "Intimidation",
+            "Medicine",
+            "Persuasion",
+            "Religion"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "martial weapon"
+            ],
+            [
+                "shield"
+            ],
+            [
+                "javelins *5"
+            ],
+            [
+                "explorer's pack",
+                "priest's pack"
+            ],
+            [
+                "chain mail"
+            ],
+            [
+                "holy symbol"
+            ]
+        ],
+        "features": [
+            "divine sense",
+            "lay on hands"
+        ],
+        "spell_slots": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "cha"
+    },
+    "ranger": {
+        "hit dice": 10,
+        "proficiencies": [
+            "light armor",
+            "medium armor",
+            "shields",
+            "simple weapons",
+            "martial weapons"
+        ],
+        "saving_throws": [
+            "str",
+            "dex"
+        ],
+        "skills": [
+            "Acrobatics",
+            "Animal Handling",
+            "Athletics",
+            "Insight",
+            "Investigation",
+            "Nature",
+            "Perception",
+            "Stealth",
+            "Survival"
+        ],
+        "num_skills": 3,
+        "starting_inv": [
+            [
+                "scale mail",
+                "leather armor"
+            ],
+            [
+                "shortsword"
+            ],
+            [
+                "shortsword"
+            ],
+            [
+                "longbow"
+            ],
+            [
+                "quiver"
+            ],
+            [
+                "arrows *20"
+            ],
+            [
+                "explorer's pack",
+                "dungeoneer's pack"
+            ]
+        ],
+        "features": [
+            "favored enemy",
+            "natural explorer"
+        ],
+        "spell_slots": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "wis"
+    },
+    "rogue": {
+        "hit dice": 8,
+        "proficiencies": [
+            "light armor",
+            "simple weapons",
+            "hand crossbows",
+            "longswords",
+            "rapiers",
+            "shortswords",
+            "thieves' tools"
+        ],
+        "saving_throws": [
+            "dex",
+            "int"
+        ],
+        "skills": [
+            "Acrobatics",
+            "Athletics",
+            "Deception",
+            "Insight",
+            "Intimidation",
+            "Investigation",
+            "Perception",
+            "Performance",
+            "Persuasion",
+            "Sleight of Hand",
+            "Stealth"
+        ],
+        "num_skills": 4,
+        "starting_inv": [
+            [
+                "leather armor"
+            ],
+            [
+                "shortsword",
+                "rapier"
+            ],
+            [
+                "shortbow"
+            ],
+            [
+                "quiver"
+            ],
+            [
+                "arrows *20"
+            ],
+            [
+                "burglar's pack",
+                "explorer's pack",
+                "dungeoneer's pack"
+            ],
+            [
+                "dagger"
+            ],
+            [
+                "dagger"
+            ],
+            [
+                "thieves' tools"
+            ]
+        ],
+        "features": [
+            "expertise",
+            "sneak attack",
+            "thieves' cant"
+        ],
+        "spell_slots": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "dex"
+    },
+    "sorcerer": {
+        "hit dice": 6,
+        "proficiencies": [
+            "daggers",
+            "darts",
+            "slings",
+            "quarterstaffs",
+            "light crossbows"
+        ],
+        "saving_throws": [
+            "con",
+            "cha"
+        ],
+        "skills": [
+            "Arcana",
+            "Deception",
+            "Insight",
+            "Intimidation",
+            "Persuasion",
+            "Religion"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "simple weapon"
+            ],
+            [
+                "arcane focus",
+                "component pouch"
+            ],
+            [
+                "dungeoneer's pack",
+                "explorer's pack"
+            ],
+            [
+                "dagger"
+            ],
+            [
+                "dagger"
+            ]
+        ],
+        "features": [
+            "spellcasting",
+            "sorcerous origin"
+        ],
+        "spell_slots": [
+            4,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "cha"
+    },
+    "warlock": {
+        "hit dice": 8,
+        "proficiencies": [
+            "light armor",
+            "simple weapons"
+        ],
+        "saving_throws": [
+            "wis",
+            "cha"
+        ],
+        "skills": [
+            "Arcana",
+            "Deception",
+            "History",
+            "Intimidation",
+            "Investigation",
+            "Nature",
+            "Religion"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "simple weapon"
+            ],
+            [
+                "simple weapon"
+            ],
+            [
+                "arcane focus",
+                "component pouch"
+            ],
+            [
+                "scholar's pack",
+                "explorer's pack"
+            ],
+            [
+                "leather armor"
+            ],
+            [
+                "dagger"
+            ],
+            [
+                "dagger"
+            ]
+        ],
+        "features": [
+            "otherworldly patron",
+            "pact magic"
+        ],
+        "spell_slots": [
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "cha"
+    },
+    "wizard": {
+        "hit dice": 6,
+        "proficiencies": [
+            "daggers",
+            "darts",
+            "slings",
+            "quarterstaffs",
+            "light crossbows"
+        ],
+        "saving_throws": [
+            "int",
+            "wis"
+        ],
+        "skills": [
+            "Arcana",
+            "History",
+            "Insight",
+            "Investigation",
+            "Medicine",
+            "Religion"
+        ],
+        "num_skills": 2,
+        "starting_inv": [
+            [
+                "quarterstaff",
+                "dagger"
+            ],
+            [
+                "arcane focus",
+                "component pouch"
+            ],
+            [
+                "scholar's pack",
+                "explorer's pack"
+            ],
+            [
+                "spellbook"
+            ]
+        ],
+        "features": [
+            "spellcasting",
+            "arcane recovery"
+        ],
+        "spell_slots": [
+            3,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "spellcasting_mod": "int"
+    }
+}
