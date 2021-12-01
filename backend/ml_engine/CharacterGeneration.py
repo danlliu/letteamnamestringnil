@@ -75,7 +75,7 @@ def fill_in_character(c):
     c['speed'] = 30
     c['height'] = "6 ft"
     c['weight'] = "220 lbs"
-    
+
     for r, val in race_traits.items():
         if r == c['race']:
             c['speed'] = val['Speed']
@@ -146,7 +146,7 @@ def fill_in_character(c):
             if b in wep and b not in atks: 
                 atks.append(b)
 
-    c['attacks'] = atks
+    c['attacks'] = arr_to_str(atks)
                 
     c['abilities'] = {
         "strength": c['str'],
