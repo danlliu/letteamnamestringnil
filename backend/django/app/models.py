@@ -14,6 +14,10 @@ class UserPartyInfo(models.Model):
     class Meta:
         unique_together = [["user", "party"]]
 
+class NPCInfo(models.Model):
+    party = models.ForeignKey("Party", on_delete=models.CASCADE)
+    sheet = models.ForeignKey("CharacterSheet", null=True, on_delete=models.CASCADE)
+
 class CharacterSheet(models.Model):
     name = models.CharField(max_length=255)
     clss = models.CharField(max_length=255)

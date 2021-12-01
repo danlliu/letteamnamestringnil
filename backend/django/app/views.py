@@ -148,11 +148,14 @@ character_sheet_schema = {
     "minProperties": 43,
 }
 
-def create_character_sheet(info):
+def create_character_sheet(info, is_npc):
     try:
         validate(instance=info, schema=character_sheet_schema)
     except ValidationError as e:
         logger.warn(f"Got validation error: {e}")
+        return None
+
+    if info["is_npc"] != is_npc:
         return None
 
     with transaction.atomic():
@@ -341,7 +344,7 @@ def member_info(request, party_code, member_id):
         if "sheet" not in obj or "isDM" not in obj:
             return HttpResponse(status=400)
         if obj["sheet"] is not None:
-            sheet = create_character_sheet(obj["sheet"])
+            sheet = create_character_sheet(obj["sheet"], is_npc=False)
             if sheet is None:
                 return HttpResponse(status=400)
         else:
@@ -356,3 +359,61 @@ def member_info(request, party_code, member_id):
         "isDM": info.is_dm,
         "sheet": json_character_sheet(info.sheet) if info.sheet is not None else None,
     })
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+@require_auth
+def npc_info(request, party_code, npc_id):
+    parties = app.models.Party.objects.filter(code=party_code)
+    if len(parties) != 1:
+        return HttpResponse(status=403)
+    party = parties[0]
+
+    if not in_party(party, request.user):
+        return HttpResponse(status=403)
+
+    info = app.models.NPCInfo.objects.filter(party=party, id=npc_id)
+    if len(info) != 1:
+        return HttpResponse(status=400)
+    info = info[0]
+
+    if request.method == "POST":
+        try:
+            obj = json.loads(request.body)
+        except json.JSONDecodeError:
+            return HttpResponse(status=400)
+        if "sheet" not in obj:
+            return HttpResponse(status=400)
+        if obj["sheet"] is not None:
+            sheet = create_character_sheet(obj["sheet"], is_npc=True)
+            if sheet is None:
+                return HttpResponse(status=400)
+        else:
+            sheet = None
+        if info.sheet is not None:
+            info.sheet.delete()
+        info.sheet = sheet
+        info.save()
+
+    return JsonResponse({
+        "sheet": json_character_sheet(info.sheet) if info.sheet is not None else None,
+    })
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@require_auth
+def create_npc(request, party_code):
+    parties = app.models.Party.objects.filter(code=party_code)
+    if len(parties) != 1:
+        return HttpResponse(status=403)
+    party = parties[0]
+
+    if not in_party(party, request.user):
+        return HttpResponse(status=403)
+
+    info = app.models.NPCInfo.objects.create(party=party, sheet=None)
+    return JsonResponse({
+        "id": info.id,
+        "sheet": info.sheet,
+    })
+
