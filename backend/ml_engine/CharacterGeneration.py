@@ -46,7 +46,7 @@ def fill_in_character(c):
     f.close()
 
 
-
+    c['name'] = ''
     c['clss'] = c['cls']
 
     c['level'] = 1
@@ -138,6 +138,8 @@ def fill_in_character(c):
         for wep in weapon_types.values():
             if b in wep and b not in atks: 
                 atks.append(b)
+
+    c['attacks'] = atks
                 
     c['abilities'] = {
         "strength": c['str'],
