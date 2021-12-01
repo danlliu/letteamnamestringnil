@@ -18,26 +18,53 @@ final class Store: ObservableObject {
 //    @Published private var user = Player()
 //    private let nFields = Mirror(reflecting: Chatt()).children.count
     
-    private let serverUrl = "https://3.139.99.112/"
+    private let serverUrl = "https://ec2-3-139-99-112.us-east-2.compute.amazonaws.com/"
 
     @MainActor
-    func login(username: String, password: String) async {
-        _ = await apiRequest(path: "users/", method: "POST", body: ["username": username, "password": password])
+    func getID() async -> Int {
+        let response = await apiRequest(path: "user/", method: "GET", body: nil)
+        switch (response) {
+        case .object (let obj):
+            print(obj)
+            return obj["id"] as! Int
+        default:
+            print(-1)
+            return -1
+        }
+    }
+    
+    @MainActor
+    func login(username: String, password: String) async -> Int {
+        print("login: \(username) / \(password)")
+        let response = await apiRequest(path: "user/", method: "POST", body: ["username": username, "password": password])
+        switch (response) {
+        case .object (let obj):
+            return obj["id"] as! Int
+        default:
+            return -1
+        }
     }
 
     @MainActor
-    func createAccount(username: String, password: String) async {
-        _ = await apiRequest(path: "users/", method: "PUT", body: ["username": username, "password": password])
+    func createAccount(username: String, password: String) async -> Int {
+        print("create: \(username) / \(password)")
+        let response = await apiRequest(path: "user/", method: "PUT", body: ["username": username, "password": password])
+        switch (response) {
+        case .object (let obj):
+            return obj["id"] as! Int
+        default:
+            return -1
+        }
     }
 
     @MainActor
     func getUser() async -> PlayerAccountInfo {
-        let response = await apiRequest(path: "users/", method: "GET", body: nil)
+        let response = await apiRequest(path: "user/", method: "GET", body: nil)
         switch (response) {
         case .object (let obj):
             return PlayerAccountInfo(id: obj["id"] as! Int, username: obj["username"] as! String)
         default:
-            exit(1) // shouldn't get here
+            return PlayerAccountInfo(id: -1, username: "")
         }
     }
 
@@ -45,10 +72,10 @@ final class Store: ObservableObject {
     func getParties() async -> [String] {
         let response = await apiRequest(path: "parties/", method: "GET", body: nil)
         switch (response) {
-        case .array (let arr):
+        case .arrayStr (let arr):
             return arr;
         default:
-            exit(1)
+            return []
         }
     }
 
@@ -68,82 +95,87 @@ final class Store: ObservableObject {
         switch (response) {
         case .object (let obj):
             let code = obj["code"] as! String
-            let playersObj = obj["players"] as! [[String:Any]]
+            let playersObj = obj["members"] as! [[String:Any]]
             let players = playersObj.map { PlayerAccountInfo(id: $0["id"] as! Int, username: $0["username"] as! String) }
             return Party(code: code, players: players)
         default:
-            exit(1)
+            return Party(code: "Could not find party", players: [])
         }
     }
 
     @MainActor
-    func getNPCs(code: String) async -> [String] {
+    func getNPCs(code: String) async -> [Int] {
         let response = await apiRequest(path: "parties/\(code)/npcs/", method: "GET", body: nil)
         switch (response) {
         case .array (let arr):
             return arr
         default:
-            exit(1)
+            return []
         }
     }
 
     @MainActor
-    func makeNPC(code: String, sheet: CharacterSheet?) async {
+    func makeNPC(code: String, sheet: CharacterSheet?) async -> Int {
         let response = await apiRequest(path: "parties/\(code)/npcs/", method: "POST", body: nil)
         switch (response) {
         case .object (let obj):
-            let id = obj["id"] as! String
+            let id = obj["id"] as! Int
             await postNPCData(code: code, npcid: id, csheet: sheet)
+            return id
         default:
             exit(1)
         }
     }
 
     @MainActor
-    func getPlayerData(code: String, player: String) async -> Player {
-        let response = await apiRequest(path: "parties/\(code)/members/\(player)/", method: "GET", body: nil)
+    func getPlayerData(code: String, playerId: Int) async -> Player {
+        let response = await apiRequest(path: "parties/\(code)/members/\(playerId)/", method: "GET", body: nil)
         switch (response) {
         case .object (let obj):
             let isDM = obj["isDM"] as! Bool
             if obj["sheet"] == nil {
-                return Player(username: player, isDM: isDM, csheet: nil)
+                return Player(id: playerId, isDM: isDM, csheet: nil)
             }
-            let csheet = obj["sheet"] as! [String:Any]
+            let csheet = obj["sheet"] as? [String:Any] ?? nil
 
-            return Player(username: player, isDM: isDM, csheet: CharacterSheet(json: csheet))
+            if csheet == nil {
+                return Player(id: playerId, isDM: isDM, csheet: nil)
+            }
+            return Player(id: playerId, isDM: isDM, csheet: CharacterSheet(json: csheet!))
         default:
             exit(1)
         }
     }
 
     @MainActor
-    func getNPCData(code: String, npcid: String) async -> NPC {
-        let response = await apiRequest(path: "parties/\(code)/members/\(npcid)/", method: "GET", body: nil)
+    func getNPCData(code: String, npcid: Int) async -> NPC {
+        let response = await apiRequest(path: "parties/\(code)/npcs/\(npcid)/", method: "GET", body: nil)
         switch (response) {
         case .object (let obj):
-            let isDM = false
-            if obj["sheet"] == nil {
+            let csheet = obj["sheet"] as? [String:Any] ?? nil
+            if csheet == nil {
                 return NPC(npcid: npcid, csheet: nil)
             }
-            let csheet = obj["sheet"] as! [String:Any]
-
-            return NPC(npcid: npcid, csheet: CharacterSheet(json: csheet))
+            return NPC(npcid: npcid, csheet: CharacterSheet(json: csheet!))
         default:
             exit(1)
         }
     }
 
     @MainActor
-    func postPlayerData(code: String, player: String, isDM: Bool, csheet: CharacterSheet?) async {
-        _ = await apiRequest(path: "parties/\(code)/members/\(player)/", method: "POST", body: [
+    func postPlayerData(code: String, playerId: Int, isDM: Bool, csheet: CharacterSheet?) async {
+        _ = await apiRequest(path: "parties/\(code)/members/\(playerId)/", method: "POST", body: [
             "isDM": isDM,
-            "sheet": csheet!.toDictionary()
+            "sheet": csheet?.toDictionary()
         ])
     }
 
     @MainActor
-    func postNPCData(code: String, npcid: String, csheet: CharacterSheet?) async {
-        _ = await apiRequest(path: "parties/\(code)/npcs/\(npcid)", method: "POST", body: [
+    func postNPCData(code: String, npcid: Int, csheet: CharacterSheet?) async {
+        if csheet == nil {
+            return
+        }
+        _ = await apiRequest(path: "parties/\(code)/npcs/\(npcid)/", method: "POST", body: [
             "sheet": csheet!.toDictionary()
         ])
     }
@@ -151,7 +183,8 @@ final class Store: ObservableObject {
     // inspired by https://stackoverflow.com/questions/40034034/swift-function-returning-two-different-types/40034233
     enum ApiResult {
         case object([String:Any])
-        case array([String])
+        case array([Int])
+        case arrayStr([String])
     }
     
     @MainActor
@@ -177,13 +210,16 @@ final class Store: ObservableObject {
 
             if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
                 print("getData: HTTP STATUS: \(httpStatus.statusCode)")
+                print("path = \(path), method = \(method)")
                 return ApiResult.array([])
             }
 
             if let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [String:Any] {
                 return ApiResult.object(jsonObj)
-            } else if let jsonArr = try? JSONSerialization.jsonObject(with: data) as? [String] {
+            } else if let jsonArr = try? JSONSerialization.jsonObject(with: data) as? [Int] {
                 return ApiResult.array(jsonArr)
+            } else if let jsonArr = try? JSONSerialization.jsonObject(with: data) as? [String] {
+                return ApiResult.arrayStr(jsonArr)
             } else {
                 print("getData: failed JSON deserialization")
                 return ApiResult.array([])
@@ -215,14 +251,16 @@ struct Party: Hashable {
 
 struct Player {
 
+    var id: Int
     var username: String
     var isDM: Bool
     var csheet: CharacterSheet?
     //can add more as desired
     
-    init(username: String, isDM: Bool,
+    init(id: Int, isDM: Bool,
          csheet: CharacterSheet?) {
-        self.username = username
+        self.id = id
+        self.username = csheet?.basicInfo.name ?? ""
         self.isDM = isDM
         self.csheet = csheet
     }
@@ -231,7 +269,7 @@ struct Player {
 
 struct NPC {
     
-    var npcid: String
+    var npcid: Int
     var csheet: CharacterSheet?
 
 }

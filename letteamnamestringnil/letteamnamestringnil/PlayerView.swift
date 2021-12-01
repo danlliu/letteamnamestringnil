@@ -23,8 +23,8 @@ struct PlayerView: View {
 
     @State private var hasCS = false
 
-    @State private var friendlyNPCs: [Player] = []
-    @State private var monsterNPCs: [Player] = []
+    @State private var friendlyNPCs: [NPC] = []
+    @State private var monsterNPCs: [NPC] = []
     
     @State private var characterName = "Eaydan Falconmoon"
     @State private var className = "Fighter"
@@ -111,7 +111,7 @@ struct PlayerView: View {
 
                 List {
                     Section(header: ListHeader(title: "Players")) {
-                        ForEach(players, id: \.username) { player in
+                        ForEach(players, id: \.id) { player in
                             IndividualPlayerView(player: player)
                         }
                     }
@@ -119,8 +119,8 @@ struct PlayerView: View {
                         if friendlyNPCs.isEmpty {
                             Text("No friendly NPCs")
                         }
-                        ForEach(friendlyNPCs, id: \.username) { friendly in
-                            IndividualPlayerView(player: friendly)
+                        ForEach(friendlyNPCs, id: \.npcid) { friendly in
+                            IndividualNPCView(npc: friendly)
                         }
                     }
 
@@ -136,7 +136,7 @@ struct PlayerView: View {
                         .listStyle(GroupedListStyle())
             }
                     .task {
-                        let response = await Store.shared.getPlayerData(code: partyCode, player: username)
+                        let response = await Store.shared.getPlayerData(code: partyCode, playerId: Store.shared.getID())
                         if let cs = response.csheet {
                             hasCS = true
                             characterName = cs.basicInfo.name
@@ -169,6 +169,27 @@ struct IndividualPlayerView: View {
             VStack(alignment: .leading) {
                 Text(player.username)
                 Text("Lvl \(player.csheet!.stats.level), \(player.csheet!.basicInfo.className), \(player.csheet!.basicInfo.alignment)")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+//            NavigationLink(destination: PlayerView()) {
+//                Text("View")
+//                .foregroundColor(Color.white)
+//                .background(Color.blue)
+//            }
+        }
+    }
+}
+
+struct IndividualNPCView: View {
+    
+    var npc: NPC
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(npc.csheet!.basicInfo.name)
+                Text("Lvl \(npc.csheet!.stats.level), \(npc.csheet!.basicInfo.className), \(npc.csheet!.basicInfo.alignment)")
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }

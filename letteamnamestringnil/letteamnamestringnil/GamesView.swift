@@ -57,6 +57,10 @@ struct GamesView: View {
             }
                     .padding()
                     .task {
+                        if await Store.shared.getID() == -1 {
+                            await Store.shared.createAccount(username: username, password: username)
+                            await Store.shared.login(username: username, password: username)
+                        }
                         let games = await Store.shared.getParties()
                         self.games = games.map {
                             GameData(code: $0)
@@ -114,7 +118,7 @@ struct GameInfoView: View {
                 }.hidden()
             }
                     .task {
-                        let p = await Store.shared.getPlayerData(code: gameCode, player: username)
+                        let p = await Store.shared.getPlayerData(code: gameCode, playerId: Store.shared.getID())
                         self.isDM = p.isDM
                     }
         } else {

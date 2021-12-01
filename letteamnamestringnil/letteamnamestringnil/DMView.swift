@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct DMView: View {
-    @State var partyCode: String = "placeholder"
-    @State var username: String = "tuna_player_485"
+    @State var partyCode: String
+    @State var username: String
 
     init(partyCode: String, username: String) {
         self.partyCode = partyCode
@@ -19,6 +19,8 @@ struct DMView: View {
     @State private var players: [Player] = []
     @State private var friendlys: [NPC] = []
     @State private var monsters: [NPC] = []
+    
+    @State var goSwitch = false
 
     var body: some View {
         if #available(iOS 15.0, *) {
@@ -26,7 +28,7 @@ struct DMView: View {
                 Text("Party code")
                 Text(partyCode)
                     .font(.title2)
-                NavigationLink(destination: PlayerView(partyCode: partyCode, username: username)) {
+                Button(action: { Task { await switchRoles(); goSwitch = true } }) {
                     Text("Switch to player")
                         .foregroundColor(Color.white)
                         .padding()
@@ -36,6 +38,10 @@ struct DMView: View {
                 .cornerRadius(10)
                 .padding()
                 
+                NavigationLink(destination: PlayerView(partyCode: partyCode, username: username), isActive: $goSwitch) {
+                    EmptyView()
+                }.hidden()
+                
                 List {
                     Section(header: Text("Widgets")) {
                         WidgetSubview(title: "HP", color: .pink, render: {cs in
@@ -43,13 +49,15 @@ struct DMView: View {
                         }, players: players)
                     }
                     Section(header: Text("Players")) {
-                        ForEach(players, id: \.username) { (player: Player) in
-                            NavigationLink(destination: PlayerView(partyCode: partyCode, username: player.username)) {
-                                VStack(alignment: .leading) {
-                                    Text(player.username)
-                                        .font(.headline)
-                                    Text("Lvl. \(player.csheet!.stats.level) \(player.csheet!.basicInfo.className)")
-                                        .font(.subheadline)
+                        ForEach(players, id: \.id) { (player: Player) in
+                            if !player.isDM && player.csheet != nil {
+                                NavigationLink(destination: PlayerView(partyCode: partyCode, username: player.username)) {
+                                    VStack(alignment: .leading) {
+                                        Text(player.username)
+                                            .font(.headline)
+                                        Text("Lvl. \(player.csheet!.stats.level) \(player.csheet!.basicInfo.className)")
+                                            .font(.subheadline)
+                                    }
                                 }
                             }
                         }
@@ -74,7 +82,7 @@ struct DMView: View {
                             }
                         }
                     }
-                    NavigationLink(destination: AddNPCView(partyCode: partyCode)) {
+                    NavigationLink(destination: AddNPCView(partyCode: partyCode, username: username)) {
                         HStack {
                             Image(systemName: "plus.circle")
                             Text("Add NPC")
@@ -84,18 +92,23 @@ struct DMView: View {
                 .listStyle(.grouped)
             }
             .task {
+                players = []
+                friendlys = []
+                monsters = []
                 let party = await Store.shared.getPartyInfo(code: partyCode)
                 for player in party.players {
-                    let p = await Store.shared.getPlayerData(code: partyCode, player: player.username)
+                    let p = await Store.shared.getPlayerData(code: partyCode, playerId: player.id)
                     players.append(p)
                 }
                 let npcs = await Store.shared.getNPCs(code: partyCode)
                 for npc in npcs {
                     let n = await Store.shared.getNPCData(code: partyCode, npcid: npc)
-                    if n.csheet!.basicInfo.isFriendly {
-                        friendlys.append(n)
-                    } else {
-                        monsters.append(n)
+                    if n.csheet != nil {
+                        if n.csheet!.basicInfo.isFriendly {
+                            friendlys.append(n)
+                        } else {
+                            monsters.append(n)
+                        }
                     }
                 }
             }
@@ -108,7 +121,11 @@ struct DMView: View {
     func switchRoles() async {
         //TODO: backend logic to turn a DM into a player
         print("switching roles...")
-        let response = await Store.shared.getPlayerData(code: partyCode, player: username)
-        await Store.shared.postPlayerData(code: partyCode, player: username, isDM: false, csheet: response.csheet)
+        let response = await Store.shared.getPlayerData(code: partyCode, playerId: Store.shared.getID())
+        if response.csheet != nil {
+            await Store.shared.postPlayerData(code: partyCode, playerId: Store.shared.getID(), isDM: false, csheet: response.csheet)
+        } else {
+            await Store.shared.postPlayerData(code: partyCode, playerId: Store.shared.getID(), isDM: false, csheet: CharacterSheet())
+        }
     }
 }

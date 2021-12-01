@@ -10,9 +10,11 @@ import SwiftUI
 struct AddNPCView: View {
 
     var partyCode: String
+    var username: String
 
-    init(partyCode: String) {
+    init(partyCode: String, username: String) {
         self.partyCode = partyCode
+        self.username = username
     }
 
     @State private var type: String = ""
@@ -21,10 +23,13 @@ struct AddNPCView: View {
     @State private var playerAlignment: String = "Select an alignment"
     @State private var level: Int = 0
     
+    @State private var goCSV = false
+    @State private var newid = 0
+    
     private var classes = ["Aarakocra", "Bugbear", "Centaur", "Dragonborn", "Dwarf", "Elf", "Gensai", "Goblin", "Human", "Minotaur", "Orc", "Tortle",
                             "Vedalken", "Warforged"]
-    private var alignments = ["Chaotic good", "Neutral good", "Lawful good", "Chaotic neutral", "Neutral neutral", "Lawful neutral", "Chaotic evil",
-                                "Neutral evil", "Lawful evil"]
+    private var alignments = ["Lawful good", "Neutral good", "Chaotic good", "Lawful neutral", "True neutral", "Chaotic neutral", "Lawful evil",
+                                "Neutral evil", "Chaotic evil"]
     
     private var buttonPadding: CGFloat = 10
     
@@ -93,7 +98,7 @@ struct AddNPCView: View {
             
             Spacer()
             
-            NavigationLink(destination: PlayerView()) {
+            NavigationLink(destination: DMView(partyCode: partyCode, username: username)) {
                 Text("Generate Random Character")
                     .foregroundColor(Color.white)
                     .padding()
@@ -106,12 +111,28 @@ struct AddNPCView: View {
             Text("or")
                 .padding()
             
-            NavigationLink(destination: CharacterSheetView(partyCode: partyCode, username: name)) {
+            Button(action: { if #available(iOS 15.0, *) {
+                Task {
+                    let ncs = CharacterSheet(isNPC: true)
+                    ncs.basicInfo.name = name
+                    ncs.basicInfo.className = playerClass
+                    ncs.basicInfo.alignment = alignments.firstIndex(of: playerAlignment)!
+                    ncs.basicInfo.isFriendly = type == "friendly"
+                    self.newid = await Store.shared.makeNPC(code: partyCode, sheet: ncs)
+                    goCSV = true
+                }
+            } else {
+                // Fallback on earlier versions
+            } }) {
                 Text("Enter all information manually")
             }
             .disabled(blankEntry())
             .foregroundColor(blankEntry() ? Color.gray : Color.blue)
 
+            NavigationLink(destination: CharacterSheetView(partyCode: partyCode, npcid: newid), isActive: $goCSV) {
+                EmptyView()
+            }.hidden()
+            
         }
         .toolbar {
             ToolbarItem(placement: .principal) {

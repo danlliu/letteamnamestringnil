@@ -22,17 +22,43 @@ class CharacterSheet: ObservableObject {
 
 //    @Published var hitDice: [Int: Int]
     
-    init () {
+    init (isNPC: Bool = false) {
         self.basicInfo = PlayerBasicInfo(characterInfo: [:])
-        self.stats = PlayerStats(stats: [:])
+        self.stats = PlayerStats(stats: [
+            "abilityScores": [
+            "strength": 0,
+            "dexterity": 0,
+            "constitution": 0,
+            "intelligence": 0,
+            "wisdom": 0,
+            "charisma": 0
+            ]
+        ])
         self.skills = Skills(sk: [:])
         self.attacks = ""
-        self.spellcasting = [:]
+        self.spellcasting = [
+            "spellcast_ability": "",
+            "spell_save_dc": 0,
+            "spell_attack_bonus": 0,
+            "by_level": [
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []],
+                ["slots": 0, "spells": []]
+            ]
+        ]
         self.spells = []
         self.inventory = PlayerInventory(equipment: "", darkGifts: "", treasure: "")
         self.background = PlayerBackgroundInfo(background: "", backstory: "", proficiencies: "", features: "", featuresAndTraits: "", allies: "", personality: Personality(json: [:]))
         self.notes = ""
-        
+        self.basicInfo.isNPC = isNPC
     }
 
     init(json: [String: Any]) {
@@ -49,7 +75,7 @@ class CharacterSheet: ObservableObject {
         character["isNPC"]      = json["is_npc"]
         character["isFriendly"] = json["is_friendly"]
 
-        var stats: [String: Any] = json["stats"] as! [String: Any]
+        var stats: [String: Any] = [:]
         stats["ac"]            = json["armor_class"]
         stats["initiative"]    = json["initiative"]
         stats["maxHP"]         = json["max_hp"]
@@ -80,7 +106,7 @@ class CharacterSheet: ObservableObject {
         self.background = PlayerBackgroundInfo(
             background: json["background"] as! String,
             backstory: json["backstory"] as! String,
-            proficiencies: json["other_proficiencies_Skills"] as! String,
+            proficiencies: json["other_proficiencies_skills"] as! String,
             features: json["features"] as! String,
             featuresAndTraits: json["features_and_traits"] as! String,
                 allies: json["allies"] as! String,
@@ -100,7 +126,77 @@ class CharacterSheet: ObservableObject {
 
     func toDictionary() -> [String:Any] {
         // TODO IMPLEMENT
-        return [:]
+        return [
+            "name": basicInfo.name,
+            "clss": basicInfo.className,
+            "is_npc": basicInfo.isNPC,
+            "is_friendly": basicInfo.isFriendly,
+            "level": stats.level,
+            "race": basicInfo.race,
+            "background": background.background,
+            "alignment": basicInfo.alignment,
+            "experience_points": stats.xp,
+            "inspiration": stats.inspiration,
+            "proficiency_bonus": stats.profBonus,
+            "passive_wisdom": stats.perception,
+            "other_proficiencies_skills": background.proficiencies,
+            "armor_class": stats.ac,
+            "initiative": stats.initiative,
+            "speed": stats.speed,
+            "max_hp": stats.maxHP,
+            "cur_hp": stats.curHP,
+            "temp_hp": stats.tmpHP,
+            "hit_dice": stats.hitDice,
+            "death_save_success": stats.deathSaveSuccess,
+            "death_save_failure": stats.deathSaveFailure,
+            "attacks": attacks,
+            "equipment": inventory.equipment,
+            "traits": background.personality.traits,
+            "ideals": background.personality.ideals,
+            "bonds": background.personality.bonds,
+            "flaws": background.personality.flaws,
+            "features_and_traits": background.featuresAndTraits,
+            "age": basicInfo.age,
+            "eyes": basicInfo.eyes,
+            "height": basicInfo.height,
+            "weight": basicInfo.weight,
+            "backstory": background.backstory,
+            "dark_gifts": inventory.darkGifts,
+            "features": background.features,
+            "allies": background.allies,
+            "treasure": inventory.treasure,
+            "notes": notes,
+            "abilities": stats.abilityScores,
+            "saving": [
+                "strength": stats.savingThrows.str,
+                "dexterity": stats.savingThrows.dex,
+                "constitution": stats.savingThrows.con,
+                "intelligence": stats.savingThrows.int,
+                "wisdom": stats.savingThrows.wis,
+                "charisma": stats.savingThrows.char
+            ],
+            "skills": [
+                "acrobatics": skills.acrobatics,
+                "animal_handling": skills.animalHandling,
+                "arcana": skills.arcana,
+                "athletics": skills.athletics,
+                "deception": skills.deception,
+                "history": skills.history,
+                "insight": skills.insight,
+                "intimidation": skills.intimidation,
+                "investigation": skills.investigation,
+                "medicine": skills.medicine,
+                "nature": skills.nature,
+                "perception": skills.perception,
+                "performance": skills.performance,
+                "persuasion": skills.persuasion,
+                "religion": skills.religion,
+                "sleight_of_hand": skills.sleightOfHand,
+                "stealth": skills.stealth,
+                "survival": skills.survival
+            ],
+            "spells": spellcasting
+        ]
     }
 
 }
@@ -112,6 +208,10 @@ struct PlayerBasicInfo: Hashable {
     var isFriendly: Bool
     var race: String
     var alignment: Int
+    var age: Int
+    var eyes: String
+    var height: String
+    var weight: String
 
     init(characterInfo: [String: Any]) {
         self.name      = characterInfo["name"] as? String ?? ""
@@ -120,6 +220,10 @@ struct PlayerBasicInfo: Hashable {
         self.alignment = characterInfo["alignment"] as? Int ?? 0
         self.isNPC = characterInfo["isNPC"] as? Bool ?? false
         self.isFriendly = characterInfo["isFriendly"] as? Bool ?? false
+        self.age = characterInfo["age"] as? Int ?? 0
+        self.eyes = characterInfo["eyes"] as? String ?? ""
+        self.height = characterInfo["height"] as? String ?? ""
+        self.weight = characterInfo["weight"] as? String ?? ""
     }
 }
 

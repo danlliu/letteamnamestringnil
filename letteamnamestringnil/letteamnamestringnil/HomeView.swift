@@ -14,81 +14,79 @@ struct HomeView: View {
     @State var active = false
     
     var body: some View {
-        VStack {
-            
-            Spacer()
-            Text("TCP")
-                .font(.largeTitle).bold() //TODO: custom fonts are a lot of work, not skeletal
-                .padding(5)
-            Text("Traveler Creation Partner")
-//                .font(.headline)
-            Spacer() //TODO: I don't love this spacing
-            
-            Text("Welcome, \(username)!")
-            
-            Spacer() //TODO: I don't love this spacing
-            
-//            VStack {
-//                Text("username:")
-//                TextField("username", text: $username)
-//                    .padding(10)
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: 10)
-//                                .stroke(Color.gray, lineWidth: 1)
-//                    )
-//            }
-//            .frame(width: 300)
-//            .padding()
-            
-//            Spacer()
-            
-            HStack {
-                Text("username:")
-                TextField("username", text: $username)
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
+        if #available(iOS 15.0, *) {
+            VStack {
+                
+                Spacer()
+                Text("TCP")
+                    .font(.largeTitle).bold() //TODO: custom fonts are a lot of work, not skeletal
+                    .padding(5)
+                Text("Traveler Creation Partner")
+                //                .font(.headline)
+                Spacer() //TODO: I don't love this spacing
+                
+                Text("Welcome, \(username)!")
+                
+                Spacer() //TODO: I don't love this spacing
+                
+                //            VStack {
+                //                Text("username:")
+                //                TextField("username", text: $username)
+                //                    .padding(10)
+                //                    .overlay(
+                //                        RoundedRectangle(cornerRadius: 10)
+                //                                .stroke(Color.gray, lineWidth: 1)
+                //                    )
+                //            }
+                //            .frame(width: 300)
+                //            .padding()
+                
+                //            Spacer()
+                
+                HStack {
+                    Text("username:")
+                    TextField("username", text: $username)
+                        .padding(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.gray, lineWidth: 1)
-                    )
-            }
-            .padding()
-
-            Button(action: {
-                if #available(iOS 15.0, *) {
+                        )
+                }
+                .padding()
+                
+                Button(action: {
                     Task {
+                        await Store.shared.createAccount(username: username, password: username)
+                        await Store.shared.login(username: username, password: username)
                         await Store.shared.createParty()
                         active = true
                     }
+                }) {
+                    Text("Create New Party")
+                        .foregroundColor(Color.white)
+                        .padding()
                 }
-            }) {
-                Text("Create New Party")
-                    .foregroundColor(Color.white)
-                    .padding()
+                .frame(width: 220)
+                .background(Color.blue)
+                .cornerRadius(40)
+                .padding(8)
+                NavigationLink(destination: GamesView(username: username), isActive: $active) {
+                    EmptyView()
+                }.hidden()
+                
+                NavigationLink(destination: GamesView(username: username)) {
+                    Text("Join Game")
+                        .foregroundColor(Color.white)
+                        .padding()
+                }
+                .frame(width: 220)
+                .background(Color.blue)
+                .cornerRadius(40)
+                .padding(8)
+                
             }
-            .frame(width: 220)
-            .background(Color.blue)
-            .cornerRadius(40)
-            .padding(8)
-                    NavigationLink(destination: GamesView(username: username), isActive: $active) {
-                        EmptyView()
-                    }.hidden()
-
-            NavigationLink(destination: GamesView(username: username)) {
-                Text("Join Game")
-                    .foregroundColor(Color.white)
-                    .padding()
-            }
-            .frame(width: 220)
-            .background(Color.blue)
-            .cornerRadius(40)
-            .padding(8)
-        
+        } else {
+            // Fallback on earlier versions
         }
-    }
-}
-
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
     }
 }
