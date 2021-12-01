@@ -23,6 +23,7 @@ struct CharacterSheetView: View {
     var npcid: Int?
 
     @State var csheet: CharacterSheet
+    @State var spells: [Spells] = []
     @State var xpText: String = ""
     @State var update = false
 
@@ -46,8 +47,10 @@ struct CharacterSheetView: View {
     var body: some View {
         if #available(iOS 15.0, *) {
             VStack {
-                Text("Character Sheet")
-                    .font(.largeTitle)
+                if update || !update {
+                    Text("Character Sheet")
+                        .font(.largeTitle)
+                }
                 
                 Button(action: { Task {
                     if username != nil {
@@ -472,11 +475,12 @@ struct CharacterSheetView: View {
                     
                     Divider()
                     Group {
-                        List {
-                            ForEach(csheet.spells, id: \.name) { spell in
+                        //List {
+                            ForEach(spells, id: \.name) { spell in
                                 HStack {
                                     Button(action: {() in
                                         csheet.spells = csheet.spells.filter({x in x.name != spell.name})
+                                        spells = csheet.spells
                                     }) {
                                         Image(systemName: "minus.circle.fill")
                                             .foregroundColor(.red)
@@ -486,7 +490,7 @@ struct CharacterSheetView: View {
                                     }
                                 }
                             }
-                        }
+                        //}
                         Divider()
                         Group {
                             TextField("Spell Name:", text: $newSpellName)
@@ -503,6 +507,7 @@ struct CharacterSheetView: View {
                                 csheet.spells.append(Spells(
                                     name: newSpellName,
                                     charges: newSpellCasts))
+                                spells = csheet.spells
                             }){
                                 Image(systemName: "plus.circle.fill")
                                     .foregroundColor(.green)
@@ -516,11 +521,13 @@ struct CharacterSheetView: View {
                     let response = await Store.shared.getPlayerData(code: partyCode, playerId: Store.shared.getID())
                     if let cs = response.csheet {
                         csheet = cs
+                        spells = csheet.spells
                     }
                 } else {
                     let response = await Store.shared.getNPCData(code: partyCode, npcid: npcid!)
                     if let cs = response.csheet {
                         csheet = cs
+                        spells = csheet.spells
                     }
                 }
             }

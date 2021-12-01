@@ -65,7 +65,7 @@ class CharacterSheet: ObservableObject {
 
         var character: [String: Any] = [:]
         character["name"]      = json["name"]
-        character["class"]     = json["class"]
+        character["clss"]      = json["clss"]
         character["race"]      = json["race"]
         character["alignment"] = json["alignment"]
         character["age"] = json["age"]

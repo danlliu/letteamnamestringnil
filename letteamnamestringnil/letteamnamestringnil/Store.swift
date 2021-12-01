@@ -19,14 +19,20 @@ final class Store: ObservableObject {
 //    private let nFields = Mirror(reflecting: Chatt()).children.count
     
     private let serverUrl = "https://ec2-3-139-99-112.us-east-2.compute.amazonaws.com/"
+    
+    private var cachedID: Int? = nil
 
     @MainActor
     func getID() async -> Int {
+        if let id = cachedID {
+            return id
+        }
         let response = await apiRequest(path: "user/", method: "GET", body: nil)
         switch (response) {
         case .object (let obj):
             print(obj)
-            return obj["id"] as! Int
+            cachedID = obj["id"] as? Int
+            return cachedID!
         default:
             print(-1)
             return -1
@@ -35,6 +41,7 @@ final class Store: ObservableObject {
     
     @MainActor
     func login(username: String, password: String) async -> Int {
+        cachedID = nil
         print("login: \(username) / \(password)")
         let response = await apiRequest(path: "user/", method: "POST", body: ["username": username, "password": password])
         switch (response) {
@@ -47,6 +54,7 @@ final class Store: ObservableObject {
 
     @MainActor
     func createAccount(username: String, password: String) async -> Int {
+        cachedID = nil
         print("create: \(username) / \(password)")
         let response = await apiRequest(path: "user/", method: "PUT", body: ["username": username, "password": password])
         switch (response) {
