@@ -45,17 +45,7 @@ def fill_in_character(c):
     cls_traits = json.load(f)
     f.close()
 
-    rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "fandom_racial_features.json")), "r", encoding="utf-8")
-    race_traits = json.load(rf)
-    rf.close()
 
-    rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "abilities_by_race.json")), "r", encoding="utf-8")
-    race_abil = json.load(rf)
-    rf.close()
-
-    rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "wikidot_all_spells.json")), "r", encoding="utf-8")
-    all_spells = json.load(rf)
-    rf.close()
 
     c['clss'] = c['cls']
 
@@ -77,6 +67,10 @@ def fill_in_character(c):
     c['death_save_failure'] = 0
 
 
+    rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "fandom_racial_features.json")), "r", encoding="utf-8")
+    race_traits = json.load(rf)
+    rf.close()
+
     for r, val in race_traits.items():
         if r == c['race']:
             c['speed'] = val['Speed']
@@ -89,6 +83,8 @@ def fill_in_character(c):
                 c['height'] = val['Size']['Height']
                 c['weight'] = val['Size']['Weight']
                 break
+
+    del race_traits
 
 
     c['age'] = random.randint(18, 80)
@@ -105,7 +101,14 @@ def fill_in_character(c):
     c['treasure'] = ''
     c['notes'] = ''
 
-    c['features_and_traits'] = arr_to_str(race_abil[c['race']] + cls_traits[c['cls']]['features'])
+    
+    rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "abilities_by_race.json")), "r", encoding="utf-8")
+    race_abil = json.load(rf)
+    rf.close()
+
+    c['features_and_traits'] = arr_to_str([s.title() for s in race_abil[c['race']] + cls_traits[c['cls']]['features']])
+
+    del race_abil
 
 
     c['other_proficiencies_skills'] = arr_to_str(cls_traits[c['cls']]['proficiencies'])
@@ -200,6 +203,10 @@ def fill_in_character(c):
         "by_level": []        
     }
 
+    rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "wikidot_all_spells.json")), "r", encoding="utf-8")
+    all_spells = json.load(rf)
+    rf.close()
+
     for idx, n in enumerate(cls_traits[c['cls']]["spell_slots"]):
         slot = {
             "slots": n,
@@ -266,6 +273,7 @@ def generate_character(cls, alignment):
 
         character['alignment'] = dl.alignment_list[(int(np.argmax(align_pred)))]
     
+
     race_pred = models.get_cat_prediction(race_model, character)
     # print(race_pred)
     race_pred = list(race_pred[0])
@@ -298,6 +306,9 @@ def generate_character(cls, alignment):
     character['cha'] = attr_preds[5]
 
     character['alignment'] = int(dl.alignment_list.index(character['alignment']))
+
+    del dl
+    del race_traits
 
     character = fill_in_character(character)
 
