@@ -201,8 +201,9 @@ def load_dataframe(keras_mode, reload_dataframe):
         df.loc[df['cls'] == 'orien human', 'cls'] = 'human'
         df.loc[df['cls'] == 'variant human', 'cls'] = 'human'
         df.loc[df['cls'] == 'half orc', 'cls'] = 'half-orc'
-        df.loc[df['cls'].find('half-orc') != -1, 'cls'] = 'half-orc'
-        df.loc[df['cls'].find('half-elf') != -1, 'cls'] = 'half-elf'
+        df.loc[df['cls'] == 'finding half-orc', 'cls']  = 'half-orc'
+        df.loc[df['cls'] == 'lyrandar half-elf', 'cls'] = 'half-elf'
+        df.loc[df['cls'] == 'medani half-elf', 'cls'] = 'half-elf'
         df.loc[df['cls'] == 'eladrin elf', 'cls'] = 'high elf'
 
         str_cols = ["cls", "background", "race", "alignment"]
