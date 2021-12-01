@@ -104,7 +104,11 @@ struct AddNPCView: View {
                     .padding()
             }
             .disabled(blankEntry())
-            .simultaneousGesture(TapGesture().onEnded(generateRandomNPC))
+            .simultaneousGesture(TapGesture().onEnded{ if #available(iOS 15.0, *) {
+                Task { await generateRandomNPC() }
+            } else {
+                // Fallback on earlier versions
+            } })
             .background(blankEntry() ? Color.gray : Color.blue)
             .cornerRadius(10)
             
@@ -139,7 +143,7 @@ struct AddNPCView: View {
                 Text("New character")
             }
             ToolbarItem {
-                NavigationLink(destination: PlayerView()) {
+                NavigationLink(destination: DMView(partyCode: partyCode, username: username)) {
                     Text("Create")
                 }
                 .simultaneousGesture(TapGesture().onEnded( {
@@ -160,8 +164,11 @@ struct AddNPCView: View {
         return false
     }
     
-    func generateRandomNPC() {
+    @available(iOS 15.0.0, *)
+    func generateRandomNPC() async {
         //TODO: need database and ML
+        self.newid = await Store.shared.makeNPC(code: partyCode, sheet: nil)
+        await Store.shared.generateNPCML(code: partyCode, npcid: newid, className: playerClass, alignment: alignments.firstIndex(of: playerAlignment), friendly: type == "friendly")
         print("generating random character sheet...")
     }
 }

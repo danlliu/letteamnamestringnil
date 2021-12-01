@@ -64,7 +64,11 @@ struct GenerateCharacter: View {
                     .padding()
             }
             .disabled(blankEntry())
-            .simultaneousGesture(TapGesture().onEnded(generateRandom))
+            .simultaneousGesture(TapGesture().onEnded{ if #available(iOS 15.0, *) {
+                Task { await generateRandom() }
+            } else {
+                // Fallback on earlier versions
+            } })
             .background(blankEntry() ? Color.gray : Color.blue)
             .cornerRadius(10)
             
@@ -97,8 +101,10 @@ struct GenerateCharacter: View {
         return false
     }
     
-    func generateRandom() {
+    @available(iOS 15.0.0, *)
+    func generateRandom() async {
         //TODO: need database and ML
+        await Store.shared.generatePlayerML(code: partyCode, playerId: Store.shared.getID(), className: playerClass, alignment: alignments.firstIndex(of: playerAlignment))
         print("generating character sheet...")
     }
 }

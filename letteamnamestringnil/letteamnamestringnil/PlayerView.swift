@@ -108,6 +108,11 @@ struct PlayerView: View {
                             .cornerRadius(4)
                 }
                 }
+                else {
+                    NavigationLink(destination: GenerateCharacter(partyCode: partyCode, username: username)) {
+                        Text("Create character sheet")
+                    }
+                }
 
                 List {
                     Section(header: ListHeader(title: "Players")) {

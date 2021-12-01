@@ -161,12 +161,50 @@ final class Store: ObservableObject {
             exit(1)
         }
     }
+    
+    @MainActor
+    func generatePlayerML(code: String, playerId: Int, className: String, alignment: Int?) async {
+        let response = await apiRequest(path: "generate/", method: "POST", body: [
+            "class": className,
+            "alignment": alignment ?? NSNull()
+        ])
+        switch (response) {
+        case .object (var sheet):
+            sheet["is_npc"] = false
+            sheet["is_friendly"] = true
+            _ = await apiRequest(path: "parties/\(code)/members/\(playerId)/", method: "POST", body: [
+                "isDM": false,
+                "sheet": sheet
+            ])
+        default:
+            return
+        }
+    }
+    
+    @MainActor
+    func generateNPCML(code: String, npcid: Int, className: String, alignment: Int?, friendly: Bool) async {
+        let response = await apiRequest(path: "generate/", method: "POST", body: [
+            "class": className,
+            "alignment": alignment ?? NSNull()
+        ])
+        switch (response) {
+        case .object (var sheet):
+            sheet["is_npc"] = true
+            sheet["is_friendly"] = friendly
+            _ = await apiRequest(path: "parties/\(code)/npcs/\(npcid)/", method: "POST", body: [
+                "sheet": sheet
+            ])
+        default:
+            return
+        }
+    }
 
     @MainActor
     func postPlayerData(code: String, playerId: Int, isDM: Bool, csheet: CharacterSheet?) async {
+        if csheet == nil { return }
         _ = await apiRequest(path: "parties/\(code)/members/\(playerId)/", method: "POST", body: [
             "isDM": isDM,
-            "sheet": csheet?.toDictionary()
+            "sheet": csheet!.toDictionary()
         ])
     }
 
