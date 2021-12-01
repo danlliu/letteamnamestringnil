@@ -106,7 +106,7 @@ struct AddNPCView: View {
             Text("or")
                 .padding()
             
-            NavigationLink(destination: CharacterSheetView(partyCode: partyCode, username: name, isNPC: true)) {
+            NavigationLink(destination: CharacterSheetView(partyCode: partyCode, username: name)) {
                 Text("Enter all information manually")
             }
             .disabled(blankEntry())
@@ -121,9 +121,13 @@ struct AddNPCView: View {
                 NavigationLink(destination: PlayerView()) {
                     Text("Create")
                 }
-                .simultaneousGesture(TapGesture.onEnded {
-                    Store.shared.postNPC
-                })
+                .simultaneousGesture(TapGesture().onEnded( {
+                    if #available(iOS 15.0.0, *) {
+                        Task{ await Store.shared.makeNPC(code: partyCode, sheet: nil) }
+                    } else {
+                        // Fallback on earlier versions
+                    } //TODO: check nil is handled ok elsewhere
+                }))
             }
         }
     }

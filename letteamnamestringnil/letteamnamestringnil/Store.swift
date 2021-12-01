@@ -93,7 +93,7 @@ final class Store: ObservableObject {
         switch (response) {
         case .object (let obj):
             let id = obj["id"] as! String
-            postNPCData(code: code, npcid: id, csheet: sheet)
+            await postNPCData(code: code, npcid: id, csheet: sheet)
         default:
             exit(1)
         }
@@ -118,7 +118,7 @@ final class Store: ObservableObject {
 
     @MainActor
     func getNPCData(code: String, npcid: String) async -> Player {
-        let response = await apiRequest(path: "parties/\(code)/members/\(player)/", method: "GET", body: nil)
+        let response = await apiRequest(path: "parties/\(code)/members/\(npcid)/", method: "GET", body: nil)
         switch (response) {
         case .object (let obj):
             let isDM = false
@@ -137,14 +137,14 @@ final class Store: ObservableObject {
     func postPlayerData(code: String, player: String, isDM: Bool, csheet: CharacterSheet?) async {
         _ = await apiRequest(path: "parties/\(code)/members/\(player)/", method: "POST", body: [
             "isDM": isDM,
-            "sheet": csheet.toDictionary()
+            "sheet": csheet!.toDictionary()
         ])
     }
 
     @MainActor
     func postNPCData(code: String, npcid: String, csheet: CharacterSheet?) async {
         _ = await apiRequest(path: "parties/\(code)/npcs/\(npcid)", method: "POST", body: [
-            "sheet": csheet.toDictionary()
+            "sheet": csheet!.toDictionary()
         ])
     }
 
@@ -230,7 +230,7 @@ struct Player {
 }
 
 struct NPC {
-
+    
     var npcid: String
     var csheet: CharacterSheet?
 

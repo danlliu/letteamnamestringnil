@@ -37,7 +37,7 @@ struct DMView: View {
 
             List {
                 Section(header: Text("Players")) {
-                    ForEach(players, id:\.self) { (player: Player) in
+                    ForEach(players, id: username) { (player: Player) in
                         NavigationLink(destination: PlayerView(partyCode: partyCode, username: player.username)) {
                             VStack(alignment: .leading) {
                                 Text(player.username)
@@ -49,7 +49,7 @@ struct DMView: View {
                     }
                 }
                 Section(header: Text("Friendly NPCs")) {
-                    ForEach(friendlys, id: \.self) { (friendly: NPC) in
+                    ForEach(friendlys, id: npcid) { (friendly: NPC) in
                         VStack(alignment: .leading) {
                             Text(friendly.csheet!.basicInfo.name)
                                     .font(.headline)
@@ -59,7 +59,7 @@ struct DMView: View {
                     }
                 }
                 Section(header: Text("Monster NPCs")) {
-                    ForEach(monsters, id: \.self) { (monster: NPC) in
+                    ForEach(monsters, id: npcid) { (monster: NPC) in
                         VStack(alignment: .leading) {
                             Text(monster.csheet!.basicInfo.name)
                                     .font(.headline)
@@ -95,17 +95,11 @@ struct DMView: View {
                 }
     }
 
-    func switchRoles() {
+    @available(iOS 15.0.0, *)
+    func switchRoles() async {
         //TODO: backend logic to turn a DM into a player
         print("switching roles...")
-        let response = Store.shared.getPlayerData(code: partyCode, player: username)
-        Store.shared.postPlayerData(code: partyCode, player: username, isDM: false, csheet: response.csheet)
-    }
-}
-
-@available(iOS 15.0, *)
-struct DMView_Previews: PreviewProvider {
-    static var previews: some View {
-        DMView()
+        let response = await Store.shared.getPlayerData(code: partyCode, player: username)
+        await Store.shared.postPlayerData(code: partyCode, player: username, isDM: false, csheet: response.csheet)
     }
 }

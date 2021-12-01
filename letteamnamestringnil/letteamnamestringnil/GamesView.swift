@@ -87,7 +87,7 @@ struct GamesView: View {
 struct GameInfoView: View {
     @State var gameCode: String
     @State var username: String
-    @State var isDM: Bool
+    @State var isDM: Bool = false
     @State var goPlayer: Bool = false
     @State var goDM: Bool = false
     

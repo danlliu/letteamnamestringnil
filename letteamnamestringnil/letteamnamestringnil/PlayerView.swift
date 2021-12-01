@@ -168,7 +168,7 @@ struct IndividualPlayerView: View {
         HStack {
             VStack(alignment: .leading) {
                 Text(player.username)
-                Text("Lvl \(player.level), \(player.playerClass), \(player.playerAlignment)")
+                Text("Lvl \(player.csheet!.stats.level), \(player.csheet!.basicInfo.className), \(player.csheet!.basicInfo.alignment)")
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }

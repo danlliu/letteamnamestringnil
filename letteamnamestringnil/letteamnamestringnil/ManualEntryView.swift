@@ -16,7 +16,7 @@ struct ManualEntryView: View {
     @State var name: String = ""
     @State var playerClass: String = ""
     @State var playerAlignment: String = ""
-    @State var isNPC: Bool = ""
+    @State var isNPC: Bool = false
     
     //TODO: validate string to int conversions -> make number only keyboard
     //basic stats

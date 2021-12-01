@@ -51,7 +51,7 @@ struct PlayerDetailView: View {
             Group {
                 VStack {
                     HStack {
-                        Text("Level \(level) (\(xp) XP)")
+                        Text("Level \(level) (\(xp) XP)") //TODO: xp???
                     }
                     .padding()
                     HStack {
@@ -92,7 +92,8 @@ struct PlayerDetailView: View {
                             Text("CHR\t-5")
                         }
                     }
-                    NavigationLink(destination: )
+                    //TODO: what even is this
+                    //NavigationLink(destination: )
                 }
             }
         }
