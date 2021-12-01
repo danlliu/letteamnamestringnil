@@ -77,6 +77,29 @@ final class Store: ObservableObject {
     }
 
     @MainActor
+    func getNPCs(code: String) async -> [String] {
+        let response = await apiRequest(path: "parties/\(code)/npcs/", method: "GET", body: nil)
+        switch (response) {
+        case .array (let arr):
+            return arr
+        default:
+            exit(1)
+        }
+    }
+
+    @MainActor
+    func makeNPC(code: String, sheet: CharacterSheet?) async {
+        let response = await apiRequest(path: "parties/\(code)/npcs/", method: "POST", body: nil)
+        switch (response) {
+        case .object (let obj):
+            let id = obj["id"] as! String
+            await postNPCData(code: code, npcid: id, csheet: sheet)
+        default:
+            exit(1)
+        }
+    }
+
+    @MainActor
     func getPlayerData(code: String, player: String) async -> Player {
         let response = await apiRequest(path: "parties/\(code)/members/\(player)/", method: "GET", body: nil)
         switch (response) {
@@ -94,10 +117,34 @@ final class Store: ObservableObject {
     }
 
     @MainActor
-    func postPlayerData(code: String, player: String, isDM: Bool, csheet: CharacterSheet) async {
+    func getNPCData(code: String, npcid: String) async -> NPC {
+        let response = await apiRequest(path: "parties/\(code)/members/\(npcid)/", method: "GET", body: nil)
+        switch (response) {
+        case .object (let obj):
+            let isDM = false
+            if obj["sheet"] == nil {
+                return NPC(npcid: npcid, csheet: nil)
+            }
+            let csheet = obj["sheet"] as! [String:Any]
+
+            return NPC(npcid: npcid, csheet: CharacterSheet(json: csheet))
+        default:
+            exit(1)
+        }
+    }
+
+    @MainActor
+    func postPlayerData(code: String, player: String, isDM: Bool, csheet: CharacterSheet?) async {
         _ = await apiRequest(path: "parties/\(code)/members/\(player)/", method: "POST", body: [
             "isDM": isDM,
-            "sheet": csheet.toDictionary()
+            "sheet": csheet!.toDictionary()
+        ])
+    }
+
+    @MainActor
+    func postNPCData(code: String, npcid: String, csheet: CharacterSheet?) async {
+        _ = await apiRequest(path: "parties/\(code)/npcs/\(npcid)", method: "POST", body: [
+            "sheet": csheet!.toDictionary()
         ])
     }
 
@@ -180,6 +227,13 @@ struct Player {
         self.csheet = csheet
     }
     
+}
+
+struct NPC {
+    
+    var npcid: String
+    var csheet: CharacterSheet?
+
 }
 
 /*

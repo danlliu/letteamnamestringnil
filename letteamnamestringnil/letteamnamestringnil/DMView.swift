@@ -16,92 +16,99 @@ struct DMView: View {
         self.username = username
     }
 
-    @State private var players: [Player] = [Player(name: "bob", playerClass: "elf", playerAlignment: "chaotic good", level: 2),
-                                            Player(name: "alice", playerClass: "dragonborn", playerAlignment: "chaotic evil", level: 7)]
-    @State private var friendlys: [NPC] = [NPC(name: "Jinx", npcClass: "wizard", npcAlignment: "chaotic good", level: 5)]
-    @State private var monsters: [NPC] = [NPC(name: "Mine orc", npcClass: "orc", npcAlignment: "lawful evil", level: 2)]
-    
+    @State private var players: [Player] = []
+    @State private var friendlys: [NPC] = []
+    @State private var monsters: [NPC] = []
+
     var body: some View {
-        VStack {
-            Text("Party code")
-            Text(partyCode)
-                .font(.title2)
-            NavigationLink(destination: PlayerView(partyCode: partyCode, username: username)) {
-                Text("Switch to player")
-                    .foregroundColor(Color.white)
-                    .padding()
-            }
-            .simultaneousGesture(TapGesture().onEnded(switchRoles)) //TODO: do we want this to be this easy?
-            .background(Color.blue)
-            .cornerRadius(10)
-            .padding()
-            
-            List {
-                Section(header: Text("Players")) {
-                    ForEach(players, id:\.self) { player in
-                        NavigationLink(destination: PlayerView()) {
+        if #available(iOS 15.0, *) {
+            VStack {
+                Text("Party code")
+                Text(partyCode)
+                    .font(.title2)
+                NavigationLink(destination: PlayerView(partyCode: partyCode, username: username)) {
+                    Text("Switch to player")
+                        .foregroundColor(Color.white)
+                        .padding()
+                }
+                .simultaneousGesture(TapGesture().onEnded({Task {await switchRoles()}})) //TODO: do we want this to be this easy?
+                .background(Color.blue)
+                .cornerRadius(10)
+                .padding()
+                
+                List {
+                    Section(header: Text("Widgets")) {
+                        WidgetSubview(title: "HP", color: .pink, render: {cs in
+                            return "\(cs.stats.curHP)"
+                        }, players: players)
+                    }
+                    Section(header: Text("Players")) {
+                        ForEach(players, id: \.username) { (player: Player) in
+                            NavigationLink(destination: PlayerView(partyCode: partyCode, username: player.username)) {
+                                VStack(alignment: .leading) {
+                                    Text(player.username)
+                                        .font(.headline)
+                                    Text("Lvl. \(player.csheet!.stats.level) \(player.csheet!.basicInfo.className)")
+                                        .font(.subheadline)
+                                }
+                            }
+                        }
+                    }
+                    Section(header: Text("Friendly NPCs")) {
+                        ForEach(friendlys, id: \.npcid) { (friendly: NPC) in
                             VStack(alignment: .leading) {
-                                Text(player.name)
+                                Text(friendly.csheet!.basicInfo.name)
                                     .font(.headline)
-                                Text("Lvl. \(player.level) \(player.playerClass)")
+                                Text("Lvl. \(friendly.csheet!.stats.level) \(friendly.csheet!.basicInfo.className)")
                                     .font(.subheadline)
                             }
                         }
                     }
-                }
-                Section(header: Text("Friendly NPCs")) {
-                    ForEach(friendlys, id: \.self) { friendly in
-                        VStack(alignment: .leading) {
-                            Text(friendly.name)
-                                .font(.headline)
-                            Text("Lvl. \(friendly.level) \(friendly.npcClass)")
-                                .font(.subheadline)
+                    Section(header: Text("Monster NPCs")) {
+                        ForEach(monsters, id: \.npcid) { (monster: NPC) in
+                            VStack(alignment: .leading) {
+                                Text(monster.csheet!.basicInfo.name)
+                                    .font(.headline)
+                                Text("Lvl. \(monster.csheet!.stats.level) \(monster.csheet!.basicInfo.className)")
+                                    .font(.subheadline)
+                            }
+                        }
+                    }
+                    NavigationLink(destination: AddNPCView(partyCode: partyCode)) {
+                        HStack {
+                            Image(systemName: "plus.circle")
+                            Text("Add NPC")
                         }
                     }
                 }
-                Section(header: Text("Monster NPCs")) {
-                    ForEach(monsters, id: \.self) { monster in
-                        VStack(alignment: .leading) {
-                            Text(monster.name)
-                                .font(.headline)
-                            Text("Lvl. \(monster.level) \(monster.npcClass)")
-                                .font(.subheadline)
-                        }
-                    }
+                .listStyle(.grouped)
+            }
+            .task {
+                let party = await Store.shared.getPartyInfo(code: partyCode)
+                for player in party.players {
+                    let p = await Store.shared.getPlayerData(code: partyCode, player: player.username)
+                    players.append(p)
                 }
-                NavigationLink(destination: AddNPCView(partyCode: partyCode)) {
-                    HStack {
-                        Image(systemName: "plus.circle")
-                        Text("Add NPC")
+                let npcs = await Store.shared.getNPCs(code: partyCode)
+                for npc in npcs {
+                    let n = await Store.shared.getNPCData(code: partyCode, npcid: npc)
+                    if n.csheet!.basicInfo.isFriendly {
+                        friendlys.append(n)
+                    } else {
+                        monsters.append(n)
                     }
                 }
             }
-            .listStyle(.grouped)
+        } else {
+            // Fallback on earlier versions
         }
     }
-    
-    func getGameData() {
-        //TODO: I am lonely! I need a database!
-        //fill in the state variables
-    }
-    
-    func switchRoles() {
+
+    @available(iOS 15.0.0, *)
+    func switchRoles() async {
         //TODO: backend logic to turn a DM into a player
         print("switching roles...")
-    }
-}
-
-struct NPC: Hashable {
-    var name: String
-    var npcClass: String
-    var npcAlignment: String
-    var level: Int
-    //can add more as desired
-}
-
-@available(iOS 15.0, *)
-struct DMView_Previews: PreviewProvider {
-    static var previews: some View {
-        DMView()
+        let response = await Store.shared.getPlayerData(code: partyCode, player: username)
+        await Store.shared.postPlayerData(code: partyCode, player: username, isDM: false, csheet: response.csheet)
     }
 }

@@ -59,7 +59,7 @@ struct GenerateCharacter: View {
             .listStyle(.plain)
             
             NavigationLink(destination: PlayerView()) {
-                Text("Generate Random Character")
+                Text("Generate Character")
                     .foregroundColor(Color.white)
                     .padding()
             }
@@ -71,7 +71,7 @@ struct GenerateCharacter: View {
             Text("or")
                 .padding()
             
-            NavigationLink(destination: ManualEntryView(name: name, playerClass: playerClass, playerAlignment: playerAlignment, isNPC: false)) {
+            NavigationLink(destination: CharacterSheetView(partyCode: partyCode, username: name)) {
                 Text("Enter all information manually")
             }
             .disabled(blankEntry())
@@ -99,6 +99,6 @@ struct GenerateCharacter: View {
     
     func generateRandom() {
         //TODO: need database and ML
-        print("generating random character sheet...")
+        print("generating character sheet...")
     }
 }

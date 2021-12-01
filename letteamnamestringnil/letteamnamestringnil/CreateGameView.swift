@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CreateGameView: View {
     @State private var partyCode: String = ""
+    @State var username = ""
+
     @State private var role: String = ""
     
     private var buttonPadding: CGFloat = 10
@@ -62,7 +64,8 @@ struct CreateGameView: View {
             
             Spacer()
             
-            NavigationLink(destination: (role == "DM") ? AnyView(DMView()) : AnyView(GenerateCharacter())) {
+            //TODO: GenerateCharacter need arguments
+            NavigationLink(destination: (role == "DM") ? AnyView(DMView(partyCode: partyCode, username: username)) : AnyView(GenerateCharacter(partyCode: partyCode, username: username))) {
                 Text("Create Party")
                     .foregroundColor(Color.white)
                     .padding()
