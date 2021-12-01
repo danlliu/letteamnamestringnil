@@ -57,7 +57,7 @@ struct HomeView: View {
                 if #available(iOS 15.0, *) {
                     Task {
                         await Store.shared.createParty()
-                        isActive = true
+                        active = true
                     }
                 }
             }) {
@@ -65,7 +65,7 @@ struct HomeView: View {
                     .foregroundColor(Color.white)
                     .padding()
             }
-                    NavigationLink(destination: GamesView(), isActive: $active) {
+                    NavigationLink(destination: GamesView(username: username), isActive: $active) {
                         EmptyView()
                     }.hidden()
             .frame(width: 220)

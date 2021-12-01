@@ -11,7 +11,8 @@ import SwiftUI
 struct CharacterSheetView: View {
 
     var partyCode: String
-    var username: String
+    var username: String?
+    var npcid: String?
 
     @State var csheet: CharacterSheet
     @State var xpText: String = ""
@@ -22,6 +23,13 @@ struct CharacterSheetView: View {
     init(partyCode: String, username: String) {
         self.partyCode = partyCode
         self.username = username
+        self.npcid = nil
+    }
+
+    init(partyCode: String, npcid: String) {
+        self.partyCode = partyCode
+        self.username = nil
+        self.npcid = npcid
     }
 
     var body: some View {
@@ -460,8 +468,13 @@ struct CharacterSheetView: View {
             }
         }
         .task {
-            let response = Store.shared.getPlayerData(code: partyCode, player: username)
-            csheet = response.csheet!
+            if username != nil {
+                let response = Store.shared.getPlayerData(code: partyCode, player: username!)
+                csheet = response.csheet!
+            } else {
+                let response = Store.shared.getNPCData(code: partyCode, npcid: npcid!)
+                csheet = response.csheet!
+            }
         }
     }
 }

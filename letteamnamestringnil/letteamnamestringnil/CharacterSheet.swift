@@ -189,12 +189,12 @@ struct SavingThrows: Hashable {
     var str, dex, con, int, wis, char: Bool
 
     init(st: [String: Bool]) {
-        str = st["strength"]
-        dex = st["dexterity"]
-        con = st["constitution"]
-        int = st["intelligence"]
-        wis = st["wisdom"]
-        char = st["charisma"]
+        str = st["strength"]!
+        dex = st["dexterity"]!
+        con = st["constitution"]!
+        int = st["intelligence"]!
+        wis = st["wisdom"]!
+        char = st["charisma"]!
     }
 }
 
@@ -204,23 +204,23 @@ struct Skills: Hashable {
         religion, sleightOfHand, stealth, survival: Bool
 
     init(sk: [String: Bool]) {
-        acrobatics = sk["acrobatics"]
-        animalHandling = sk["animal_handling"]
-        arcana = sk["arcana"]
-        athletics = sk["athletics"]
-        deception = sk["deception"]
-        history = sk["history"]
-        insight = sk["insight"]
-        intimidation = sk["intimidation"]
-        investigation = sk["investigation"]
-        medicine = sk["medicine"]
-        nature = sk["nature"]
-        perception = sk["perception"]
-        performance = sk["performance"]
-        persuasion = sk["persuasion"]
-        religion = sk["religion"]
-        sleightOfHand = sk["sleight_of_hand"]
-        stealth = sk["stealth"]
-        survival = sk["survival"]
+        acrobatics = sk["acrobatics"]!
+        animalHandling = sk["animal_handling"]!
+        arcana = sk["arcana"]!
+        athletics = sk["athletics"]!
+        deception = sk["deception"]!
+        history = sk["history"]!
+        insight = sk["insight"]!
+        intimidation = sk["intimidation"]!
+        investigation = sk["investigation"]!
+        medicine = sk["medicine"]!
+        nature = sk["nature"]!
+        perception = sk["perception"]!
+        performance = sk["performance"]!
+        persuasion = sk["persuasion"]!
+        religion = sk["religion"]!
+        sleightOfHand = sk["sleight_of_hand"]!
+        stealth = sk["stealth"]!
+        survival = sk["survival"]!
     }
 }

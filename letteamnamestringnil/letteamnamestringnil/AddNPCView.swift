@@ -121,6 +121,9 @@ struct AddNPCView: View {
                 NavigationLink(destination: PlayerView()) {
                     Text("Create")
                 }
+                .simultaneousGesture(TapGesture.onEnded {
+                    Store.shared.postNPC
+                })
             }
         }
     }

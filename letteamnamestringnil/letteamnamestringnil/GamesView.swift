@@ -101,9 +101,10 @@ struct GameInfoView: View {
                             .font(.subheadline)
                 }
                 Spacer()
-                Button(action: joinGame) {
-                    Image(systemName: "x.square")
-                            .foregroundColor(Color.red)
+                Button(action: {
+                    joinGame()
+                }) {
+                    Image(systemName: "square.and.arrow.down")
                 }
                 NavigationLink(destination: PlayerView(partyCode: gameCode, username: username), isActive: $goPlayer) {
                     EmptyView()
@@ -120,10 +121,13 @@ struct GameInfoView: View {
             // Fallback on earlier versions
         }
     }
-    
+
     func joinGame() {
-        //TODO: remove player from game in database
-        //if player created game, does whole game go away? backend problem
+        if isDM {
+            goDM = true
+        } else {
+            goPlayer = true
+        }
     }
 }
 
