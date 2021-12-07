@@ -1,9 +1,13 @@
-# letteamnamestringnil
+# UM EECS441§3&4 F21 `let teamName: String? = nil`
 
-App Name: TCP
+| Demo  |  Wiki |  Trello  |
+|:-----:|:-----:|:--------:|
+|[<img src="https://eecs441.eecs.umich.edu/img/admin/video.png">][demo_page]|[<img src="https://eecs441.eecs.umich.edu/img/admin/wiki.png">][https://github.com/danlliu/letteamnamestringnil/wiki]|[<img src="https://eecs441.eecs.umich.edu/img/admin/trello.png">][https://trello.com/b/c0FM2SOt/let-teamname-string-nil]|
 
-- [Getting Started](https://github.com/danlliu/letteamnamestringnil/wiki/Getting-Started)
-- [Model and Engine](https://github.com/danlliu/letteamnamestringnil/wiki/Model-and-Engine)
-- [APIs and Controller](https://github.com/danlliu/letteamnamestringnil/wiki/APIs-and-Controller)
-- [View UI/UX](https://github.com/danlliu/letteamnamestringnil/wiki/View-UI-UX)
-- [Team Roster](https://github.com/danlliu/letteamnamestringnil/wiki/Team-Roster)
+![Elevator Pitch](/assets/title.png)
+![Team](/assets/team.png)
+
+[demo_page]: https://youtu.be/sample
+[wiki_page]: https://github.com/danlliu/letteamnamestringnil/wiki
+[process_page]: https://trello.com/b/c0FM2SOt/let-teamname-string-nil
+
