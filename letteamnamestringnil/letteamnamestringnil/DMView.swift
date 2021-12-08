@@ -28,15 +28,6 @@ struct DMView: View {
                 Text("Party code")
                 Text(partyCode)
                     .font(.title2)
-                Button(action: { Task { await switchRoles(); goSwitch = true } }) {
-                    Text("Switch to player")
-                        .foregroundColor(Color.white)
-                        .padding()
-                }
-                .simultaneousGesture(TapGesture().onEnded({Task {await switchRoles()}})) //TODO: do we want this to be this easy?
-                .background(Color.blue)
-                .cornerRadius(10)
-                .padding()
                 
                 NavigationLink(destination: PlayerView(partyCode: partyCode, username: username), isActive: $goSwitch) {
                     EmptyView()
@@ -121,7 +112,6 @@ struct DMView: View {
 
     @available(iOS 15.0.0, *)
     func switchRoles() async {
-        //TODO: backend logic to turn a DM into a player
         print("switching roles...")
         guard let id = await Store.shared.getID() else {
             return
@@ -132,7 +122,7 @@ struct DMView: View {
         if response.csheet != nil {
             await Store.shared.postPlayerData(code: partyCode, playerId: id, isDM: false, csheet: response.csheet)
         } else {
-            await Store.shared.postPlayerData(code: partyCode, playerId: id, isDM: false, csheet: CharacterSheet())
+            await Store.shared.postPlayerData(code: partyCode, playerId: id, isDM: false, csheet: nil)
         }
     }
 }

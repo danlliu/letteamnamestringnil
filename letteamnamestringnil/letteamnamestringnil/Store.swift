@@ -159,15 +159,10 @@ final class Store: ObservableObject {
         switch (response) {
         case .object (let obj):
             let isDM = obj["isDM"] as! Bool
-            if obj["sheet"] == nil {
+            guard let csheet = obj["sheet"] as? [String:Any] else {
                 return Player(id: playerId, isDM: isDM, csheet: nil)
             }
-            let csheet = obj["sheet"] as? [String:Any] ?? nil
-
-            if csheet == nil {
-                return Player(id: playerId, isDM: isDM, csheet: nil)
-            }
-            return Player(id: playerId, isDM: isDM, csheet: CharacterSheet(json: csheet!))
+            return Player(id: playerId, isDM: isDM, csheet: CharacterSheet(json: csheet))
         default:
             return nil
         }
