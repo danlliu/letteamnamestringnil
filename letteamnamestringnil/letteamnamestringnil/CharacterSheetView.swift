@@ -28,6 +28,22 @@ struct CharacterSheetView: View {
 
     @State var newSpellName: String = ""
     @State var newSpellCasts: Int = 0
+    
+    @State var level = 0
+    @State var str = 0
+    @State var dex = 0
+    @State var con = 0
+    @State var int = 0
+    @State var wis = 0
+    @State var char = 0
+    
+    @State var inspiration = 0
+    @State var profBonus = 0
+    
+    @State var perception = 0
+    @State var maxHP = 0
+    @State var curHP = 0
+    @State var tmpHP = 0
 
     init(partyCode: String, username: String) {
         self.partyCode = partyCode
@@ -87,12 +103,14 @@ struct CharacterSheetView: View {
                             HStack {
                                 Text("Character Level:")
                                 Stepper {
-                                    Text("\(csheet.stats.level)")
+                                    Text("\(level)")
                                 } onIncrement: {
                                     csheet.stats.level += 1
+                                    level += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.level -= 1
+                                    level -= 1
                                     update.toggle()
                                 }
                             }
@@ -112,35 +130,35 @@ struct CharacterSheetView: View {
                                     HStack {
                                         Button(action: { () in csheet.basicInfo.alignment = 0; update.toggle() }) {
                                             Text("LG")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 0 ? Color.white : Color.cyan)
                                         Button(action: { () in csheet.basicInfo.alignment = 1; update.toggle() }) {
                                             Text("LN")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 1 ? Color.white : Color.cyan)
                                         Button(action: { () in csheet.basicInfo.alignment = 2; update.toggle() }) {
                                             Text("LE")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 2 ? Color.white : Color.cyan)
                                     }
                                     HStack {
                                         Button(action: { () in csheet.basicInfo.alignment = 3; update.toggle() }) {
                                             Text("NG")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 3 ? Color.white : Color.cyan)
                                         Button(action: { () in csheet.basicInfo.alignment = 4; update.toggle() }) {
                                             Text("TN")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 4 ? Color.white : Color.cyan)
                                         Button(action: { () in csheet.basicInfo.alignment = 5; update.toggle() }) {
                                             Text("NE")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 5 ? Color.white : Color.cyan)
                                     }
                                     HStack {
                                         Button(action: { () in csheet.basicInfo.alignment = 6; update.toggle() }) {
                                             Text("CG")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 6 ? Color.white : Color.cyan)
                                         Button(action: { () in csheet.basicInfo.alignment = 7; update.toggle() }) {
                                             Text("CN")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 7 ? Color.white : Color.cyan)
                                         Button(action: { () in csheet.basicInfo.alignment = 8; update.toggle() }) {
                                             Text("CE")
-                                        }
+                                        }.border(csheet.basicInfo.alignment == 8 ? Color.white : Color.cyan)
                                     }
                                 }
                             }
@@ -172,78 +190,84 @@ struct CharacterSheetView: View {
                             HStack {
                                 Text("STR")
                                 Stepper {
-                                    let str = csheet.stats.abilityScores["strength"]!
                                     Text("\(str)")
                                 } onIncrement: {
                                     csheet.stats.abilityScores["strength"]! += 1
+                                    str += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.abilityScores["strength"]! -= 1
+                                    str -= 1
                                     update.toggle()
                                 }
                             }
                             HStack {
                                 Text("DEX")
                                 Stepper {
-                                    let dex = csheet.stats.abilityScores["dexterity"]!
                                     Text("\(dex)")
                                 } onIncrement: {
                                     csheet.stats.abilityScores["dexterity"]! += 1
+                                    dex += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.abilityScores["dexterity"]! -= 1
+                                    dex -= 1
                                     update.toggle()
                                 }
                             }
                             HStack {
                                 Text("CON")
                                 Stepper {
-                                    let con = csheet.stats.abilityScores["constitution"]!
                                     Text("\(con)")
                                 } onIncrement: {
                                     csheet.stats.abilityScores["constitution"]! += 1
+                                    con += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.abilityScores["constitution"]! -= 1
+                                    con -= 1
                                     update.toggle()
                                 }
                             }
                             HStack {
                                 Text("INT")
                                 Stepper {
-                                    let int = csheet.stats.abilityScores["intelligence"]!
                                     Text("\(int)")
                                 } onIncrement: {
                                     csheet.stats.abilityScores["intelligence"]! += 1
+                                    int += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.abilityScores["intelligence"]! -= 1
+                                    int -= 1
                                     update.toggle()
                                 }
                             }
                             HStack {
                                 Text("WIS")
                                 Stepper {
-                                    let wis = csheet.stats.abilityScores["wisdom"]!
                                     Text("\(wis)")
                                 } onIncrement: {
                                     csheet.stats.abilityScores["wisdom"]! += 1
+                                    wis += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.abilityScores["wisdom"]! -= 1
+                                    wis -= 1
                                     update.toggle()
                                 }
                             }
                             HStack {
                                 Text("CHAR")
                                 Stepper {
-                                    let char = csheet.stats.abilityScores["charisma"]!
                                     Text("\(char)")
                                 } onIncrement: {
                                     csheet.stats.abilityScores["charisma"]! += 1
+                                    char += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.abilityScores["charisma"]! -= 1
+                                    char -= 1
                                     update.toggle()
                                 }
                             }
@@ -252,24 +276,28 @@ struct CharacterSheetView: View {
                             HStack {
                                 Text("Inspiration:")
                                 Stepper {
-                                    Text("\(csheet.stats.inspiration)")
+                                    Text("\(inspiration)")
                                 } onIncrement: {
                                     csheet.stats.inspiration += 1
+                                    inspiration += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.inspiration -= 1
+                                    inspiration -= 1
                                     update.toggle()
                                 }
                             }
                             HStack {
                                 Text("Proficiency:")
                                 Stepper {
-                                    Text("\(csheet.stats.profBonus)")
+                                    Text("\(profBonus)")
                                 } onIncrement: {
                                     csheet.stats.profBonus += 1
+                                    profBonus += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.profBonus -= 1
+                                    profBonus -= 1
                                     update.toggle()
                                 }
                             }
@@ -372,14 +400,16 @@ struct CharacterSheetView: View {
                             }
                             
                             HStack {
-                                Text("Passive Perception: \(csheet.stats.perception)")
+                                Text("Passive Perception: \(perception)")
                                 Stepper {
                                     Text("\(csheet.stats.perception)")
                                 } onIncrement: {
                                     csheet.stats.perception += 1
+                                    perception += 1
                                     update.toggle()
                                 } onDecrement: {
                                     csheet.stats.perception -= 1
+                                    perception -= 1
                                     update.toggle()
                                 }
                             }
@@ -387,30 +417,36 @@ struct CharacterSheetView: View {
                         
                         VStack {
                             Stepper {
-                                Text("Max HP: \(csheet.stats.maxHP)")
+                                Text("Max HP: \(maxHP)")
                             } onIncrement: {
                                 csheet.stats.maxHP += 1
+                                maxHP += 1
                                 update.toggle()
                             } onDecrement: {
                                 csheet.stats.maxHP -= 1
+                                maxHP -= 1
                                 update.toggle()
                             }
                             Stepper {
-                                Text("Current HP: \(csheet.stats.curHP)")
+                                Text("Current HP: \(curHP)")
                             } onIncrement: {
                                 csheet.stats.curHP += 1
+                                curHP += 1
                                 update.toggle()
                             } onDecrement: {
                                 csheet.stats.curHP -= 1
+                                curHP -= 1
                                 update.toggle()
                             }
                             Stepper {
-                                Text("Temporary HP: \(csheet.stats.tmpHP)")
+                                Text("Temporary HP: \(tmpHP)")
                             } onIncrement: {
-                                csheet.stats.curHP += 1
+                                csheet.stats.tmpHP += 1
+                                tmpHP += 1
                                 update.toggle()
                             } onDecrement: {
-                                csheet.stats.curHP -= 1
+                                csheet.stats.tmpHP -= 1
+                                tmpHP -= 1
                                 update.toggle()
                             }
                         }.padding(16)
@@ -535,6 +571,21 @@ struct CharacterSheetView: View {
                         csheet = cs
                     }
                 }
+                level = csheet.stats.level
+                str = csheet.stats.abilityScores["strength"]!
+                dex = csheet.stats.abilityScores["dexterity"]!
+                con = csheet.stats.abilityScores["constitution"]!
+                int = csheet.stats.abilityScores["intelligence"]!
+                wis = csheet.stats.abilityScores["wisdom"]!
+                char = csheet.stats.abilityScores["charisma"]!
+                
+                inspiration = csheet.stats.inspiration
+                profBonus = csheet.stats.profBonus
+                
+                perception = csheet.stats.perception
+                maxHP = csheet.stats.maxHP
+                curHP = csheet.stats.curHP
+                tmpHP = csheet.stats.tmpHP
             }
         } else {
             // Fallback on earlier versions
