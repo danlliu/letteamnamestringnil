@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
@@ -9,6 +10,9 @@ from app.utils import require_auth, gen_code, in_party
 from app.charactersheet import create_character_sheet, json_character_sheet, json_spells
 import app.models
 
+
+sys.path.append('../ml_engine')
+from CharacterGeneration import generate_character
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +43,7 @@ def user(request):
         user = authenticate(username=obj["username"], password=obj["password"])
         login(request, user)
     if not user.is_authenticated:
-        return HttpResponse(status=401)
+        return HttpResponse("Not authenticated", status=401)
     return JsonResponse({
         "id": user.id,
         "username": user.username,
@@ -72,8 +76,8 @@ def join_party(request):
     if len(parties) != 1:
         return HttpResponse(status=400)
     party = parties[0]
-    app.models.UserPartyInfo.create(
-        user=request.user, party=party, is_dm=is_dm, sheet=None)
+    app.models.UserPartyInfo.objects.create(
+        user=request.user, party=party, is_dm=obj["is_dm"], sheet=None)
     return HttpResponse(status=201)
 
 @csrf_exempt
@@ -217,19 +221,47 @@ def party_spells(request, party_code):
     if not in_party(party, request.user):
         return HttpResponse(status=403)
 
-    user_party_info = app.models.UserPartyInfo.objects.filter(party=party_code)
+    user_party_info = app.models.UserPartyInfo.objects.filter(party=party)
 
     result = []
     for userinfo in user_party_info:
-        username = userinfo.user
+        username = userinfo.user.username
         sheet = userinfo.sheet
         dm = userinfo.is_dm
         
-        cur = {}
         if sheet and not dm:
-            cur['user'] = username
-            cur['spells'] = json_spells(sheet)
-            result.append(cur)
+            user_spells = json_spells(sheet)
+           
+            for level in range(10): 
+                for spell in user_spells['by_level'][level]['spells']:
+                    cur_spell = [level, username] 
 
-    return JsonResponse({result})
+                    if spell['damage_type'] != None:
+                        cur_spell += ['ATK', spell['damage_type'], spell['damage'], spell['range']]
+                    elif spell['healing'] != None:
+                        cur_spell += ['HEAL', spell['healing'], spell['range']]
+                    else:
+                        cur_spell += ['DEF/UTIL']
+                
+                    result.append(cur_spell)
+        
+        result.sort()
 
+    return JsonResponse(result, safe=False)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+@require_auth
+def generate(request):
+    try:
+        obj = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse(status=400)
+    if "clss" not in obj or not isinstance(obj["clss"], str):
+        return HttpResponse(status=400)
+    if obj.get("alignment") is not None and not isinstance(obj.get("alignment"), int):
+        return HttpResponse(status=400)
+    clss = obj["clss"]
+    alignment = obj.get("alignment")
+    sheet_json = generate_character(clss, alignment) if alignment is not None else generate_character(clss)
+    return JsonResponse(sheet_json)

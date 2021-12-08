@@ -14,7 +14,7 @@ skills = ["acrobatics", "animal_handling", "arcana", "athletics", "deception", "
 
 spells_same_attrs = ["spellcast_ability", "spell_save_dc", "spell_attack_bonus"]
 
-spell_same_attrs = ["name", "description", "classes", "level", "components", "material", "casting_time", "die_sides", "die_count", "extra_damage", "damage_type", "duration", "range", "school", "target"]
+spell_same_attrs = ["name", "description", "classes", "level", "components", "material", "casting_time", "damage", "healing", "damage_type", "duration", "range", "school", "target"]
 
 character_sheet_schema = {
     "type": "object",

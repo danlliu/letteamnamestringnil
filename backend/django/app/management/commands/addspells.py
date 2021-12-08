@@ -12,15 +12,13 @@ def main():
         with transaction.atomic():
             for name, data in spells.items():
                 # Note: This does not store Higher Spell Slot info
-                die_sides = None
-                die_count = None
-                extra_damage = None
-                if "Damage" in data:
-                    damage_data = data["Damage"]
-                    if "+" in damage_data:
-                        [damage_data, extra_damage] = damage_data.split("+")
-                        extra_damage = int(extra_damage)
-                    [die_count, die_sides] = list(map(int, damage_data.split("d")))
+                healing = data.get("Healing")
+                if name == "Beacon of Hope":
+                    healing = "The maximum HP possible from any Healing"
+                elif name == "Mass Heal":
+                    healing = "Up to 700 HP"
+                elif name == "Regenerate":
+                    healing = "4d8+15"
                 app.models.Spell.objects.create(
                     name=name,
                     description=data["Description"],
@@ -29,9 +27,8 @@ def main():
                     components=data.get("Components"),
                     material=data.get("Material"),
                     casting_time=data.get("Casting Time"),
-                    die_sides=die_sides,
-                    die_count=die_count,
-                    extra_damage=extra_damage,
+                    damage = data.get("Damage"),
+                    healing = healing,
                     damage_type=data.get("Damage Type"),
                     duration=data["Duration"],
                     range=data.get("Range"),

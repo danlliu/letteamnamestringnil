@@ -27,4 +27,5 @@ urlpatterns = [
     path('parties/<str:party_code>/npcs/', views.party_npcs, name='party_npcs'),
     path('parties/<str:party_code>/npcs/<int:npc_id>/', views.npc_info, name='npc_info'),
     path('parties/<str:party_code>/spells/', views.party_spells, name='party_spells'), 
+    path('generate/', views.generate, name='generate'), 
 ]
