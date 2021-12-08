@@ -307,6 +307,7 @@ def fill_in_character(c, level):
         roll20_spells = json.load(rf)
         rf.close()
         roll20_spells = set(roll20_spells.keys())
+        roll20_spells.remove("Eldritch Blast")
         
     for idx, n in enumerate(cls_traits[c['cls']]["spell_slots"]):
         slot = {
@@ -317,6 +318,12 @@ def fill_in_character(c, level):
             lvl = "Level " + str(int(idx))
             if lvl == "Level 0":
                 lvl = "Cantrip"
+                if c['cls'] == 'warlock':
+                    sp = {
+                        "name": "Eldritch Blast",
+                        "charges": 5
+                    }
+                    slot["spells"].append(sp)
 
             spell_list = list(all_spells[lvl].keys())
             spell_list = list(set(spell_list) & set(roll20_spells))
