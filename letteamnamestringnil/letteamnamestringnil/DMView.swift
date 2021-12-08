@@ -147,6 +147,8 @@ struct DMView: View {
                         monsters.append(n)
                     }
                 }
+                
+                synergy = await Store.shared.getSynergy(code: partyCode) as? [[String]] ?? []
             }
         } else {
             // Fallback on earlier versions
