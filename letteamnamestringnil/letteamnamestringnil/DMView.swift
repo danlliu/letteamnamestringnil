@@ -46,12 +46,12 @@ struct DMView: View {
                     Section(header: Text("Widgets")) {
                         WidgetSubview(title: "HP", color: .pink, render: {cs in
                             return "\(cs.stats.curHP)"
-                        }, players: players)
+                        }, players: $players)
                     }
                     Section(header: Text("Players")) {
                         ForEach(players, id: \.id) { (player: Player) in
                             if !player.isDM && player.csheet != nil {
-                                NavigationLink(destination: PlayerView(partyCode: partyCode, username: player.username)) {
+                                NavigationLink(destination: PlayerDetailView(partyCode: partyCode, playerID: player.id)) {
                                     VStack(alignment: .leading) {
                                         Text(player.username)
                                             .font(.headline)

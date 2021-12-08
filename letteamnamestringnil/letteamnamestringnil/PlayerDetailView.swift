@@ -3,11 +3,11 @@ import SwiftUI
 struct PlayerDetailView: View {
     
     var partyCode: String
-    var username: String
+    var playerID: Int
 
-    init(partyCode: String, username: String) {
+    init(partyCode: String, playerID: Int) {
         self.partyCode = partyCode
-        self.username = username
+        self.playerID = playerID
     }
 
 
@@ -106,10 +106,7 @@ struct PlayerDetailView: View {
                 }
             }
             .task {
-                guard let id = await Store.shared.getID() else {
-                    return
-                }
-                let response = await Store.shared.getPlayerData(code: partyCode, playerId: id)
+                let response = await Store.shared.getPlayerData(code: partyCode, playerId: playerID)
                 if let sheet = response?.csheet {
                     names["character"] = sheet.basicInfo.name
                     names["class"] = sheet.basicInfo.className
@@ -134,6 +131,6 @@ struct PlayerDetailView: View {
 
 struct PlayerDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        PlayerDetailView(partyCode: "E44W", username: "tuna_player_485")
+        PlayerDetailView(partyCode: "E44W", playerID: 0)
     }
 }

@@ -12,6 +12,7 @@ struct HomeView: View {
     @State var username: String = "guest"
     // https://stackoverflow.com/questions/57799548/navigationview-and-navigationlink-on-button-click-in-swiftui
     @State var active = false
+    @State var newPartyCode = ""
     
     var body: some View {
         if #available(iOS 15.0, *) {
@@ -59,7 +60,10 @@ struct HomeView: View {
                         await Store.shared.logout()
                         await Store.shared.createAccount(username: username, password: username)
                         await Store.shared.login(username: username, password: username)
-                        await Store.shared.createParty()
+                        guard let code = await Store.shared.createParty() else {
+                            return
+                        }
+                        newPartyCode = code
                         active = true
                     }
                 }) {
@@ -71,7 +75,7 @@ struct HomeView: View {
                 .background(Color.blue)
                 .cornerRadius(40)
                 .padding(8)
-                NavigationLink(destination: GamesView(username: username), isActive: $active) {
+                NavigationLink(destination: DMView(partyCode: newPartyCode, username: username), isActive: $active) {
                     EmptyView()
                 }.hidden()
                 

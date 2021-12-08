@@ -9,17 +9,17 @@ import SwiftUI
 
 struct WidgetSubview: View {
     
-    @State var players: [Player]
+    @Binding var players: [Player]
     
     @State var title: String = "HP"
     @State var color: Color = .purple
     var render: (CharacterSheet) -> String
     
-    init(title: String, color: Color, render: @escaping (CharacterSheet) -> String, players: [Player]) {
+    init(title: String, color: Color, render: @escaping (CharacterSheet) -> String, players: Binding<[Player]>) {
         self.title = title
         self.color = color
         self.render = render
-        self.players = players
+        self._players = players
     }
     
     var body: some View {

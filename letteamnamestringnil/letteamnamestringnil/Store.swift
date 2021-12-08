@@ -94,13 +94,19 @@ final class Store: ObservableObject {
     }
 
     @MainActor
-    func createParty() async {
-        _ = await apiRequest(path: "parties/", method: "POST", body: nil)
+    func createParty() async -> String? {
+        guard case let .object(obj) = await apiRequest(path: "parties/", method: "POST", body: nil) else {
+            return nil
+        }
+        return obj["code"] as? String
     }
 
     @MainActor
-    func joinParty(code: String) async {
-        _ = await apiRequest(path: "parties/join/", method: "POST", body: ["code": code, "is_dm": false])
+    func joinParty(code: String) async -> ()? {
+        guard await apiRequest(path: "parties/join/", method: "POST", body: ["code": code, "is_dm": false]) != nil else {
+            return nil
+        }
+        return ()
     }
 
     @MainActor
