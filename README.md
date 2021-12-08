@@ -2,12 +2,12 @@
 
 | Demo  |  Wiki |  Trello  |
 |:-----:|:-----:|:--------:|
-|[<img src="https://eecs441.eecs.umich.edu/img/admin/video.png">][demo_page]|[<img src="https://eecs441.eecs.umich.edu/img/admin/wiki.png">][https://github.com/danlliu/letteamnamestringnil/wiki]|[<img src="https://eecs441.eecs.umich.edu/img/admin/trello.png">][https://trello.com/b/c0FM2SOt/let-teamname-string-nil]|
+|[<img src="https://eecs441.eecs.umich.edu/img/admin/video.png">][https://youtu.be/HRd6GGIlxz4]|[<img src="https://eecs441.eecs.umich.edu/img/admin/wiki.png">][https://github.com/danlliu/letteamnamestringnil/wiki]|[<img src="https://eecs441.eecs.umich.edu/img/admin/trello.png">][https://trello.com/b/c0FM2SOt/let-teamname-string-nil]|
 
 ![Elevator Pitch](/assets/title.png)
 ![Team](/assets/team.png)
 
-[demo_page]: https://youtu.be/sample
+[demo_page]: https://youtu.be/HRd6GGIlxz4
 [wiki_page]: https://github.com/danlliu/letteamnamestringnil/wiki
 [process_page]: https://trello.com/b/c0FM2SOt/let-teamname-string-nil
 
