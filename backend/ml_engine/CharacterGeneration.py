@@ -229,6 +229,7 @@ def fill_in_character(c, level):
     }
 
     c['equipment'] = generate_inventory(c['cls'], c['background'], c['race'], c['str'], c['dex'], c['con'], cls_traits, weapon_types)
+    c['equipment'] = arr_to_str(c['equipment'])
 
     atks = []
     for a in c['equipment']:
