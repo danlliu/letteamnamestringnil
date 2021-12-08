@@ -194,7 +194,7 @@ struct PlayerView: View {
                             hasCS = false
                         }
                         
-                        synergy = await Store.shared.getSynergy(code: partyCode) as! [[Any]]
+                        synergy = await Store.shared.getSynergy(code: partyCode) as! [[String]]
                     }
         } else {
             // Fallback on earlier versions
