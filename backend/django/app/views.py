@@ -52,9 +52,9 @@ def user(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def logout(request):
+def user_logout(request):
     logout(request)
-    return HttpReponse(status=200)
+    return HttpResponse(status=200)
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
@@ -269,7 +269,17 @@ def generate(request):
         return HttpResponse(status=400)
     if obj.get("alignment") is not None and not isinstance(obj.get("alignment"), int):
         return HttpResponse(status=400)
+    if obj.get("race") is not None and not isinstance(obj.get("race"), str):
+        return HttpResponse(status=400)
+    if obj.get("level") is not None and not isinstance(obj.get("level"), int):
+        return HttpResponse(status=400)
+    if obj.get("name") is not None and not isinstance(obj.get("name"), str):
+        return HttpResponse(status=400)
+
     clss = obj["clss"]
     alignment = obj.get("alignment")
-    sheet_json = generate_character(clss, alignment) if alignment is not None else generate_character(clss)
+    race = obj.get("race")
+    level = obj["level"] if obj.get("level") is not None else 1
+    name = obj.get("name")
+    sheet_json = generate_character(clss, alignment, race, level, name)
     return JsonResponse(sheet_json)
