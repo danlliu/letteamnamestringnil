@@ -1,5 +1,5 @@
-# UM EECS441§3&4 F21
-`let teamName: String? = nil`
+# UM EECS441 § 3&4 F21
+# `let teamName: String? = nil`
 
 | Demo  |  Wiki |  Trello  |
 |:-----:|:-----:|:--------:|
