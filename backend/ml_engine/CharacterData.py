@@ -268,6 +268,8 @@ class DataLists:
         self.item_proficiency_list = remove_banned_strs(self.item_proficiency_list)
         self.language_list = remove_banned_strs(self.language_list)
 
+        self.inventory_list = [s.lower() for s in self.inventory_list]
+
 
     def load_from_file(self, fpath, encoding="utf-8"):
         f = open(fpath, "r", encoding=encoding)
@@ -286,6 +288,8 @@ class DataLists:
         self.inventory_list = data["inventory_list"]
         self.item_proficiency_list = data["item_proficiency_list"]
         self.language_list = data["language_list"]
+
+        self.inventory_list = [s.lower() for s in self.inventory_list]
 
     
     def save_to_file(self, fpath):

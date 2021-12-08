@@ -147,7 +147,7 @@ def get_all_attr_predictions(attr_models, char_dict, column_names):
     return preds
 
 
-def create_cat_model(input_df, cat_input_cols, numeric_input_cols, target_col, target_data_list=None):
+def create_cat_model(input_df, cat_input_cols, numeric_input_cols, target_col, target_data_list=None, batch_size=0):
     all_cols = numeric_input_cols + cat_input_cols
     all_cols.append(target_col)
     df = input_df[all_cols].copy()
@@ -156,9 +156,12 @@ def create_cat_model(input_df, cat_input_cols, numeric_input_cols, target_col, t
 
     train, val, test = np.split(df.sample(frac=1), [int(0.8*len(df)), int(0.9*len(df))])
 
-    train_ds = df_to_dataset(train, batch_size=int(len(train.index) / 8))
-    val_ds = df_to_dataset(val, shuffle=False, batch_size=int(len(val.index) / 8))
-    test_ds = df_to_dataset(test, shuffle=False, batch_size=int(len(test.index) / 8))
+    if batch_size == 0:
+        batch_size = int(len(train.index))
+
+    train_ds = df_to_dataset(train, batch_size=batch_size)
+    val_ds = df_to_dataset(val, shuffle=False, batch_size=batch_size)
+    test_ds = df_to_dataset(test, shuffle=False, batch_size=batch_size)
 
     all_inputs = []
     encoded_features = []
@@ -270,23 +273,11 @@ def create_attr_model(input_df, cat_input_cols, numeric_input_cols, target_col):
         test_results = model.evaluate(test_features, test_labels)
         print(test_results)
 
-        sample = {
-            'cls' : "paladin",
-            "background": "bounty hunter",
-            "race": "mountain dwarf"
-        }
-        print(type(sample))
-        temp = pd.DataFrame(0, index = np.arange(1,2), columns=column_names)
-        for v in sample.values():
-            temp[v][1] = 1
-        print(temp.head())
-        print(model.predict(temp)[0][0])
-
     return model, column_names
 
 
 # training
-def train_models(dataframe, data_list_in, ver, deb, tst):
+def train_models(dataframe_in, item_dataframe_in, data_list_in, ver, deb, tst):
     global verbose
     global debug_mode
     global testing_mode
@@ -297,13 +288,36 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
     
     global data_list
     data_list = data_list_in
-    dataframe = dataframe.drop(dataframe[dataframe.cls == b'apothecary'].index)
-    dataframe = dataframe.drop(dataframe[dataframe.level != 1].index)
+    dataframe_in = dataframe_in.drop(dataframe_in[dataframe_in.cls == b'apothecary'].index)
+    dataframe_in = dataframe_in.drop(dataframe_in[dataframe_in.level != 1].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.cls == b'apothecary'].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == 'Being Worn/equipped'].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Scrap Of Paper With Uninteligible Writing On It"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Of Hemp Rope"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Priest Pack"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Heward's Handy Haversack"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Hairpin Of Color Changing"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Strapped To Backpack"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Including A Hood"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Gallons Water"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Skateboarding Helmet"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Charges"].index)
 
-    dataframe = dataframe[['cls', 'background', 'race', 'alignment', 'str', 'dex', 'con', 'int', 'wis', 'cha']].copy()
+
+
+
+    dataframe = dataframe_in[['cls', 'background', 'race', 'alignment', 'str', 'dex', 'con', 'int', 'wis', 'cha']].copy()
+
+    item_df = item_dataframe_in[['cls', 'background', 'race', 'alignment', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'item']].copy()
+
+    print(dataframe.head())
+    print(item_df.head())
 
     str_cols = ["cls", "background", "race", "alignment"]
     dataframe = trim_strings(dataframe, str_cols)
+    item_df = trim_strings(item_df, str_cols)
+    item_df['item'] = item_df['item'].apply(lambda s: s.lower())
+    print(item_df.head())
 
     if debug_mode and testing_mode:
         print_vals(dataframe, "cls")
@@ -349,9 +363,9 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
         print(test_race_layer(test_race_col))
 
     if debug_mode and testing_mode:
-        train_ds = df_to_dataset(train, batch_size=int(len(train.index) / 8))
-        val_ds = df_to_dataset(val, shuffle=False, batch_size=int(len(val.index) / 8))
-        test_ds = df_to_dataset(test, shuffle=False, batch_size=int(len(test.index) / 8))
+        train_ds = df_to_dataset(train, batch_size=int(len(train.index)))
+        val_ds = df_to_dataset(val, shuffle=False, batch_size=int(len(val.index)))
+        test_ds = df_to_dataset(test, shuffle=False, batch_size=int(len(test.index)))
 
         all_inputs = []
         encoded_features = []
@@ -427,7 +441,7 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
         pred = model.predict(input_dict)
         print(pred)
     
-
+    # Make changes to models here
     align_model = create_cat_model(dataframe, ['cls'], [], 'alignment', target_data_list=data_list.alignment_list)
     race_model = create_cat_model(dataframe, ['cls', 'alignment'], [], 'race', target_data_list=data_list.race_list)
     background_model = create_cat_model(dataframe, ['cls', 'alignment', 'race'], [], 'background', target_data_list=data_list.background_list)
@@ -441,6 +455,9 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
 
     attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
 
+    item_model = create_cat_model(item_df, ['cls', 'background'], ['str', 'dex', 'con'], 'item',
+                            target_data_list=data_list.inventory_list)
+
 
     if debug_mode:
         sample = {
@@ -451,7 +468,19 @@ def train_models(dataframe, data_list_in, ver, deb, tst):
 
         print(get_all_attr_predictions(attr_models, sample, col_names))
 
+    if debug_mode:
+        sample = {
+            'cls' : "wizard",
+            "background": "mercenary veteran",
+            "race": "tiefling",
+            "str": 10,
+            "dex": 14, 
+            "con": 13
+        }
 
-    return align_model, race_model, background_model, attr_models, col_names
+        print(get_cat_prediction(item_model, sample))
+
+
+    return align_model, race_model, background_model, attr_models, item_model, col_names
 
 
