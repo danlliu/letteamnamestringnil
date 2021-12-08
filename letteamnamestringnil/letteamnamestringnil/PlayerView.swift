@@ -43,6 +43,7 @@ struct PlayerView: View {
     init(partyCode: String = "", username: String = "") {
         self._partyCode = State(wrappedValue: partyCode)
         self._username = State(wrappedValue: username)
+        self.synergy = []
     }
     
     var body: some View {
