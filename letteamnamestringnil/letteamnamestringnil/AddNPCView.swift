@@ -17,6 +17,7 @@ struct AddNPCView: View {
         self.username = username
     }
 
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State private var type: String = ""
     @State private var name: String = ""
     @State private var playerClass: String = "Select a class"
@@ -97,17 +98,21 @@ struct AddNPCView: View {
             
             Spacer()
             
-            NavigationLink(destination: DMView(partyCode: partyCode, username: username)) {
+            Button(action: {
+                if #available(iOS 15.0, *) {
+                    Task {
+                        await generateRandomNPC()
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                } else {
+                    // Fallback on earlier versions
+                }
+            }) {
                 Text("Generate Random Character")
                     .foregroundColor(Color.white)
                     .padding()
             }
             .disabled(blankEntry())
-            .simultaneousGesture(TapGesture().onEnded{ if #available(iOS 15.0, *) {
-                Task { await generateRandomNPC() }
-            } else {
-                // Fallback on earlier versions
-            } })
             .background(blankEntry() ? Color.gray : Color.blue)
             .cornerRadius(10)
             
