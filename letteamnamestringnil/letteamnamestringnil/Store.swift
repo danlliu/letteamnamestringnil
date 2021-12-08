@@ -218,11 +218,23 @@ final class Store: ObservableObject {
         ])
     }
 
+    @MainActor
+    func getSynergy(code: String) async -> [Any] {
+        let response = await apiRequest(path: "/parties/\(code)/spells/", method: "GET", body: nil)
+        switch (response) {
+        case .arrayObj (let arr):
+            return arr
+        default:
+            exit(1)
+        }
+    }
+    
     // inspired by https://stackoverflow.com/questions/40034034/swift-function-returning-two-different-types/40034233
     enum ApiResult {
         case object([String:Any])
         case array([Int])
         case arrayStr([String])
+        case arrayObj([Any])
     }
     
     @MainActor
@@ -258,6 +270,8 @@ final class Store: ObservableObject {
                 return ApiResult.array(jsonArr)
             } else if let jsonArr = try? JSONSerialization.jsonObject(with: data) as? [String] {
                 return ApiResult.arrayStr(jsonArr)
+            } else if let jsonArr = try? JSONSerialization.jsonObject(with: data) as? [Any] {
+                return ApiResult.arrayObj(jsonArr)
             } else {
                 print("getData: failed JSON deserialization")
                 return ApiResult.array([])

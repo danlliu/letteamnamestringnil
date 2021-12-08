@@ -38,6 +38,8 @@ struct PlayerView: View {
     @State private var ac = "12"
     @State private var alignment = 2
     
+    @State private var synergy: [[String]]
+    
     init(partyCode: String = "", username: String = "") {
         self._partyCode = State(wrappedValue: partyCode)
         self._username = State(wrappedValue: username)
@@ -139,6 +141,39 @@ struct PlayerView: View {
                     //                }
                 }
                         .listStyle(GroupedListStyle())
+                List {
+                    Section(header: ListHeader(title: "Spell Synergy")) {
+                        ForEach(synergy, id: \.self) { spell in
+                            if spell[2] == "ATK" {
+                                HStack {
+                                    Image(systemName: "scope")
+                                    Text("lvl \(spell[0]) (\(spell[1])")
+                                    Text("\(spell[2]) \(spell[4]) \(spell[3])")
+                                    Text("range \(spell[5])")
+                                }
+                            } else if spell[2] == "HEAL" {
+                                HStack {
+                                    Image(systemName: "heart")
+                                    Text("lvl \(spell[0]) (\(spell[1]))")
+                                    Text("+\(spell[3]) HP")
+                                    Text("range \(spell[4])")
+                                }
+                            } else if spell[2] == "DEF" {
+                                HStack {
+                                    Image(systemName: "checkerboard.shield")
+                                    Text("lvl \(spell[0]) (\(spell[1]))")
+                                    Text("defensive spell")
+                                }
+                            } else if spell[2] == "UTIL" {
+                                HStack {
+                                    Image(systemName: "gear.circle")
+                                    Text("lvl \(spell[0]) (\(spell[1]))")
+                                    Text("utility spell")
+                                }
+                            }
+                        }
+                    }
+                }
             }
                     .task {
                         let response = await Store.shared.getPlayerData(code: partyCode, playerId: Store.shared.getID())
@@ -158,6 +193,8 @@ struct PlayerView: View {
                         } else {
                             hasCS = false
                         }
+                        
+                        synergy = Store.shared.getSynergy(code: partyCode) as! [[Any]]
                     }
         } else {
             // Fallback on earlier versions
