@@ -34,7 +34,7 @@ data_list = cd.DataLists()
 
 
 def init_data():
-    basepath = path.abspath('')
+    basepath = path.abspath(path.join(__file__, ".."))
     fpath = path.abspath(path.join(basepath, "..", "game_data", "saved_character_data_lists.json"))
     if exists(fpath) and not reload_char_data:
         if verbose:
@@ -296,6 +296,7 @@ def load_dataframe(keras_mode, reload_dataframe):
             item_df = item_df.drop(columns=["Unnamed: 0"])
 
     return df, item_df
+
 
 
 # Models

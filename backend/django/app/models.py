@@ -110,9 +110,8 @@ class Spell(models.Model):
     components = models.CharField(max_length=255, default=None, blank=True, null=True) # List stored as string. Use json.dumps
     material = models.CharField(max_length = 511, default=None, blank=True, null=True)
     casting_time = models.CharField(max_length=255, default="1 action", blank=True, null=True)
-    die_sides = models.IntegerField(default=None, blank=True, null=True) # ex. 2d12+3: die_sides=12, die_count=2, extra_damage=3
-    die_count = models.IntegerField(default=None, blank=True, null=True)
-    extra_damage = models.IntegerField(default=None, blank=True, null=True)
+    damage = models.CharField(max_length=255, default=None, null=True)
+    healing = models.CharField(max_length=255, default=None, null=True)
     damage_type = models.CharField(max_length=255, default=None, blank=True, null=True)
     duration = models.CharField(max_length=255)
     range = models.CharField(max_length=255, null=True)
