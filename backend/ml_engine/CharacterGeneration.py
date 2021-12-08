@@ -301,6 +301,14 @@ def fill_in_character(c, level):
         all_spells = json.load(rf)
         rf.close()
         all_spells = all_spells[c['cls'].title()]
+        print(list(all_spells.keys()))
+
+        rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "roll_20_all_spells.json")), "r", encoding="utf-8")
+        roll20_spells = json.load(rf)
+        rf.close()
+        roll20_spells = set(roll20_spells.keys())
+        print(roll20_spells)
+        
     for idx, n in enumerate(cls_traits[c['cls']]["spell_slots"]):
         slot = {
             "slots": n,
@@ -312,6 +320,7 @@ def fill_in_character(c, level):
                 lvl = "Cantrip"
 
             spell_list = list(all_spells[lvl].keys())
+            spell_list = list(set(spell_list) & set(roll20_spells))
             spells = rand_from_arr(spell_list, n)
             for s in spells:
                 sp = {
