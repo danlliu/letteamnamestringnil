@@ -356,9 +356,13 @@ def generate_character(cls, alignment=None, race='', level=1, name=""):
 
     character = {}
 
+    cls = cls.lower()
+    race = race.lower()
+
     if alignment:
         if isinstance(alignment, int):
             alignment = dl.alignment_list[alignment]
+        alignment = alignment.lower()
         character = {
             'cls': cls,
             'alignment': alignment

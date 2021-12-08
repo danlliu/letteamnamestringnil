@@ -359,6 +359,7 @@ def run_engine(args = sys.argv[1:]):
     --reload-char-data : Reload character data from files
     --overwrite, -o : Overwrite existing character data
     --reload-dataframe, -r : Overwrite the existing input dataframe
+    --train, -t : Retrain the ML models. Should take 5-10 minutes
     """
 
     if "--help" in args or "-h" in args:
@@ -419,11 +420,6 @@ def run_engine(args = sys.argv[1:]):
 
         with open("saved_models/model_col_names.json", "w", encoding='utf-8') as f:
             json.dump(col_names, f, ensure_ascii=False)
-
-    else:
-        align_model, race_model, background_model, attr_models, item_model, col_names = get_models()
-
-
     
 
 
