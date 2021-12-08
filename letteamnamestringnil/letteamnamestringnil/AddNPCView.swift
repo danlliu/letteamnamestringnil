@@ -173,7 +173,7 @@ struct AddNPCView: View {
             return
         }
         self.newid = newID
-        await Store.shared.generateNPCML(code: partyCode, npcid: newid, className: playerClass.lowercased(), alignment: alignments.firstIndex(of: playerAlignment), friendly: type == "friendly")
+        await Store.shared.generateNPCML(code: partyCode, npcid: newid, className: playerClass.lowercased(), alignment: alignments.firstIndex(of: playerAlignment), race: nil, level: level, name: name, friendly: type == "friendly")
         print("generating random character sheet...")
     }
 }

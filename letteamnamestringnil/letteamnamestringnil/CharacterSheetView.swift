@@ -62,6 +62,12 @@ struct CharacterSheetView: View {
                     Text("Save changes")
                 }
                 
+                if let username = username {
+                    NavigationLink(destination: GenerateCharacter(partyCode: partyCode, username: username)) {
+                        Text("Regenerate character sheet")
+                    }
+                }
+                
                 List {
                     Divider()
                     Group {

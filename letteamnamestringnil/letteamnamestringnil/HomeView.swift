@@ -56,6 +56,7 @@ struct HomeView: View {
                 
                 Button(action: {
                     Task {
+                        await Store.shared.logout()
                         await Store.shared.createAccount(username: username, password: username)
                         await Store.shared.login(username: username, password: username)
                         await Store.shared.createParty()
@@ -84,6 +85,8 @@ struct HomeView: View {
                 .cornerRadius(40)
                 .padding(8)
                 
+            }.task {
+                await Store.shared.logout()
             }
         } else {
             // Fallback on earlier versions

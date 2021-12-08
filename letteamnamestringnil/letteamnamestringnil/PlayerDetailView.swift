@@ -1,16 +1,9 @@
-//
-//  PlayerDetailView.swift
-//  letteamnamestringnil
-//
-//  Created by Abigail Fox on 10/31/21.
-//
-
 import SwiftUI
 
 struct PlayerDetailView: View {
     
-    var partyCode = "E44W"
-    var username = "tuna_player_485"
+    var partyCode: String
+    var username: String
 
     init(partyCode: String, username: String) {
         self.partyCode = partyCode
@@ -19,18 +12,31 @@ struct PlayerDetailView: View {
 
 
     // TODO: get UI
-    @State private var characterName = "Eaydan Falconmoon"
-    @State private var className = "Fighter"
+    @State private var names = [
+        "character": "Eaydan Falconmoon",
+        "class": "Fighter"
+    ]
     @State private var race = "Human"
     @State private var level = 4
     @State private var xp = 0
     @State private var maxHP = 28
-    @State private var tempHP = 28
+    @State private var curHP = 28
     @State private var prof = "+4"
     @State private var speed = "30"
     @State private var initiative = "+5"
     @State private var ac = "12"
     @State private var alignment = 2
+    
+    // This should be @State or similar, but I think there's a bug in the Swift
+    //  runtime that causes a crash if we do that
+    @State private var scores = [
+        "strength": 10,
+        "dexterity": 8,
+        "constitution": 6,
+        "intelligence": 8,
+        "wisdom": 7,
+        "charisma": -5
+    ]
     
     var body: some View {
         if #available(iOS 15.0, *) {
@@ -45,10 +51,10 @@ struct PlayerDetailView: View {
                 }
                 //            Spacer()
                 Group {
-                    Text(characterName)
-                    Text("\(className), \(race)")
+                    Text(names["character"]!)
+                    Text("\(names["class"]!), \(race)")
                 }
-                Text("HP \(tempHP)/\(maxHP)")
+                Text("HP \(curHP)/\(maxHP)")
                 Spacer()
                 Group {
                     VStack {
@@ -83,15 +89,15 @@ struct PlayerDetailView: View {
                     List {
                         HStack {
                             VStack(alignment: .leading) {
-                                Text("STR\t10")
-                                Text("DEX\t8")
-                                Text("CON\t6")
+                                Text("STR\t\(scores["strength"]!)")
+                                Text("DEX\t\(scores["dexterity"]!)")
+                                Text("CON\t\(scores["constitution"]!)")
                             }
                             Spacer()
                             VStack(alignment: .leading) {
-                                Text("INT \t8")
-                                Text("WIS\t7")
-                                Text("CHR\t-5")
+                                Text("INT \t\(scores["intelligence"]!)")
+                                Text("WIS\t\(scores["wisdom"]!)")
+                                Text("CHR\t\(scores["charisma"]!)")
                             }
                         }
                         //TODO: what even is this
@@ -103,21 +109,22 @@ struct PlayerDetailView: View {
                 guard let id = await Store.shared.getID() else {
                     return
                 }
-                guard let response = await Store.shared.getPlayerData(code: partyCode, playerId: id) else {
-                    return
+                let response = await Store.shared.getPlayerData(code: partyCode, playerId: id)
+                if let sheet = response?.csheet {
+                    names["character"] = sheet.basicInfo.name
+                    names["class"] = sheet.basicInfo.className
+                    race = sheet.basicInfo.race
+                    level = sheet.stats.level
+                    xp = sheet.stats.xp
+                    maxHP = sheet.stats.maxHP
+                    curHP = sheet.stats.curHP
+                    prof = "\(sheet.stats.profBonus)"
+                    speed = "\(sheet.stats.speed)"
+                    initiative = "\(sheet.stats.initiative)"
+                    ac = "\(sheet.stats.ac)"
+                    alignment = sheet.basicInfo.alignment
+                    scores = sheet.stats.abilityScores
                 }
-                characterName = response.csheet!.basicInfo.name
-                className = response.csheet!.basicInfo.className
-                race = response.csheet!.basicInfo.race
-                level = response.csheet!.stats.level
-                xp = response.csheet!.stats.xp
-                maxHP = response.csheet!.stats.maxHP
-                tempHP = response.csheet!.stats.tmpHP
-                prof = "\(response.csheet!.stats.profBonus)"
-                speed = "\(response.csheet!.stats.speed)"
-                initiative = "\(response.csheet!.stats.initiative)"
-                ac = "\(response.csheet!.stats.ac)"
-                alignment = response.csheet!.basicInfo.alignment
             }
         } else {
             // Fallback on earlier versions

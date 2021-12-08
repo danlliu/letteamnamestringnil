@@ -17,6 +17,7 @@ struct GenerateCharacter: View {
         self.username = username
     }
 
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State private var name: String = ""
     @State private var playerClass: String = "Select a class"
     @State private var playerAlignment: String = "Select an alignment"
@@ -57,7 +58,9 @@ struct GenerateCharacter: View {
             }
             .listStyle(.plain)
             
-            NavigationLink(destination: PlayerView(partyCode: partyCode, username: name)) {
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }) {
                 Text("Generate Character")
                     .foregroundColor(Color.white)
                     .padding()
@@ -106,7 +109,7 @@ struct GenerateCharacter: View {
         guard let id = await Store.shared.getID() else {
             return
         }
-        await Store.shared.generatePlayerML(code: partyCode, playerId: id, className: playerClass.lowercased(), alignment: alignments.firstIndex(of: playerAlignment))
+        await Store.shared.generatePlayerML(code: partyCode, playerId: id, className: playerClass.lowercased(), alignment: alignments.firstIndex(of: playerAlignment), race: nil, level: level, name: name)
         print("generating character sheet...")
     }
 }

@@ -59,6 +59,7 @@ struct GamesView: View {
                     .task {
                         
                         if await Store.shared.getID() == nil {
+                            await Store.shared.logout()
                             await Store.shared.createAccount(username: username, password: username)
                             await Store.shared.login(username: username, password: username)
                         }

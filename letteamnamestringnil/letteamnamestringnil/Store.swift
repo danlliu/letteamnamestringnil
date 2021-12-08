@@ -47,6 +47,11 @@ final class Store: ObservableObject {
             return -1
         }
     }
+    
+    @MainActor
+    func logout() async {
+        let _ = await apiRequest(path: "logout/", method: "POST", body: nil)
+    }
 
     @MainActor
     func createAccount(username: String, password: String) async -> Int {
@@ -178,10 +183,13 @@ final class Store: ObservableObject {
     }
     
     @MainActor
-    func generatePlayerML(code: String, playerId: Int, className: String, alignment: Int?) async {
+    func generatePlayerML(code: String, playerId: Int, className: String, alignment: Int?, race: String?, level: Int?, name: String?) async {
         let response = await apiRequest(path: "generate/", method: "POST", body: [
             "clss": className,
-            "alignment": alignment ?? NSNull()
+            "alignment": alignment ?? NSNull(),
+            "race": race ?? NSNull(),
+            "level": level ?? NSNull(),
+            "name": name ?? NSNull(),
         ])
         switch (response) {
         case .object (var sheet):
@@ -197,10 +205,13 @@ final class Store: ObservableObject {
     }
     
     @MainActor
-    func generateNPCML(code: String, npcid: Int, className: String, alignment: Int?, friendly: Bool) async {
+    func generateNPCML(code: String, npcid: Int, className: String, alignment: Int?, race: String?, level: Int?, name: String?, friendly: Bool) async {
         let response = await apiRequest(path: "generate/", method: "POST", body: [
             "clss": className,
-            "alignment": alignment ?? NSNull()
+            "alignment": alignment ?? NSNull(),
+            "race": race ?? NSNull(),
+            "level": level ?? NSNull(),
+            "name": name ?? NSNull(),
         ])
         switch (response) {
         case .object (var sheet):
