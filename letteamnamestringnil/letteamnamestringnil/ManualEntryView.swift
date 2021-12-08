@@ -172,7 +172,7 @@ struct ManualEntryView: View {
             }
             .listStyle(.grouped)
             
-            NavigationLink(destination: PlayerView()) {
+            NavigationLink(destination: PlayerView(partyCode: partyCode, username: name)) {
                 Text("Generate Character")
                     .foregroundColor(Color.white)
                     .padding()

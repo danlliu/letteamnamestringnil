@@ -26,8 +26,7 @@ struct AddNPCView: View {
     @State private var goCSV = false
     @State private var newid = 0
     
-    private var classes = ["Aarakocra", "Bugbear", "Centaur", "Dragonborn", "Dwarf", "Elf", "Gensai", "Goblin", "Human", "Minotaur", "Orc", "Tortle",
-                            "Vedalken", "Warforged"]
+    private var classes = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"]
     private var alignments = ["Lawful good", "Neutral good", "Chaotic good", "Lawful neutral", "True neutral", "Chaotic neutral", "Lawful evil",
                                 "Neutral evil", "Chaotic evil"]
     
@@ -122,7 +121,10 @@ struct AddNPCView: View {
                     ncs.basicInfo.className = playerClass
                     ncs.basicInfo.alignment = alignments.firstIndex(of: playerAlignment)!
                     ncs.basicInfo.isFriendly = type == "friendly"
-                    self.newid = await Store.shared.makeNPC(code: partyCode, sheet: ncs)
+                    guard let newID = await Store.shared.makeNPC(code: partyCode, sheet: ncs) else {
+                        return
+                    }
+                    self.newid = newID
                     goCSV = true
                 }
             } else {
@@ -167,8 +169,11 @@ struct AddNPCView: View {
     @available(iOS 15.0.0, *)
     func generateRandomNPC() async {
         //TODO: need database and ML
-        self.newid = await Store.shared.makeNPC(code: partyCode, sheet: nil)
-        await Store.shared.generateNPCML(code: partyCode, npcid: newid, className: playerClass, alignment: alignments.firstIndex(of: playerAlignment), friendly: type == "friendly")
+        guard let newID = await Store.shared.makeNPC(code: partyCode, sheet: nil) else {
+            return
+        }
+        self.newid = newID
+        await Store.shared.generateNPCML(code: partyCode, npcid: newid, className: playerClass.lowercased(), alignment: alignments.firstIndex(of: playerAlignment), friendly: type == "friendly")
         print("generating random character sheet...")
     }
 }

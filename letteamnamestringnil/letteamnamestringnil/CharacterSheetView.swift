@@ -51,7 +51,10 @@ struct CharacterSheetView: View {
                 
                 Button(action: { Task {
                     if username != nil {
-                        await Store.shared.postPlayerData(code: partyCode, playerId: Store.shared.getID(), isDM: false, csheet: csheet)
+                        guard let id = await Store.shared.getID() else {
+                            return
+                        }
+                        await Store.shared.postPlayerData(code: partyCode, playerId: id, isDM: false, csheet: csheet)
                     } else {
                         await Store.shared.postNPCData(code: partyCode, npcid: npcid!, csheet: csheet)
                     }
@@ -513,13 +516,16 @@ struct CharacterSheetView: View {
             }
             .task {
                 if username != nil {
-                    let response = await Store.shared.getPlayerData(code: partyCode, playerId: Store.shared.getID())
-                    if let cs = response.csheet {
+                    guard let id = await Store.shared.getID() else {
+                        return
+                    }
+                    let response = await Store.shared.getPlayerData(code: partyCode, playerId: id)
+                    if let cs = response?.csheet {
                         csheet = cs
                     }
                 } else {
                     let response = await Store.shared.getNPCData(code: partyCode, npcid: npcid!)
-                    if let cs = response.csheet {
+                    if let cs = response?.csheet {
                         csheet = cs
                     }
                 }

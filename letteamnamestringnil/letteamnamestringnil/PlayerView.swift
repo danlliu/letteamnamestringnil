@@ -144,32 +144,39 @@ struct PlayerView: View {
                         .listStyle(GroupedListStyle())
                 List {
                     Section(header: ListHeader(title: "Spell Synergy")) {
+                        if synergy.isEmpty {
+                            Text("No spells found")
+                        }
                         ForEach(synergy, id: \.self) { spell in
-                            if spell[2] == "ATK" {
+                            if spell[3] == "ATK" {
                                 HStack {
                                     Image(systemName: "scope")
-                                    Text("lvl \(spell[0]) (\(spell[1])")
-                                    Text("\(spell[2]) \(spell[4]) \(spell[3])")
-                                    Text("range \(spell[5])")
+                                    Text(spell[2]).font(Font.system(size: 10))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
+                                    Text("\(spell[3]) \(spell[5]) \(spell[4])").font(Font.system(size: 8))
+                                    Text("range \(spell[6])").font(Font.system(size: 8))
                                 }
-                            } else if spell[2] == "HEAL" {
+                            } else if spell[3] == "HEAL" {
                                 HStack {
                                     Image(systemName: "heart")
-                                    Text("lvl \(spell[0]) (\(spell[1]))")
-                                    Text("+\(spell[3]) HP")
-                                    Text("range \(spell[4])")
+                                    Text(spell[2]).font(Font.system(size: 10))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
+                                    Text(spell[4]).font(Font.system(size: 8))
+                                    Text("range \(spell[5])").font(Font.system(size: 8))
                                 }
-                            } else if spell[2] == "DEF" {
+                            } else if spell[3] == "DEF" {
                                 HStack {
                                     Image(systemName: "checkerboard.shield")
-                                    Text("lvl \(spell[0]) (\(spell[1]))")
-                                    Text("defensive spell")
+                                    Text(spell[2]).font(Font.system(size: 10))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
+                                    Text("defensive spell").font(Font.system(size: 8))
                                 }
-                            } else if spell[2] == "UTIL" {
+                            } else if spell[3] == "UTIL" {
                                 HStack {
                                     Image(systemName: "gear.circle")
-                                    Text("lvl \(spell[0]) (\(spell[1]))")
-                                    Text("utility spell")
+                                    Text(spell[2]).font(Font.system(size: 10))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
+                                    Text("utility spell").font(Font.system(size: 8))
                                 }
                             }
                         }
@@ -177,8 +184,11 @@ struct PlayerView: View {
                 }
             }
                     .task {
-                        let response = await Store.shared.getPlayerData(code: partyCode, playerId: Store.shared.getID())
-                        if let cs = response.csheet {
+                        guard let id = await Store.shared.getID() else {
+                            return
+                        }
+                        let response = await Store.shared.getPlayerData(code: partyCode, playerId: id)
+                        if let cs = response?.csheet {
                             hasCS = true
                             characterName = cs.basicInfo.name
                             className = cs.basicInfo.className
@@ -195,7 +205,7 @@ struct PlayerView: View {
                             hasCS = false
                         }
                         
-                        synergy = await Store.shared.getSynergy(code: partyCode) as! [[String]]
+                        synergy = await Store.shared.getSynergy(code: partyCode) as? [[String]] ?? []
                     }
         } else {
             // Fallback on earlier versions

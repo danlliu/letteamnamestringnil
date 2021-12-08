@@ -100,7 +100,12 @@ struct PlayerDetailView: View {
                 }
             }
             .task {
-                let response = await Store.shared.getPlayerData(code: partyCode, playerId: Store.shared.getID())
+                guard let id = await Store.shared.getID() else {
+                    return
+                }
+                guard let response = await Store.shared.getPlayerData(code: partyCode, playerId: id) else {
+                    return
+                }
                 characterName = response.csheet!.basicInfo.name
                 className = response.csheet!.basicInfo.className
                 race = response.csheet!.basicInfo.race

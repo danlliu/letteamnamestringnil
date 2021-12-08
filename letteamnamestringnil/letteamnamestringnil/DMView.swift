@@ -97,18 +97,20 @@ struct DMView: View {
                 monsters = []
                 let party = await Store.shared.getPartyInfo(code: partyCode)
                 for player in party.players {
-                    let p = await Store.shared.getPlayerData(code: partyCode, playerId: player.id)
+                    guard let p = await Store.shared.getPlayerData(code: partyCode, playerId: player.id) else {
+                        continue
+                    }
                     players.append(p)
                 }
                 let npcs = await Store.shared.getNPCs(code: partyCode)
                 for npc in npcs {
-                    let n = await Store.shared.getNPCData(code: partyCode, npcid: npc)
-                    if n.csheet != nil {
-                        if n.csheet!.basicInfo.isFriendly {
-                            friendlys.append(n)
-                        } else {
-                            monsters.append(n)
-                        }
+                    guard let n = await Store.shared.getNPCData(code: partyCode, npcid: npc), n.csheet != nil else {
+                        continue
+                    }
+                    if n.csheet!.basicInfo.isFriendly {
+                        friendlys.append(n)
+                    } else {
+                        monsters.append(n)
                     }
                 }
             }
@@ -121,11 +123,16 @@ struct DMView: View {
     func switchRoles() async {
         //TODO: backend logic to turn a DM into a player
         print("switching roles...")
-        let response = await Store.shared.getPlayerData(code: partyCode, playerId: Store.shared.getID())
+        guard let id = await Store.shared.getID() else {
+            return
+        }
+        guard let response = await Store.shared.getPlayerData(code: partyCode, playerId: id) else {
+            return
+        }
         if response.csheet != nil {
-            await Store.shared.postPlayerData(code: partyCode, playerId: Store.shared.getID(), isDM: false, csheet: response.csheet)
+            await Store.shared.postPlayerData(code: partyCode, playerId: id, isDM: false, csheet: response.csheet)
         } else {
-            await Store.shared.postPlayerData(code: partyCode, playerId: Store.shared.getID(), isDM: false, csheet: CharacterSheet())
+            await Store.shared.postPlayerData(code: partyCode, playerId: id, isDM: false, csheet: CharacterSheet())
         }
     }
 }
