@@ -64,6 +64,7 @@ def parties(request):
         # Create a new party
         party = app.models.Party.objects.create(code=gen_code())
         app.models.UserPartyInfo.objects.create(user=request.user, party=party, is_dm=True, sheet=None)
+        return JsonResponse({"code": party.code})
 
     parties = app.models.UserPartyInfo.objects.all().filter(user=request.user)
     return JsonResponse(list(map(lambda p: p.party.code, parties)), safe=False)
