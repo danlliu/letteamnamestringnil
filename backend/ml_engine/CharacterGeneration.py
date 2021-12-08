@@ -224,7 +224,8 @@ def fill_in_character(c, level):
         "simple weapon": ['dagger', 'javelins', 'light hammer', 'mace', 'quarterstaff', 'light crossbow', 'dart', 'shortbow'],
         "simple melee weapon": ['dagger', 'javelins', 'light hammer', 'mace', 'quarterstaff'],
         "martial weapon": ['battleaxe', 'longsword', 'rapier', 'shortsword', 'blowgun', 'heavy crossbow', 'hand crossbow', 'longbow', "handaxe"],
-        "martial melee weapon": ['battleaxe', 'longsword', 'rapier', 'shortsword', "handaxe"]
+        "martial melee weapon": ['battleaxe', 'longsword', 'rapier', 'shortsword', "handaxe"],
+        "musical instrument": ['lute', 'tiny banjo']
     }
 
     c['equipment'] = generate_inventory(c['cls'], c['background'], c['race'], c['str'], c['dex'], c['con'], cls_traits, weapon_types)
@@ -301,13 +302,11 @@ def fill_in_character(c, level):
         all_spells = json.load(rf)
         rf.close()
         all_spells = all_spells[c['cls'].title()]
-        print(list(all_spells.keys()))
 
         rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "roll_20_all_spells.json")), "r", encoding="utf-8")
         roll20_spells = json.load(rf)
         rf.close()
         roll20_spells = set(roll20_spells.keys())
-        print(roll20_spells)
         
     for idx, n in enumerate(cls_traits[c['cls']]["spell_slots"]):
         slot = {
