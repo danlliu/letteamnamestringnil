@@ -427,7 +427,7 @@ def train_models(dataframe_in, item_dataframe_in, data_list_in, ver, deb, tst):
         pred = model.predict(input_dict)
         print(pred)
     
-
+    # Make changes to models here
     align_model = create_cat_model(dataframe, ['cls'], [], 'alignment', target_data_list=data_list.alignment_list)
     race_model = create_cat_model(dataframe, ['cls', 'alignment'], [], 'race', target_data_list=data_list.race_list)
     background_model = create_cat_model(dataframe, ['cls', 'alignment', 'race'], [], 'background', target_data_list=data_list.background_list)
