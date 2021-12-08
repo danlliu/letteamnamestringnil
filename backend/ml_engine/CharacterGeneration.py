@@ -39,7 +39,59 @@ def to_score(n):
     return int(n / 2 - 5)
 
 
-def fill_in_character(c):
+def generate_inventory(item_model, cls, background, race, str, dex, con, cls_traits, weapon_types):
+    sample = {
+        'cls' : cls,
+        "background": background,
+        "race": race,
+        "str": str,
+        "dex": dex, 
+        "con": con
+    }
+
+    pred_from_model = models.get_cat_prediction(item_model, sample)[0]
+    print(pred_from_model)
+
+    fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
+    data_list = cd.DataLists()
+    data_list.load_from_file(fpath)
+
+    equipt = []
+    for a in cls_traits[cls]['starting_inv']:
+        if len(a) == 1 and a[0] not in weapon_types.keys():
+            equipt.append(a[0])
+
+        else:
+            init_len = len(a)        
+            count = 1
+            for n, i in enumerate(a):
+                if i in weapon_types.keys():
+                    a = a + weapon_types[i]
+                    a.remove(i)
+                elif i[-1].isdigit():
+                    count = int(re.match('.*?([0-9]+)$', i).group(1))
+                    a[n] = (i.rstrip('1234567890* '))
+
+            idxs = []
+            for i in a:
+                idxs.append(pred_from_model[data_list.inventory_list.index(i)])
+
+            max_pred = idxs.index(max(idxs))
+
+            if (max_pred < init_len or a[max_pred] == 'javelins') and count > 1:
+                item = a[max_pred]
+                item += " *{}".format(count)
+
+                equipt.append(item)
+            else:
+                equipt.append(a[max_pred])
+            
+    print(equipt)
+    return equipt
+        
+
+
+def fill_in_character(c, item_model, level):
     fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "class_traits.json"))
     f = open(fpath, 'r', encoding="utf-8")
     cls_traits = json.load(f)
@@ -49,17 +101,53 @@ def fill_in_character(c):
     c['name'] = ''
     c['clss'] = c['cls']
 
-    c['level'] = 1
+
+    c['level'] = level
     c['experience_points'] = 0
     c['inspiration'] = 0
-    c['proficiency_bonus'] = 2
-    c['passive_wisdom'] = 0
 
-    c['armor_class'] = 10 + to_score(c['dex'])
-    c['initiative'] = to_score(c['dex'])
+    c['abilities'] = {
+        "strength": c['str'],
+        "dexterity": c['dex'],
+        "constitution": c['con'],
+        "intelligence": c['int'],
+        "wisdom": c['wis'],
+        "charisma": c['cha']
+    }
 
     c['hit_dice'] = cls_traits[c['cls']]["hit dice"]
     c['max_hp'] = c['hit_dice']
+
+    if level > 1:
+        for _ in range(level - 1):
+            # level scaling
+            modifier = 1.039
+            skipped = []
+            num_to_redo = 0
+            for i in c['abilities']:
+                new_val = int(round(float(c['abilities'][i]) * modifier))
+                if new_val == c['abilities'][i]:
+                    skipped.append(i)
+                else:
+                    c['abilities'][i] = new_val
+                if c['abilities'][i] > 20:
+                    c['abilities'][i] = 20
+                    modifier += 0.006
+                    num_to_redo += 1
+            if num_to_redo > 0 and num_to_redo < 6:
+                for n in range(num_to_redo):
+                    if n < len(skipped):
+                        new_val = int(round(float(c['abilities'][skipped[n]]) * modifier))
+                        c['abilities'][skipped[n]] = new_val
+
+            c['max_hp'] += random.randint(1, c['hit_dice']) + c['abilities']['constitution']
+
+    c['proficiency_bonus'] = int(2 + ((level - 1)/4))
+    c['passive_wisdom'] = 0
+
+    c['armor_class'] = 10 + to_score(c['abilities']["dexterity"])
+    c['initiative'] = to_score(c['abilities']["dexterity"])
+
     c['cur_hp'] = c['max_hp']
     c['temp_hp'] = 0
 
@@ -71,24 +159,22 @@ def fill_in_character(c):
     race_traits = json.load(rf)
     rf.close()
 
-
     c['speed'] = 30
     c['height'] = "6 ft"
-    c['weight'] = "220 lbs"
+    c['weight'] = "180 lbs"
 
     for r, val in race_traits.items():
-        if r == c['race']:
+        if r == c['race'].title():
             c['speed'] = val['Speed']
             c['height'] = val['Size']['Height']
             c['weight'] = val['Size']['Weight']
             break
         elif 'Subclasses' in list(val.keys()):
-            if c['race'] in val['Subclasses']:
+            if c['race'].title() in val['Subclasses']:
                 c['speed'] = val['Speed']
                 c['height'] = val['Size']['Height']
                 c['weight'] = val['Size']['Weight']
                 break
-
 
 
     del race_traits
@@ -117,27 +203,16 @@ def fill_in_character(c):
 
     del race_abil
 
-
     c['other_proficiencies_skills'] = arr_to_str(cls_traits[c['cls']]['proficiencies'])
 
-
-
-
     weapon_types = {
-        "simple weapon": ['club', 'dagger', 'javelin', 'light hammer', 'mace', 'quarterstaff', 'light crossbow', 'dart', 'shortbow'],
-        "simple melee weapon": ['club', 'dagger', 'javelin', 'light hammer', 'mace', 'quarterstaff'],
-        "martial weapon": ['battleaxe', 'longsword', 'pike', 'rapier', 'shortsword', 'glaive', 'blowgun', 'heavy crossbow', 'hand crossbow', 'longbow', "handaxe"],
-        "martial melee weapon": ['battleaxe', 'longsword', 'pike', 'rapier', 'shortsword', 'glaive', "handaxe"]
+        "simple weapon": ['dagger', 'javelins', 'light hammer', 'mace', 'quarterstaff', 'light crossbow', 'dart', 'shortbow'],
+        "simple melee weapon": ['dagger', 'javelins', 'light hammer', 'mace', 'quarterstaff'],
+        "martial weapon": ['battleaxe', 'longsword', 'rapier', 'shortsword', 'blowgun', 'heavy crossbow', 'hand crossbow', 'longbow', "handaxe"],
+        "martial melee weapon": ['battleaxe', 'longsword', 'rapier', 'shortsword', "handaxe"]
     }
 
-
-    equipt = []
-    for a in cls_traits[c['cls']]['starting_inv']:
-        item = rand_from_arr(a, 1)[0]
-        if item in weapon_types.keys():
-            item = rand_from_arr(weapon_types[item], 1)[0]
-        equipt.append(item)
-    c['equipment'] = arr_to_str(equipt)
+    c['equipment'] = generate_inventory(item_model, c['cls'], c['background'], c['race'], c['str'], c['dex'], c['con'], cls_traits, weapon_types)
 
     atks = []
     for a in c['equipment']:
@@ -147,15 +222,6 @@ def fill_in_character(c):
                 atks.append(b)
 
     c['attacks'] = arr_to_str(atks)
-                
-    c['abilities'] = {
-        "strength": c['str'],
-        "dexterity": c['dex'],
-        "constitution": c['con'],
-        "intelligence": c['int'],
-        "wisdom": c['wis'],
-        "charisma": c['cha']
-    }
 
     c['saving'] = {
         "strength": False,
@@ -242,8 +308,6 @@ def fill_in_character(c):
 
     c['spells']['by_level'].append({"slots": 0, "spells": []})
 
-
-    
     del c['cls']
 
     del c['str']
@@ -258,11 +322,11 @@ def fill_in_character(c):
 
 
 
-def generate_character(cls, alignment):
+def generate_character(cls, alignment, level):
     fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
     dl = cd.DataLists()
     dl.load_from_file(fpath)
-    align_model, race_model, background_model, attr_models, col_names = engine.get_models()
+    align_model, race_model, background_model, attr_models, item_model, col_names = engine.get_models()
 
     rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "abilities_by_race.json")), "r", encoding="utf-8")
     race_traits = json.load(rf)
@@ -325,6 +389,6 @@ def generate_character(cls, alignment):
     del dl
     del race_traits
 
-    character = fill_in_character(character)
+    character = fill_in_character(character, item_model, level)
 
     return character

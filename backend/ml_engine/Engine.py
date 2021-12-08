@@ -143,9 +143,11 @@ def keras_encode(df):
 
 def load_dataframe(keras_mode, reload_dataframe):
     df = None
+    item_df = pd.DataFrame()
+    basepath = path.abspath('')
+    keras_df_outfile = path.abspath(path.join(basepath, "..", "training_data", "fully_cleaned", "keras_training_dataframe.csv"))
+    keras_item_outfile = path.abspath(path.join(basepath, "..", "training_data", "fully_cleaned", "keras_item_training_dataframe.csv"))
     if keras_mode:
-        basepath = path.abspath('')
-        keras_df_outfile = path.abspath(path.join(basepath, "..", "training_data", "fully_cleaned", "keras_training_dataframe.csv"))
         df = None
         if reload_dataframe:
             df = create_dataframe()
@@ -155,8 +157,9 @@ def load_dataframe(keras_mode, reload_dataframe):
                 df.pop(tag)
 
             if verbose:
-                print("Saving keras dataframe to file... ", end="", flush=True)
+                print("Saving keras dataframes to file... ", end="", flush=True)
             df.to_csv(keras_df_outfile, sep="|", quotechar='"')
+            
             if verbose:
                 print("Success")
         else:
@@ -167,6 +170,7 @@ def load_dataframe(keras_mode, reload_dataframe):
             16:ast.literal_eval, 17:ast.literal_eval, 18:ast.literal_eval})
 
             df = df.drop(columns=["Unnamed: 0"])
+            
 
             if verbose:
                 print("Success")
@@ -174,8 +178,7 @@ def load_dataframe(keras_mode, reload_dataframe):
         if verbose:
             print("Final cleaning...", flush=True)
 
-        # TODO: figure this bs out
-        list_cols = ["proficient_skills", "proficient_saves", "attacks", "features", "inventory", "proficient_items", "languages"]
+        list_cols = ["proficient_skills", "proficient_saves", "attacks", "features", "proficient_items", "languages"]
         for tag in list_cols:
             # df[tag] = [np.asarray(l).astype(np.str) for l in df[tag]]
             df.pop(tag)
@@ -211,7 +214,46 @@ def load_dataframe(keras_mode, reload_dataframe):
             #df[tag] = [np.str(i) for i in df[tag]]
             df[tag] = df[tag].astype('|S')
 
-        
+
+        if reload_dataframe:
+            item_dataframe_in = df[['cls', 'background', 'race', 'alignment', 'str', 'dex', 'con', 'int', 'wis', 'cha', 'inventory']].copy()
+            print(item_dataframe_in.head())
+
+            num_rows = int(len(item_dataframe_in.index))
+            count_at = int(num_rows / 100)
+            count_iter = 0
+            temp_df = pd.DataFrame()
+
+            for idx, row in item_dataframe_in.iterrows():
+                if verbose and idx % count_at == 0:
+                    print(count_iter, "%")
+                    count_iter += 1
+                
+                for item in row['inventory']:
+                    temp = {
+                        'cls': row['cls'], 
+                        'background': row['background'], 
+                        'race': row['race'], 
+                        'alignment': row['alignment'], 
+                        'str': row['str'], 
+                        'dex': row['dex'], 
+                        'con': row['con'], 
+                        'int': row['int'], 
+                        'wis': row['wis'], 
+                        'cha': row['cha'],
+                        'item': item
+                    }
+                    temp_df = temp_df.append(temp, ignore_index=True)
+                if idx % 8 == 0:
+                    item_df = item_df.append(temp_df, ignore_index=True)
+                    temp_df = pd.DataFrame()
+            item_df = item_df.append(temp_df, ignore_index=True)
+
+            item_df.to_csv(keras_item_outfile, sep="|", quotechar='"')
+        else:
+            item_df = pd.read_csv(keras_item_outfile, sep="|", quotechar='"', skipinitialspace=True)
+            item_df = item_df.drop(columns=["Unnamed: 0"])
+
 
         if verbose:
             print("Complete")
@@ -239,6 +281,8 @@ def load_dataframe(keras_mode, reload_dataframe):
                 json.dump(crossed_tags, outfile, ensure_ascii=False)
             if verbose:
                 print("Success")
+            item_df = pd.read_csv(keras_item_outfile, sep="|", quotechar='"', skipinitialspace=True)
+            item_df = item_df.drop(columns=["Unnamed: 0"])
         else:
             if verbose:
                 print("Loading dataframe from file... ", end="", flush=True)
@@ -248,8 +292,10 @@ def load_dataframe(keras_mode, reload_dataframe):
             temp.close()
             if verbose:
                 print("Success")
+            item_df = pd.read_csv(keras_item_outfile, sep="|", quotechar='"', skipinitialspace=True)
+            item_df = item_df.drop(columns=["Unnamed: 0"])
 
-    return df
+    return df, item_df
 
 
 def get_models():
@@ -265,19 +311,21 @@ def get_models():
     wis_model = tf.keras.models.load_model('saved_models/wis_model')
     cha_model = tf.keras.models.load_model('saved_models/cha_model')
 
+    item_model = tf.keras.models.load_model('saved_models/item_model')
+
     attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
 
     with open("saved_models/model_col_names.json", "r", encoding='utf-8') as f:
         col_names = json.load(f)
 
-    return align_model, race_model, background_model, attr_models, col_names
+    return align_model, race_model, background_model, attr_models, item_model, col_names
 
 
 ## -- CHARACTER GENERATOR -- ##
 # moved to CharacterGeneration.py
 
-def generate_character(cls, alignment=''):
-    return gen.generate_character(cls, alignment)
+def generate_character(cls, alignment='', level=1):
+    return gen.generate_character(cls, alignment, level)
 
 
 ## -- TRAINING ENGINE -- ##
@@ -331,7 +379,7 @@ def run_engine(args = sys.argv[1:]):
 
     init_data()
     keras_mode = True
-    df = load_dataframe(keras_mode, reload_dataframe)
+    df, item_df = load_dataframe(keras_mode, reload_dataframe)
     
     align_model = None
     race_model = None
@@ -344,7 +392,7 @@ def run_engine(args = sys.argv[1:]):
         print("Training Models...")
         print()
 
-        align_model, race_model, background_model, attr_models, col_names = models.train_models(df, data_list, verbose, debug_mode, testing_mode)
+        align_model, race_model, background_model, attr_models, item_model, col_names = models.train_models(df, item_df, data_list, verbose, debug_mode, testing_mode)
 
         align_model.save('saved_models/align_model')
         race_model.save('saved_models/race_model')
@@ -355,12 +403,13 @@ def run_engine(args = sys.argv[1:]):
         attr_models[3].save('saved_models/int_model')
         attr_models[4].save('saved_models/wis_model')
         attr_models[5].save('saved_models/cha_model')
+        item_model.save('saved_models/item_model')
 
         with open("saved_models/model_col_names.json", "w", encoding='utf-8') as f:
             json.dump(col_names, f, ensure_ascii=False)
 
     else:
-        align_model, race_model, background_model, attr_models, col_names = get_models()
+        align_model, race_model, background_model, attr_models, item_model, col_names = get_models()
 
 
     

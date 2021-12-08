@@ -17,8 +17,8 @@
         },
         "Size": {
             "Classification": "Medium",
-            "Height": "6+ ft",
-            "Weight": "250+ lbs"
+            "Height": "7 ft",
+            "Weight": "260 lbs"
         },
         "Speed": 30,
         "Racial Abilities": {
@@ -106,7 +106,7 @@
         },
         "Size": {
             "Classification": "Medium",
-            "Height": "4-5 ft",
+            "Height": "4.5 ft",
             "Weight": "150 lbs"
         },
         "Speed": 25,
@@ -181,7 +181,7 @@
         },
         "Size": {
             "Classification": "Medium",
-            "Height": "5-6 ft",
+            "Height": "6 ft",
             "Weight": "150 lbs"
         },
         "Speed": 30,
@@ -292,7 +292,7 @@
         },
         "Size": {
             "Classification": "Small",
-            "Height": "3-4 ft",
+            "Height": "3.5 ft",
             "Weight": "40 lbs"
         },
         "Speed": 25,
@@ -352,8 +352,8 @@
         },
         "Size": {
             "Classification": "Medium",
-            "Height": "5-6 ft",
-            "Weight": "150 lbs"
+            "Height": "6 ft",
+            "Weight": "160 lbs"
         },
         "Speed": 30,
         "Racial Abilities": {
@@ -443,8 +443,8 @@
         },
         "Size": {
             "Classification": "medium",
-            "Height": "5-7 ft",
-            "Weight": "200 lbs"
+            "Height": "6.5 ft",
+            "Weight": "230 lbs"
         },
         "Speed": 30,
         "Racial Abilities": {
@@ -493,7 +493,8 @@
         },
         "Size": {
             "Classification": "medium",
-            "Height": "5-7 ft"
+            "Height": "6 ft",
+            "Weight": "180 lbs"
         },
         "Speed": 30,
         "Racial Abilities": {
@@ -520,7 +521,8 @@
         },
         "Size": {
             "Classification": "medium",
-            "Height": "5-7 ft"
+            "Height": "5.8 ft",
+            "Weight": "190 lbs"
         },
         "Speed": 30,
         "Racial Abilities": {
@@ -568,7 +570,8 @@
         },
         "Size": {
             "Classification": "medium",
-            "Height": "5-7 ft"
+            "Height": "6 ft",
+            "Weight": "195 lbs"
         },
         "Speed": 30,
         "Racial Abilities": {

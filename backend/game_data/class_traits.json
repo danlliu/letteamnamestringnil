@@ -34,7 +34,7 @@
                 "explorer's pack"
             ],
             [
-                "javelin *4"
+                "javelins *4"
             ]
         ],
         "features": [
@@ -162,7 +162,7 @@
                 "light crossbow"
             ],
             [
-                "bolts *20"
+                "bolt *20"
             ],
             [
                 "priest's pack",
@@ -300,7 +300,7 @@
                 "light crossbow"
             ],
             [
-                "bolts *20"
+                "bolt *20"
             ],
             [
                 "explorer's pack",
@@ -673,7 +673,6 @@
                 "component pouch"
             ],
             [
-                "scholar's pack",
                 "explorer's pack"
             ],
             [
@@ -736,7 +735,6 @@
                 "component pouch"
             ],
             [
-                "scholar's pack",
                 "explorer's pack"
             ],
             [
