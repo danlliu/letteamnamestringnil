@@ -300,32 +300,34 @@ def load_dataframe(keras_mode, reload_dataframe):
 
 # Models
 def get_classifier_models():
-    align_model = tf.keras.models.load_model('saved_models/align_model')
-    race_model = tf.keras.models.load_model('saved_models/race_model')
-    background_model = tf.keras.models.load_model('saved_models/background_model')
+    basepath = path.abspath(path.join(__file__, ".."))
+    align_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/align_model'))
+    race_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/race_model'))
+    background_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/background_model'))
 
     return align_model, race_model, background_model
 
 
 def get_attr_models():
-    str_model = tf.keras.models.load_model('saved_models/str_model')
-    dex_model = tf.keras.models.load_model('saved_models/dex_model')
-    con_model = tf.keras.models.load_model('saved_models/con_model')
-    int_model = tf.keras.models.load_model('saved_models/int_model')
-    wis_model = tf.keras.models.load_model('saved_models/wis_model')
-    cha_model = tf.keras.models.load_model('saved_models/cha_model')
+    basepath = path.abspath(path.join(__file__, ".."))
+    str_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/str_model'))
+    dex_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/dex_model'))
+    con_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/con_model'))
+    int_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/int_model'))
+    wis_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/wis_model'))
+    cha_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/cha_model'))
 
     attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
 
-    basepath = path.abspath('')
-    with open("saved_models/model_col_names.json", "r", encoding='utf-8') as f:
+    with open(path.join(basepath, "saved_models/model_col_names.json"), "r", encoding='utf-8') as f:
         col_names = json.load(f)
 
     return attr_models, col_names
 
 
 def get_item_model():
-    item_model = tf.keras.models.load_model('saved_models/item_model')
+    basepath = path.abspath(path.join(__file__, ".."))
+    item_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/item_model'))
     return item_model
 
 
