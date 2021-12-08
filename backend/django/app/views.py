@@ -1,7 +1,7 @@
 import json
 import logging
 import sys
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -51,6 +51,12 @@ def user(request):
     })
 
 @csrf_exempt
+@require_http_methods(["POST"])
+def logout(request):
+    logout(request)
+    return HttpReponse(status=200)
+
+@csrf_exempt
 @require_http_methods(["GET", "POST"])
 @require_auth
 def parties(request):
@@ -69,8 +75,10 @@ def join_party(request):
     try:
         obj = json.loads(request.body)
     except json.JSONDecodeError:
+        print("Failed to decode join party JSON")
         return HttpResponse(status=400)
     if "code" not in obj or "is_dm" not in obj:
+        print("code or is_dm missing")
         return HttpResponse(status=400)
     parties = app.models.Party.objects.filter(code=obj["code"])
     if len(parties) != 1:
@@ -234,7 +242,7 @@ def party_spells(request, party_code):
            
             for level in range(10): 
                 for spell in user_spells['by_level'][level]['spells']:
-                    cur_spell = [level, username] 
+                    cur_spell = [str(level), username, spell['name']] 
 
                     if spell['damage_type'] != None:
                         cur_spell += ['ATK', spell['damage_type'], spell['damage'], spell['range']]
