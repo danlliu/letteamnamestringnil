@@ -157,7 +157,7 @@ def create_cat_model(input_df, cat_input_cols, numeric_input_cols, target_col, t
     train, val, test = np.split(df.sample(frac=1), [int(0.8*len(df)), int(0.9*len(df))])
 
     if batch_size == 0:
-        batch_size = int(len(train.index) / 8)
+        batch_size = int(len(train.index) / 16)
 
     train_ds = df_to_dataset(train, batch_size=batch_size)
     val_ds = df_to_dataset(val, shuffle=False, batch_size=batch_size)
@@ -442,7 +442,7 @@ def train_models(dataframe_in, item_dataframe_in, data_list_in, ver, deb, tst):
     attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
 
     item_model = create_cat_model(item_df, ['cls', 'race', 'background'], ['str', 'dex', 'con'], 'item',
-                            target_data_list=data_list.inventory_list, batch_size=256)
+                            target_data_list=data_list.inventory_list, batch_size=512)
 
 
     if debug_mode:
