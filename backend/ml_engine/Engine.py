@@ -34,7 +34,7 @@ data_list = cd.DataLists()
 
 
 def init_data():
-    basepath = path.abspath('')
+    basepath = path.abspath(path.join(__file__, ".."))
     fpath = path.abspath(path.join(basepath, "..", "game_data", "saved_character_data_lists.json"))
     if exists(fpath) and not reload_char_data:
         if verbose:
@@ -253,21 +253,21 @@ def load_dataframe(keras_mode, reload_dataframe):
 
 
 def get_models():
-    basepath = path.abspath('')
-    align_model = tf.keras.models.load_model('saved_models/align_model')
-    race_model = tf.keras.models.load_model('saved_models/race_model')
-    background_model = tf.keras.models.load_model('saved_models/background_model')
+    basepath = path.abspath(path.join(__file__, ".."))
+    align_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/align_model'))
+    race_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/race_model'))
+    background_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/background_model'))
 
-    str_model = tf.keras.models.load_model('saved_models/str_model')
-    dex_model = tf.keras.models.load_model('saved_models/dex_model')
-    con_model = tf.keras.models.load_model('saved_models/con_model')
-    int_model = tf.keras.models.load_model('saved_models/int_model')
-    wis_model = tf.keras.models.load_model('saved_models/wis_model')
-    cha_model = tf.keras.models.load_model('saved_models/cha_model')
+    str_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/str_model'))
+    dex_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/dex_model'))
+    con_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/con_model'))
+    int_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/int_model'))
+    wis_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/wis_model'))
+    cha_model = tf.keras.models.load_model(path.join(basepath, 'saved_models/cha_model'))
 
     attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
 
-    with open("saved_models/model_col_names.json", "r", encoding='utf-8') as f:
+    with open(path.join(basepath, "saved_models/model_col_names.json"), "r", encoding='utf-8') as f:
         col_names = json.load(f)
 
     return align_model, race_model, background_model, attr_models, col_names
