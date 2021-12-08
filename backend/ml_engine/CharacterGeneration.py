@@ -356,8 +356,10 @@ def generate_character(cls, alignment=None, race='', level=1, name=""):
 
     character = {}
 
-    cls = cls.lower()
-    race = race.lower()
+    if cls:
+        cls = cls.lower()
+    if race:
+        race = race.lower()
 
     if alignment:
         if isinstance(alignment, int):
