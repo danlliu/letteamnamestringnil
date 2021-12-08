@@ -324,8 +324,8 @@ def get_models():
 ## -- CHARACTER GENERATOR -- ##
 # moved to CharacterGeneration.py
 
-def generate_character(cls, alignment='', level=1):
-    return gen.generate_character(cls, alignment, level)
+def generate_character(cls, alignment='', race='', level=1):
+    return gen.generate_character(cls, alignment, race=race, level=level)
 
 
 ## -- TRAINING ENGINE -- ##

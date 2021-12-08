@@ -50,7 +50,6 @@ def generate_inventory(item_model, cls, background, race, str, dex, con, cls_tra
     }
 
     pred_from_model = models.get_cat_prediction(item_model, sample)[0]
-    print(pred_from_model)
 
     fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
     data_list = cd.DataLists()
@@ -86,7 +85,6 @@ def generate_inventory(item_model, cls, background, race, str, dex, con, cls_tra
             else:
                 equipt.append(a[max_pred])
             
-    print(equipt)
     return equipt
         
 
@@ -322,7 +320,7 @@ def fill_in_character(c, item_model, level):
 
 
 
-def generate_character(cls, alignment, level):
+def generate_character(cls, alignment, race='', level=1):
     fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
     dl = cd.DataLists()
     dl.load_from_file(fpath)
@@ -352,22 +350,24 @@ def generate_character(cls, alignment, level):
 
         character['alignment'] = dl.alignment_list[(int(np.argmax(align_pred)))]
     
-
-    race_pred = models.get_cat_prediction(race_model, character)
-    # print(race_pred)
-    race_pred = list(race_pred[0])
-    max_val = max(list(race_pred))
-    max_idx = list(race_pred).index(max_val)
-    character['race'] = str(dl.race_list[max_idx])
-    while True:
-        if character['race'] in race_traits:
-            break
-        if max_val < 0.0:
-            break
-        race_pred[max_idx] = -1.0
+    if race:
+        character['race'] = race
+    else:
+        race_pred = models.get_cat_prediction(race_model, character)
+        # print(race_pred)
+        race_pred = list(race_pred[0])
         max_val = max(list(race_pred))
         max_idx = list(race_pred).index(max_val)
-        character['race'] = dl.race_list[max_idx]
+        character['race'] = str(dl.race_list[max_idx])
+        while True:
+            if character['race'] in race_traits:
+                break
+            if max_val < 0.0:
+                break
+            race_pred[max_idx] = -1.0
+            max_val = max(list(race_pred))
+            max_idx = list(race_pred).index(max_val)
+            character['race'] = dl.race_list[max_idx]
 
     bg_pred = models.get_cat_prediction(background_model, character)
     # print(bg_pred)
