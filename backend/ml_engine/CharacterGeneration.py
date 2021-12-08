@@ -24,16 +24,6 @@ def arr_to_str(arr):
 def rand_from_arr(arr, n):
     return random.sample(arr, n)
 
-def long_name(s):
-    long_names = {
-        'str': 'strength',
-        'dex': 'dexterity',
-        'con': 'constitution',
-        'int': 'intelligence',
-        'wis': 'wisdom',
-        'cha': 'charisma'
-    }
-    return long_names[s]
 
 def to_score(n):
     return int(n / 2 - 5)
@@ -155,7 +145,7 @@ def fill_in_character(c, level):
                         new_val = int(round(float(c['abilities'][skipped[n]]) * modifier))
                         c['abilities'][skipped[n]] = new_val
 
-            c['max_hp'] += random.randint(1, c['hit_dice']) + c['abilities']['constitution']
+            c['max_hp'] += random.randint(1, c['hit_dice']) + to_score(c['abilities']['constitution'])
 
     c['proficiency_bonus'] = int(2 + ((level - 1)/4))
     c['passive_wisdom'] = 0
@@ -289,7 +279,7 @@ def fill_in_character(c, level):
         c['skills'][s] = True
 
     c['spells'] = {
-        "spellcast_ability": long_name(cls_traits[c['cls']]["spellcasting_mod"]),
+        "spellcast_ability": to_long_name(cls_traits[c['cls']]["spellcasting_mod"]),
         "spell_save_dc": 8 + to_score(c["abilities"][to_long_name(cls_traits[c['cls']]["spellcasting_mod"])]) + c['proficiency_bonus'],
         "spell_attack_bonus": to_score(c["abilities"][to_long_name(cls_traits[c['cls']]["spellcasting_mod"])]) + c['proficiency_bonus'],
         "by_level": []        
