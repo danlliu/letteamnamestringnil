@@ -179,7 +179,7 @@ struct PlayerView: View {
                             }
                         }
                     }
-                }
+                }.listStyle(GroupedListStyle())
             }.task {
                 players = []
                 let party = await Store.shared.getPartyInfo(code: partyCode)
