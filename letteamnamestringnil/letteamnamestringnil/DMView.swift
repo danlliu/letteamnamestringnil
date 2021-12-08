@@ -20,6 +20,8 @@ struct DMView: View {
     @State private var friendlys: [NPC] = []
     @State private var monsters: [NPC] = []
     
+    @State private var synergy: [[String]] = []
+    
     @State var goSwitch = false
 
     var body: some View {
@@ -77,6 +79,47 @@ struct DMView: View {
                         HStack {
                             Image(systemName: "plus.circle")
                             Text("Add NPC")
+                        }
+                    }
+                }
+                .listStyle(.grouped)
+                List {
+                    Section(header: ListHeader(title: "Spell Synergy")) {
+                        if synergy.isEmpty {
+                            Text("No spells found")
+                        }
+                        ForEach(synergy, id: \.self) { spell in
+                            if spell[3] == "ATK" {
+                                HStack {
+                                    Image(systemName: "scope")
+                                    Text(spell[2]).font(Font.system(size: 10))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
+                                    Text("\(spell[3]) \(spell[5]) \(spell[4])").font(Font.system(size: 8))
+                                    Text("range \(spell[6])").font(Font.system(size: 8))
+                                }
+                            } else if spell[3] == "HEAL" {
+                                HStack {
+                                    Image(systemName: "heart")
+                                    Text(spell[2]).font(Font.system(size: 10))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
+                                    Text(spell[4]).font(Font.system(size: 8))
+                                    Text("range \(spell[5])").font(Font.system(size: 8))
+                                }
+                            } else if spell[3] == "DEF" {
+                                HStack {
+                                    Image(systemName: "checkerboard.shield")
+                                    Text(spell[2]).font(Font.system(size: 10))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
+                                    Text("defensive spell").font(Font.system(size: 8))
+                                }
+                            } else if spell[3] == "UTIL" {
+                                HStack {
+                                    Image(systemName: "gear.circle")
+                                    Text(spell[2]).font(Font.system(size: 10))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
+                                    Text("utility spell").font(Font.system(size: 8))
+                                }
+                            }
                         }
                     }
                 }
