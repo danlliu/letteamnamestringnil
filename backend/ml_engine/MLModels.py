@@ -157,7 +157,7 @@ def create_cat_model(input_df, cat_input_cols, numeric_input_cols, target_col, t
     train, val, test = np.split(df.sample(frac=1), [int(0.8*len(df)), int(0.9*len(df))])
 
     if batch_size == 0:
-        batch_size = int(len(train.index) / 16)
+        batch_size = int(len(train.index))
 
     train_ds = df_to_dataset(train, batch_size=batch_size)
     val_ds = df_to_dataset(val, shuffle=False, batch_size=batch_size)
@@ -290,7 +290,21 @@ def train_models(dataframe_in, item_dataframe_in, data_list_in, ver, deb, tst):
     data_list = data_list_in
     dataframe_in = dataframe_in.drop(dataframe_in[dataframe_in.cls == b'apothecary'].index)
     dataframe_in = dataframe_in.drop(dataframe_in[dataframe_in.level != 1].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.cls == b'apothecary'].index)
     item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == 'Being Worn/equipped'].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Scrap Of Paper With Uninteligible Writing On It"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Of Hemp Rope"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Priest Pack"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Heward's Handy Haversack"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Hairpin Of Color Changing"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Strapped To Backpack"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Including A Hood"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Gallons Water"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Skateboarding Helmet"].index)
+    item_dataframe_in = item_dataframe_in.drop(item_dataframe_in[item_dataframe_in.item == "Charges"].index)
+
+
+
 
     dataframe = dataframe_in[['cls', 'background', 'race', 'alignment', 'str', 'dex', 'con', 'int', 'wis', 'cha']].copy()
 
@@ -349,9 +363,9 @@ def train_models(dataframe_in, item_dataframe_in, data_list_in, ver, deb, tst):
         print(test_race_layer(test_race_col))
 
     if debug_mode and testing_mode:
-        train_ds = df_to_dataset(train, batch_size=int(len(train.index) / 8))
-        val_ds = df_to_dataset(val, shuffle=False, batch_size=int(len(val.index) / 8))
-        test_ds = df_to_dataset(test, shuffle=False, batch_size=int(len(test.index) / 8))
+        train_ds = df_to_dataset(train, batch_size=int(len(train.index)))
+        val_ds = df_to_dataset(val, shuffle=False, batch_size=int(len(val.index)))
+        test_ds = df_to_dataset(test, shuffle=False, batch_size=int(len(test.index)))
 
         all_inputs = []
         encoded_features = []
@@ -441,8 +455,8 @@ def train_models(dataframe_in, item_dataframe_in, data_list_in, ver, deb, tst):
 
     attr_models = [str_model, dex_model, con_model, int_model, wis_model, cha_model]
 
-    item_model = create_cat_model(item_df, ['cls', 'race', 'background'], ['str', 'dex', 'con'], 'item',
-                            target_data_list=data_list.inventory_list, batch_size=512)
+    item_model = create_cat_model(item_df, ['cls', 'background'], ['str', 'dex', 'con'], 'item',
+                            target_data_list=data_list.inventory_list)
 
 
     if debug_mode:

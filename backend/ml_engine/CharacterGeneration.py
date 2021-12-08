@@ -39,7 +39,20 @@ def to_score(n):
     return int(n / 2 - 5)
 
 
-def generate_inventory(item_model, cls, background, race, str, dex, con, cls_traits, weapon_types):
+def to_long_name(s):
+    names = {
+        "str": "strength",
+        "dex": "dexterity",
+        "con":"constitution",
+        "int": "intelligence",
+        "wis": "wisdom",
+        "cha": "charisma"
+    }
+
+    return names[s]
+
+
+def generate_inventory(cls, background, race, str, dex, con, cls_traits, weapon_types):
     sample = {
         'cls' : cls,
         "background": background,
@@ -48,6 +61,8 @@ def generate_inventory(item_model, cls, background, race, str, dex, con, cls_tra
         "dex": dex, 
         "con": con
     }
+
+    item_model = engine.get_item_model()
 
     pred_from_model = models.get_cat_prediction(item_model, sample)[0]
 
@@ -84,12 +99,14 @@ def generate_inventory(item_model, cls, background, race, str, dex, con, cls_tra
                 equipt.append(item)
             else:
                 equipt.append(a[max_pred])
+
+    del item_model
             
     return equipt
         
 
 
-def fill_in_character(c, item_model, level):
+def fill_in_character(c, level):
     fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "class_traits.json"))
     f = open(fpath, 'r', encoding="utf-8")
     cls_traits = json.load(f)
@@ -210,7 +227,7 @@ def fill_in_character(c, item_model, level):
         "martial melee weapon": ['battleaxe', 'longsword', 'rapier', 'shortsword', "handaxe"]
     }
 
-    c['equipment'] = generate_inventory(item_model, c['cls'], c['background'], c['race'], c['str'], c['dex'], c['con'], cls_traits, weapon_types)
+    c['equipment'] = generate_inventory(c['cls'], c['background'], c['race'], c['str'], c['dex'], c['con'], cls_traits, weapon_types)
 
     atks = []
     for a in c['equipment']:
@@ -271,8 +288,8 @@ def fill_in_character(c, item_model, level):
 
     c['spells'] = {
         "spellcast_ability": long_name(cls_traits[c['cls']]["spellcasting_mod"]),
-        "spell_save_dc": 8 + to_score(c[cls_traits[c['cls']]["spellcasting_mod"]]) + c['proficiency_bonus'],
-        "spell_attack_bonus": to_score(c[cls_traits[c['cls']]["spellcasting_mod"]]) + c['proficiency_bonus'],
+        "spell_save_dc": 8 + to_score(c["abilities"][to_long_name(cls_traits[c['cls']]["spellcasting_mod"])]) + c['proficiency_bonus'],
+        "spell_attack_bonus": to_score(c["abilities"][to_long_name(cls_traits[c['cls']]["spellcasting_mod"])]) + c['proficiency_bonus'],
         "by_level": []        
     }
 
@@ -304,6 +321,7 @@ def fill_in_character(c, item_model, level):
                 slot["spells"].append(sp)
         c['spells']['by_level'].append(slot)
 
+    # level x skills, only granted by gm
     c['spells']['by_level'].append({"slots": 0, "spells": []})
 
     del c['cls']
@@ -324,7 +342,7 @@ def generate_character(cls, alignment, race='', level=1):
     fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
     dl = cd.DataLists()
     dl.load_from_file(fpath)
-    align_model, race_model, background_model, attr_models, item_model, col_names = engine.get_models()
+    align_model, race_model, background_model = engine.get_classifier_models()
 
     rf = open(path.abspath(path.join(path.abspath(''), "..", "game_data", "abilities_by_race.json")), "r", encoding="utf-8")
     race_traits = json.load(rf)
@@ -334,11 +352,13 @@ def generate_character(cls, alignment, race='', level=1):
 
     if alignment:
         if isinstance(alignment, int):
-            alignment = dl.alignment_list[(int(np.argmax(alignment)))]
+            alignment = dl.alignment_list[alignment]
         character = {
             'cls': cls,
             'alignment': alignment
         }
+        
+        del align_model
 
     else:
         character = {
@@ -347,13 +367,16 @@ def generate_character(cls, alignment, race='', level=1):
 
         align_pred = models.get_cat_prediction(align_model, character)
         # print(align_pred)
+        del align_model
 
         character['alignment'] = dl.alignment_list[(int(np.argmax(align_pred)))]
     
     if race:
         character['race'] = race
+        del race_model
     else:
         race_pred = models.get_cat_prediction(race_model, character)
+        del race_model
         # print(race_pred)
         race_pred = list(race_pred[0])
         max_val = max(list(race_pred))
@@ -370,12 +393,14 @@ def generate_character(cls, alignment, race='', level=1):
             character['race'] = dl.race_list[max_idx]
 
     bg_pred = models.get_cat_prediction(background_model, character)
+    del background_model
     # print(bg_pred)
 
     character['background'] = dl.background_list[(int(np.argmax(bg_pred)))]
 
-
+    attr_models, col_names = engine.get_attr_models()
     attr_preds = models.get_all_attr_predictions(attr_models, character, col_names)
+    del attr_models
 
     character['str'] = attr_preds[0]
     character['dex'] = attr_preds[1]
@@ -389,6 +414,6 @@ def generate_character(cls, alignment, race='', level=1):
     del dl
     del race_traits
 
-    character = fill_in_character(character, item_model, level)
+    character = fill_in_character(character, level)
 
     return character
