@@ -21,22 +21,25 @@ final class Store: ObservableObject {
     private let serverUrl = "https://ec2-3-139-99-112.us-east-2.compute.amazonaws.com/"
 
     @MainActor
-    func getID() async -> Int {
-        let response = await apiRequest(path: "user/", method: "GET", body: nil)
+    func getID() async -> Int? {
+        guard let response = await apiRequest(path: "user/", method: "GET", body: nil) else {
+            return nil
+        }
         switch (response) {
         case .object (let obj):
             print(obj)
-            return obj["id"] as! Int
+            return obj["id"] as? Int
         default:
-            print(-1)
-            return -1
+            return nil
         }
     }
     
     @MainActor
     func login(username: String, password: String) async -> Int {
         print("login: \(username) / \(password)")
-        let response = await apiRequest(path: "user/", method: "POST", body: ["username": username, "password": password])
+        guard let response = await apiRequest(path: "user/", method: "POST", body: ["username": username, "password": password]) else {
+            return -1
+        }
         switch (response) {
         case .object (let obj):
             return obj["id"] as! Int
@@ -48,7 +51,9 @@ final class Store: ObservableObject {
     @MainActor
     func createAccount(username: String, password: String) async -> Int {
         print("create: \(username) / \(password)")
-        let response = await apiRequest(path: "user/", method: "PUT", body: ["username": username, "password": password])
+        guard let response = await apiRequest(path: "user/", method: "PUT", body: ["username": username, "password": password]) else {
+            return -1
+        }
         switch (response) {
         case .object (let obj):
             return obj["id"] as! Int
@@ -59,7 +64,9 @@ final class Store: ObservableObject {
 
     @MainActor
     func getUser() async -> PlayerAccountInfo {
-        let response = await apiRequest(path: "user/", method: "GET", body: nil)
+        guard let response = await apiRequest(path: "user/", method: "GET", body: nil) else {
+            return PlayerAccountInfo(id: -1, username: "")
+        }
         switch (response) {
         case .object (let obj):
             return PlayerAccountInfo(id: obj["id"] as! Int, username: obj["username"] as! String)
@@ -70,7 +77,9 @@ final class Store: ObservableObject {
 
     @MainActor
     func getParties() async -> [String] {
-        let response = await apiRequest(path: "parties/", method: "GET", body: nil)
+        guard let response = await apiRequest(path: "parties/", method: "GET", body: nil) else {
+            return []
+        }
         switch (response) {
         case .arrayStr (let arr):
             return arr;
@@ -86,12 +95,14 @@ final class Store: ObservableObject {
 
     @MainActor
     func joinParty(code: String) async {
-        _ = await apiRequest(path: "parties/join/", method: "POST", body: ["code": code])
+        _ = await apiRequest(path: "parties/join/", method: "POST", body: ["code": code, "is_dm": false])
     }
 
     @MainActor
     func getPartyInfo(code: String) async -> Party {
-        let response = await apiRequest(path: "parties/\(code)/", method: "GET", body: nil)
+        guard let response = await apiRequest(path: "parties/\(code)/", method: "GET", body: nil) else {
+            return Party(code: "Could not find party", players: [])
+        }
         switch (response) {
         case .object (let obj):
             let code = obj["code"] as! String
@@ -105,7 +116,9 @@ final class Store: ObservableObject {
 
     @MainActor
     func getNPCs(code: String) async -> [Int] {
-        let response = await apiRequest(path: "parties/\(code)/npcs/", method: "GET", body: nil)
+        guard let response = await apiRequest(path: "parties/\(code)/npcs/", method: "GET", body: nil) else {
+            return []
+        }
         switch (response) {
         case .array (let arr):
             return arr
@@ -115,20 +128,22 @@ final class Store: ObservableObject {
     }
 
     @MainActor
-    func makeNPC(code: String, sheet: CharacterSheet?) async -> Int {
-        let response = await apiRequest(path: "parties/\(code)/npcs/", method: "POST", body: nil)
+    func makeNPC(code: String, sheet: CharacterSheet?) async -> Int? {
+        guard let response = await apiRequest(path: "parties/\(code)/npcs/", method: "POST", body: nil) else {
+            return nil
+        }
         switch (response) {
         case .object (let obj):
             let id = obj["id"] as! Int
             await postNPCData(code: code, npcid: id, csheet: sheet)
             return id
         default:
-            exit(1)
+            return nil
         }
     }
 
     @MainActor
-    func getPlayerData(code: String, playerId: Int) async -> Player {
+    func getPlayerData(code: String, playerId: Int) async -> Player? {
         let response = await apiRequest(path: "parties/\(code)/members/\(playerId)/", method: "GET", body: nil)
         switch (response) {
         case .object (let obj):
@@ -143,12 +158,12 @@ final class Store: ObservableObject {
             }
             return Player(id: playerId, isDM: isDM, csheet: CharacterSheet(json: csheet!))
         default:
-            exit(1)
+            return nil
         }
     }
 
     @MainActor
-    func getNPCData(code: String, npcid: Int) async -> NPC {
+    func getNPCData(code: String, npcid: Int) async -> NPC? {
         let response = await apiRequest(path: "parties/\(code)/npcs/\(npcid)/", method: "GET", body: nil)
         switch (response) {
         case .object (let obj):
@@ -158,14 +173,14 @@ final class Store: ObservableObject {
             }
             return NPC(npcid: npcid, csheet: CharacterSheet(json: csheet!))
         default:
-            exit(1)
+            return nil
         }
     }
     
     @MainActor
     func generatePlayerML(code: String, playerId: Int, className: String, alignment: Int?) async {
         let response = await apiRequest(path: "generate/", method: "POST", body: [
-            "class": className,
+            "clss": className,
             "alignment": alignment ?? NSNull()
         ])
         switch (response) {
@@ -184,7 +199,7 @@ final class Store: ObservableObject {
     @MainActor
     func generateNPCML(code: String, npcid: Int, className: String, alignment: Int?, friendly: Bool) async {
         let response = await apiRequest(path: "generate/", method: "POST", body: [
-            "class": className,
+            "clss": className,
             "alignment": alignment ?? NSNull()
         ])
         switch (response) {
@@ -219,13 +234,13 @@ final class Store: ObservableObject {
     }
 
     @MainActor
-    func getSynergy(code: String) async -> [Any] {
-        let response = await apiRequest(path: "/parties/\(code)/spells/", method: "GET", body: nil)
+    func getSynergy(code: String) async -> [Any]? {
+        let response = await apiRequest(path: "parties/\(code)/spells/", method: "GET", body: nil)
         switch (response) {
         case .arrayObj (let arr):
             return arr
         default:
-            exit(1)
+            return nil
         }
     }
     
@@ -238,19 +253,19 @@ final class Store: ObservableObject {
     }
     
     @MainActor
-    func apiRequest(path: String, method: String, body: [String:Any]?) async -> ApiResult {
+    func apiRequest(path: String, method: String, body: [String:Any]?) async -> ApiResult? {
 
         guard let apiUrl = URL(string: serverUrl+path) else {
-            print("getData: Bad URL")
-            return ApiResult.array([])
+            print("API request: Bad URL")
+            return nil
         }
 
         var request = URLRequest(url: apiUrl)
         request.httpMethod = method
         if let b = body {
             guard let jsonData = try? JSONSerialization.data(withJSONObject: b) else {
-                print("Couldn't serialize object")
-                return ApiResult.array([])
+                print("API request: Couldn't serialize object")
+                return nil
             }
             request.httpBody = jsonData
         }
@@ -259,9 +274,9 @@ final class Store: ObservableObject {
             let (data, response) = try await URLSession.shared.data(for: request)
 
             if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                print("getData: HTTP STATUS: \(httpStatus.statusCode)")
+                print("API request: HTTP STATUS: \(httpStatus.statusCode)")
                 print("path = \(path), method = \(method)")
-                return ApiResult.array([])
+                return nil
             }
 
             if let jsonObj = try? JSONSerialization.jsonObject(with: data) as? [String:Any] {
@@ -273,12 +288,12 @@ final class Store: ObservableObject {
             } else if let jsonArr = try? JSONSerialization.jsonObject(with: data) as? [Any] {
                 return ApiResult.arrayObj(jsonArr)
             } else {
-                print("getData: failed JSON deserialization")
-                return ApiResult.array([])
+                print("API request: failed JSON deserialization")
+                return nil
             }
         } catch {
-            print("getUser: NETWORKING ERROR")
-            return ApiResult.array([])
+            print("API request: NETWORKING ERROR")
+            return nil
         }
     }
     

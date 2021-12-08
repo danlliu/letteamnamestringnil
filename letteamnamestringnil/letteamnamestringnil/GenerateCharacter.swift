@@ -23,8 +23,7 @@ struct GenerateCharacter: View {
     @State private var level: Int = 0
     @State private var manualInput: Bool = false
     
-    private var classes = ["Aarakocra", "Bugbear", "Centaur", "Dragonborn", "Dwarf", "Elf", "Gensai", "Goblin", "Human", "Minotaur", "Orc", "Tortle",
-                            "Vedalken", "Warforged"]
+    private var classes = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"]
     private var alignments = ["Chaotic good", "Neutral good", "Lawful good", "Chaotic neutral", "Neutral neutral", "Lawful neutral", "Chaotic evil",
                                 "Neutral evil", "Lawful evil"]
     var body: some View {
@@ -58,7 +57,7 @@ struct GenerateCharacter: View {
             }
             .listStyle(.plain)
             
-            NavigationLink(destination: PlayerView()) {
+            NavigationLink(destination: PlayerView(partyCode: partyCode, username: name)) {
                 Text("Generate Character")
                     .foregroundColor(Color.white)
                     .padding()
@@ -87,7 +86,7 @@ struct GenerateCharacter: View {
                 Text("New character")
             }
             ToolbarItem {
-                NavigationLink(destination: PlayerView()) {
+                NavigationLink(destination: PlayerView(partyCode: partyCode, username: name)) {
                     Text("Create")
                 }
             }
@@ -104,7 +103,10 @@ struct GenerateCharacter: View {
     @available(iOS 15.0.0, *)
     func generateRandom() async {
         //TODO: need database and ML
-        await Store.shared.generatePlayerML(code: partyCode, playerId: Store.shared.getID(), className: playerClass, alignment: alignments.firstIndex(of: playerAlignment))
+        guard let id = await Store.shared.getID() else {
+            return
+        }
+        await Store.shared.generatePlayerML(code: partyCode, playerId: id, className: playerClass.lowercased(), alignment: alignments.firstIndex(of: playerAlignment))
         print("generating character sheet...")
     }
 }

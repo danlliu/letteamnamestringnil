@@ -57,7 +57,8 @@ struct GamesView: View {
             }
                     .padding()
                     .task {
-                        if await Store.shared.getID() == -1 {
+                        
+                        if await Store.shared.getID() == nil {
                             await Store.shared.createAccount(username: username, password: username)
                             await Store.shared.login(username: username, password: username)
                         }
@@ -118,8 +119,11 @@ struct GameInfoView: View {
                 }.hidden()
             }
                     .task {
-                        let p = await Store.shared.getPlayerData(code: gameCode, playerId: Store.shared.getID())
-                        self.isDM = p.isDM
+                        guard let id = await Store.shared.getID() else {
+                            return
+                        }
+                        let p = await Store.shared.getPlayerData(code: gameCode, playerId: id)
+                        self.isDM = p?.isDM ?? false
                     }
         } else {
             // Fallback on earlier versions
