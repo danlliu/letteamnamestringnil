@@ -354,7 +354,7 @@ def fill_in_character(c, level):
 
 
 
-def generate_character(cls, alignment=None, race='', level=1):
+def generate_character(cls, alignment=None, race='', level=1, name=""):
     fpath = path.abspath(path.join(path.abspath(''), "..", "game_data", "saved_character_data_lists.json"))
     dl = cd.DataLists()
     dl.load_from_file(fpath)
@@ -431,5 +431,7 @@ def generate_character(cls, alignment=None, race='', level=1):
     del race_traits
 
     character = fill_in_character(character, level)
+
+    character["name"] = name
 
     return character
