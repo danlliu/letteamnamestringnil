@@ -73,13 +73,14 @@ struct CharacterSheetView: View {
                     } else {
                         await Store.shared.postNPCData(code: partyCode, npcid: npcid!, csheet: csheet)
                     }
-                } }) {
-                    Text("Save changes")
+                } })
+                {
+                    Text("Save Edits")
+                        .padding(10)
                 }
-                
                 if let username = username {
                     NavigationLink(destination: GenerateCharacter(partyCode: partyCode, username: username)) {
-                        Text("Regenerate character sheet")
+                        Text("Remake Character Sheet")
                     }
                 }
                 

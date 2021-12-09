@@ -88,11 +88,6 @@ struct GenerateCharacter: View {
             ToolbarItem(placement: .principal) {
                 Text("New character")
             }
-            ToolbarItem {
-                NavigationLink(destination: PlayerView(partyCode: partyCode, username: name)) {
-                    Text("Create")
-                }
-            }
         }
     }
     

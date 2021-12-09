@@ -149,18 +149,6 @@ struct AddNPCView: View {
             ToolbarItem(placement: .principal) {
                 Text("New character")
             }
-            ToolbarItem {
-                NavigationLink(destination: DMView(partyCode: partyCode, username: username)) {
-                    Text("Create")
-                }
-                .simultaneousGesture(TapGesture().onEnded( {
-                    if #available(iOS 15.0.0, *) {
-                        Task{ await Store.shared.makeNPC(code: partyCode, sheet: nil) }
-                    } else {
-                        // Fallback on earlier versions
-                    } //TODO: check nil is handled ok elsewhere
-                }))
-            }
         }
     }
     
