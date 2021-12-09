@@ -138,9 +138,7 @@ struct PlayerView: View {
                     //                        IndividualPlayerView(player: monster)
                     //                    }
                     //                }
-                }
-                        .listStyle(GroupedListStyle())
-                List {
+                
                     Section(header: ListHeader(title: "Spell Synergy")) {
                         if synergy.isEmpty {
                             Text("No spells found")

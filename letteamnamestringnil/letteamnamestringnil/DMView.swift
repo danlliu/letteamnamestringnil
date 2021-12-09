@@ -81,9 +81,7 @@ struct DMView: View {
                             Text("Add NPC")
                         }
                     }
-                }
-                .listStyle(.grouped)
-                List {
+                
                     Section(header: ListHeader(title: "Spell Synergy")) {
                         if synergy.isEmpty {
                             Text("No spells found")
