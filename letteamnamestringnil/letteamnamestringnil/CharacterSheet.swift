@@ -54,7 +54,19 @@ class CharacterSheet: ObservableObject {
                 ["slots": 0, "spells": []]
             ]
         ]
-        self.spells = []
+        self.spells = [
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []]
+        ]
         self.inventory = PlayerInventory(equipment: "", darkGifts: "", treasure: "")
         self.background = PlayerBackgroundInfo(background: "", backstory: "", proficiencies: "", features: "", featuresAndTraits: "", allies: "", personality: Personality(json: [:]))
         self.notes = ""
