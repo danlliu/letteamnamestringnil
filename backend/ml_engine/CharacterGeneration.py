@@ -356,6 +356,9 @@ def generate_character(cls, alignment=None, race='', level=1, name=""):
 
     character = {}
 
+    if level <= 0:
+        level = 1
+
     if cls:
         cls = cls.lower()
     if race:
