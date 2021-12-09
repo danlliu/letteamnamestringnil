@@ -126,6 +126,9 @@ class CharacterSheet: ObservableObject {
 
     func toDictionary() -> [String:Any] {
         // TODO IMPLEMENT
+        
+        self.spellcasting["by_level"] = self.spells
+        
         return [
             "name": basicInfo.name,
             "clss": basicInfo.className,
