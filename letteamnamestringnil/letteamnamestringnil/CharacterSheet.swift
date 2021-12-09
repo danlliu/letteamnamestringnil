@@ -54,19 +54,7 @@ class CharacterSheet: ObservableObject {
                 ["slots": 0, "spells": []]
             ]
         ]
-        self.spells = [
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []],
-            ["slots": 0, "spells": []]
-        ]
+        self.spells = []
         self.inventory = PlayerInventory(equipment: "", darkGifts: "", treasure: "")
         self.background = PlayerBackgroundInfo(background: "", backstory: "", proficiencies: "", features: "", featuresAndTraits: "", allies: "", personality: Personality(json: [:]))
         self.notes = ""
@@ -128,18 +116,41 @@ class CharacterSheet: ObservableObject {
         self.spellcasting = json["spells"] as! [String: Any]
         self.spells = []
 
+        var lv = 0
         for level in spellsData {
             for spell in level["spells"] as! [[String: Any]] {
                 self.spells.append(Spells(name: spell["name"] as! String,
-                        charges: spell["charges"] as! Int))
+                                          charges: spell["charges"] as! Int, level: lv))
             }
+            lv += 1
         }
     }
 
     func toDictionary() -> [String:Any] {
         // TODO IMPLEMENT
         
-        self.spellcasting["by_level"] = self.spells
+        var bylevel = [
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []],
+            ["slots": 0, "spells": []]
+        ]
+        
+        for spell in spells {
+            bylevel[spell.level]["slots"] = bylevel[spell.level]["slots"] as! Int + 1
+            var spellList = bylevel[spell.level]["spells"] as! [[String: Any]]
+            spellList.append(["name": spell.name, "charges": spell.charges])
+            bylevel[spell.level]["spells"] = spellList
+        }
+        
+        self.spellcasting["by_level"] = bylevel
         
         return [
             "name": basicInfo.name,
@@ -294,6 +305,7 @@ struct PlayerStats: Hashable {
 struct Spells: Hashable {
     var name: String = ""
     var charges: Int = 0
+    var level: Int = 0
 }
 
 
