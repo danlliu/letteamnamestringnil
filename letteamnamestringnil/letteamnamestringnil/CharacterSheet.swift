@@ -201,6 +201,18 @@ class CharacterSheet: ObservableObject {
             "spells": spellcasting
         ]
     }
+    
+    func copyFrom(_ other: CharacterSheet) {
+        basicInfo = other.basicInfo
+        stats = other.stats
+        skills = other.skills
+        attacks = other.attacks
+        spellcasting = other.spellcasting
+        spells = other.spells
+        inventory = other.inventory
+        background = other.background
+        notes = other.notes
+    }
 
 }
 

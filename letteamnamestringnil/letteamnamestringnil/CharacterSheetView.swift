@@ -22,7 +22,7 @@ struct CharacterSheetView: View {
     var username: String?
     var npcid: Int?
 
-    @State var csheet: CharacterSheet
+    @StateObject var csheet = CharacterSheet()
     @State var xpText: String = ""
     @State var update = false
 
@@ -49,14 +49,13 @@ struct CharacterSheetView: View {
         self.partyCode = partyCode
         self.username = username
         self.npcid = nil
-        self.csheet = CharacterSheet()
     }
 
     init(partyCode: String, npcid: Int) {
         self.partyCode = partyCode
         self.username = nil
         self.npcid = npcid
-        self.csheet = CharacterSheet(isNPC: true)
+        self.csheet.basicInfo.isNPC = true
     }
 
     var body: some View {
@@ -537,7 +536,7 @@ struct CharacterSheetView: View {
                     }
                     
                     Group {
-                        List {
+                        //List {
                             ForEach(csheet.spells, id: \.name) { spell in
                                 HStack {
                                     Button(action: {() in
@@ -551,7 +550,7 @@ struct CharacterSheetView: View {
                                     }
                                 }
                             }
-                        }
+                        //}
                         Divider()
                         Group {
                             TextField("Spell Name:", text: $newSpellName)
@@ -583,12 +582,12 @@ struct CharacterSheetView: View {
                     }
                     let response = await Store.shared.getPlayerData(code: partyCode, playerId: id)
                     if let cs = response?.csheet {
-                        csheet = cs
+                        self.csheet.copyFrom(cs)
                     }
                 } else {
                     let response = await Store.shared.getNPCData(code: partyCode, npcid: npcid!)
                     if let cs = response?.csheet {
-                        csheet = cs
+                        self.csheet.copyFrom(cs)
                     }
                 }
                 level = csheet.stats.level
