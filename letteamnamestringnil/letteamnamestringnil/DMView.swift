@@ -92,32 +92,32 @@ struct DMView: View {
                             if spell[3] == "ATK" {
                                 HStack {
                                     Image(systemName: "scope")
-                                    Text(spell[2]).font(Font.system(size: 10))
-                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
-                                    Text("\(spell[3]) \(spell[5]) \(spell[4])").font(Font.system(size: 8))
-                                    Text("range \(spell[6])").font(Font.system(size: 8))
+                                    Text(spell[2]).font(Font.system(size: 14))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 12))
+                                    Text("\(spell[3]) \(spell[5]) \(spell[4])").font(Font.system(size: 12))
+                                    Text("range \(spell[6])").font(Font.system(size: 12))
                                 }
                             } else if spell[3] == "HEAL" {
                                 HStack {
                                     Image(systemName: "heart")
-                                    Text(spell[2]).font(Font.system(size: 10))
-                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
-                                    Text(spell[4]).font(Font.system(size: 8))
-                                    Text("range \(spell[5])").font(Font.system(size: 8))
+                                    Text(spell[2]).font(Font.system(size: 14))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 12))
+                                    Text(spell[4]).font(Font.system(size: 12))
+                                    Text("range \(spell[5])").font(Font.system(size: 12))
                                 }
                             } else if spell[3] == "DEF" {
                                 HStack {
                                     Image(systemName: "checkerboard.shield")
-                                    Text(spell[2]).font(Font.system(size: 10))
-                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
-                                    Text("defensive spell").font(Font.system(size: 8))
+                                    Text(spell[2]).font(Font.system(size: 14))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 12))
+                                    Text("defensive spell").font(Font.system(size: 12))
                                 }
                             } else if spell[3] == "UTIL" {
                                 HStack {
                                     Image(systemName: "gear.circle")
-                                    Text(spell[2]).font(Font.system(size: 10))
-                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 8))
-                                    Text("utility spell").font(Font.system(size: 8))
+                                    Text(spell[2]).font(Font.system(size: 14))
+                                    Text("lvl \(spell[0]) (\(spell[1]))").font(Font.system(size: 12))
+                                    Text("utility spell").font(Font.system(size: 12))
                                 }
                             }
                         }

@@ -126,6 +126,26 @@ struct CharacterSheetView: View {
                             HStack {
                                 Text("Character Alignment:")
                                 VStack {
+                                    var align = ""
+                                    if csheet.basicInfo.alignment == 0 {
+                                        align = "LG"
+                                    } else if csheet.basicInfo.alignment == 1 {
+                                        align = "LN"
+                                    } else if csheet.basicInfo.alignment == 2 {
+                                        align = "LE"
+                                    } else if csheet.basicInfo.alignment == 3 {
+                                        align = "NG"
+                                    } else if csheet.basicInfo.alignment == 4 {
+                                        align = "TN"
+                                    } else if csheet.basicInfo.alignment == 5 {
+                                        align = "NE"
+                                    } else if csheet.basicInfo.alignment == 6 {
+                                        align = "CG"
+                                    } else if csheet.basicInfo.alignment == 7 {
+                                        align = "CN"
+                                    } else if csheet.basicInfo.alignment == 8 {
+                                        align = "CE"
+                                    }
                                     Menu("Alignment") {
                                         Button(action: { () in csheet.basicInfo.alignment = 0; update.toggle() }) {
                                             Text("LG")
@@ -171,7 +191,8 @@ struct CharacterSheetView: View {
                                         }
                                         if filtered != newValue {
                                             self.xpText = newValue
-                                            csheet.stats.xp = Int(filtered)!
+                                            csheet.stats.xp = Int(filtered) ?? 0
+                                            xpText = "\(csheet.stats.xp)"
                                             update.toggle()
                                         }
                                     }
