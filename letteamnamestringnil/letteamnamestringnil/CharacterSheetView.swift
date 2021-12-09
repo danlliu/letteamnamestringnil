@@ -104,10 +104,16 @@ struct CharacterSheetView: View {
                                 Stepper {
                                     Text("\(level)")
                                 } onIncrement: {
+                                    if level == 15 {
+                                        return
+                                    }
                                     csheet.stats.level += 1
                                     level += 1
                                     update.toggle()
                                 } onDecrement: {
+                                    if level == 0 {
+                                        return
+                                    }
                                     csheet.stats.level -= 1
                                     level -= 1
                                     update.toggle()
@@ -126,7 +132,7 @@ struct CharacterSheetView: View {
                             HStack {
                                 Text("Character Alignment:")
                                 VStack {
-                                    let align: String = (csheet.basicInfo.alignment == 0 ? "LG" : (csheet.basicInfo.alignment == 1 ? "LN" : (csheet.basicInfo.alignment == 2 ? "LE" : (csheet.basicInfo.alignment == 3 ? "NG" : (csheet.basicInfo.alignment == 4 ? "TN" : (csheet.basicInfo.alignment == 5 ? "NE" : (csheet.basicInfo.alignment == 6 ? "CG" : (csheet.basicInfo.alignment == 7 ? "CN" : "CE"))))))))
+                                    let align: String = (update || !update) ? (csheet.basicInfo.alignment == 0 ? "LG" : (csheet.basicInfo.alignment == 1 ? "LN" : (csheet.basicInfo.alignment == 2 ? "LE" : (csheet.basicInfo.alignment == 3 ? "NG" : (csheet.basicInfo.alignment == 4 ? "TN" : (csheet.basicInfo.alignment == 5 ? "NE" : (csheet.basicInfo.alignment == 6 ? "CG" : (csheet.basicInfo.alignment == 7 ? "CN" : "CE")))))))) : "hi"
                                     
                                     Menu(align) {
                                         Button(action: { () in csheet.basicInfo.alignment = 0; update.toggle() }) {
@@ -281,6 +287,9 @@ struct CharacterSheetView: View {
                                     inspiration += 1
                                     update.toggle()
                                 } onDecrement: {
+                                    if inspiration == 0 {
+                                        return
+                                    }
                                     csheet.stats.inspiration -= 1
                                     inspiration -= 1
                                     update.toggle()
@@ -295,6 +304,9 @@ struct CharacterSheetView: View {
                                     profBonus += 1
                                     update.toggle()
                                 } onDecrement: {
+                                    if profBonus == 0 {
+                                        return
+                                    }
                                     csheet.stats.profBonus -= 1
                                     profBonus -= 1
                                     update.toggle()
@@ -407,6 +419,9 @@ struct CharacterSheetView: View {
                                     perception += 1
                                     update.toggle()
                                 } onDecrement: {
+                                    if perception == 0 {
+                                        return
+                                    }
                                     csheet.stats.perception -= 1
                                     perception -= 1
                                     update.toggle()
@@ -422,6 +437,9 @@ struct CharacterSheetView: View {
                                 maxHP += 1
                                 update.toggle()
                             } onDecrement: {
+                                if maxHP == 0 {
+                                    return
+                                }
                                 csheet.stats.maxHP -= 1
                                 maxHP -= 1
                                 update.toggle()
@@ -433,6 +451,9 @@ struct CharacterSheetView: View {
                                 curHP += 1
                                 update.toggle()
                             } onDecrement: {
+                                if curHP == 0 {
+                                    return
+                                }
                                 csheet.stats.curHP -= 1
                                 curHP -= 1
                                 update.toggle()
@@ -444,6 +465,9 @@ struct CharacterSheetView: View {
                                 tmpHP += 1
                                 update.toggle()
                             } onDecrement: {
+                                if tmpHP == 0 {
+                                    return
+                                }
                                 csheet.stats.tmpHP -= 1
                                 tmpHP -= 1
                                 update.toggle()
