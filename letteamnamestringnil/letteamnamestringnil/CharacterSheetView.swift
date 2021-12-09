@@ -85,7 +85,6 @@ struct CharacterSheetView: View {
                 }
                 
                 List {
-                    Divider()
                     Group {
                         Text("Character Information")
                             .font(.headline)
@@ -127,7 +126,7 @@ struct CharacterSheetView: View {
                             HStack {
                                 Text("Character Alignment:")
                                 VStack {
-                                    HStack {
+                                    Menu("Alignment") {
                                         Button(action: { () in csheet.basicInfo.alignment = 0; update.toggle() }) {
                                             Text("LG")
                                         }.border(csheet.basicInfo.alignment == 0 ? Color.white : Color.cyan)
@@ -137,8 +136,7 @@ struct CharacterSheetView: View {
                                         Button(action: { () in csheet.basicInfo.alignment = 2; update.toggle() }) {
                                             Text("LE")
                                         }.border(csheet.basicInfo.alignment == 2 ? Color.white : Color.cyan)
-                                    }
-                                    HStack {
+                                    
                                         Button(action: { () in csheet.basicInfo.alignment = 3; update.toggle() }) {
                                             Text("NG")
                                         }.border(csheet.basicInfo.alignment == 3 ? Color.white : Color.cyan)
@@ -148,8 +146,7 @@ struct CharacterSheetView: View {
                                         Button(action: { () in csheet.basicInfo.alignment = 5; update.toggle() }) {
                                             Text("NE")
                                         }.border(csheet.basicInfo.alignment == 5 ? Color.white : Color.cyan)
-                                    }
-                                    HStack {
+                                    
                                         Button(action: { () in csheet.basicInfo.alignment = 6; update.toggle() }) {
                                             Text("CG")
                                         }.border(csheet.basicInfo.alignment == 6 ? Color.white : Color.cyan)
@@ -182,7 +179,6 @@ struct CharacterSheetView: View {
                         }.padding(16)
                     }
                     
-                    Divider()
                     Group {
                         Text("Character Statistics")
                             .font(.headline)
@@ -452,7 +448,6 @@ struct CharacterSheetView: View {
                         }.padding(16)
                     }
                     
-                    Divider()
                     Group {
                         Group {
                             Text("Personality Traits:")
@@ -497,7 +492,6 @@ struct CharacterSheetView: View {
                         }
                     }
                     
-                    Divider()
                     Group {
                         Group {
                             Text("Dark Gifts:")
@@ -515,7 +509,6 @@ struct CharacterSheetView: View {
                         }
                     }
                     
-                    Divider()
                     Group {
                         List {
                             ForEach(csheet.spells, id: \.name) { spell in
