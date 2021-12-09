@@ -126,27 +126,9 @@ struct CharacterSheetView: View {
                             HStack {
                                 Text("Character Alignment:")
                                 VStack {
-                                    var align = ""
-                                    if csheet.basicInfo.alignment == 0 {
-                                        align = "LG"
-                                    } else if csheet.basicInfo.alignment == 1 {
-                                        align = "LN"
-                                    } else if csheet.basicInfo.alignment == 2 {
-                                        align = "LE"
-                                    } else if csheet.basicInfo.alignment == 3 {
-                                        align = "NG"
-                                    } else if csheet.basicInfo.alignment == 4 {
-                                        align = "TN"
-                                    } else if csheet.basicInfo.alignment == 5 {
-                                        align = "NE"
-                                    } else if csheet.basicInfo.alignment == 6 {
-                                        align = "CG"
-                                    } else if csheet.basicInfo.alignment == 7 {
-                                        align = "CN"
-                                    } else if csheet.basicInfo.alignment == 8 {
-                                        align = "CE"
-                                    }
-                                    Menu("Alignment") {
+                                    let align: String = (csheet.basicInfo.alignment == 0 ? "LG" : (csheet.basicInfo.alignment == 1 ? "LN" : (csheet.basicInfo.alignment == 2 ? "LE" : (csheet.basicInfo.alignment == 3 ? "NG" : (csheet.basicInfo.alignment == 4 ? "TN" : (csheet.basicInfo.alignment == 5 ? "NE" : (csheet.basicInfo.alignment == 6 ? "CG" : (csheet.basicInfo.alignment == 7 ? "CN" : "CE"))))))))
+                                    
+                                    Menu(align) {
                                         Button(action: { () in csheet.basicInfo.alignment = 0; update.toggle() }) {
                                             Text("LG")
                                         }.border(csheet.basicInfo.alignment == 0 ? Color.white : Color.cyan)
